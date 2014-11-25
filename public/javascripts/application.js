@@ -11,15 +11,23 @@ $j(document).ready(function() {
     attachCharacterCounters();
     setupAccordion();
     setupDropdown();
-
+    prepareDeleteLinks();
+    thermometer();
+    
     // remove final comma from comma lists in older browsers
     $j('.commas li:last-child').addClass('last');
 
     // make Share buttons on works and own bookmarks visible
     $j('.actions').children('.share').removeClass('hidden');
 
-    prepareDeleteLinks();
-    thermometer();
+    // don't let the user submit a live search form
+    $j('.live').submit(function() {
+      return false;
+    });
+  
+    // hide the submit button on live search forms
+    $j('.live').find('[type=submit]').hide();
+
 });
 
 ///////////////////////////////////////////////////////////////////
@@ -510,3 +518,64 @@ function thermometer() {
     }
   });
 }
+
+///////////////////////////////////////////////////////////////////
+// Live Search
+///////////////////////////////////////////////////////////////////
+
+$j(document).ready(function() {
+  var search_field = $j('.live').find('input[type=text]');
+  var results_container = $j('.results');
+  var results_index = results_container.find('.index');
+  var json_url = $j('.live').attr('action');
+  
+  // allow us to set a delay between an event and a function
+  var delay = (function(){
+    var timer = 0;
+    return function(callback, ms){
+      clearTimeout (timer);
+      timer = setTimeout(callback, ms);
+    };
+  })();
+
+  // use JSON data to create an array of items to search
+  $j.getJSON( json_url, function( data ) {
+    var all_items = [];  
+    $j.each( data, function( key, val ) {
+      all_items.push( $j('<li><a href="' + data[key].url + '" class="tag">' + data[key].name + '</a></li>') );
+    });
+
+    // 750ms after the search field last receives input, do search-related things
+    search_field.on('input', function(){
+      delay(function(){
+    
+        // get the search term and reset the results count to zero
+        var filter = search_field.val(), count = 0;
+
+        // always start with an empty results array and empty results index
+        var results = [];
+        results_index.empty();
+ 
+        // if a search term is present, loop through the items, find matches, increase the count, and show it all to the user 
+        // otherwise, hide the results section
+        if ( search_field.val().length > 0 ) {       
+          var i;          
+          for (i = 0; i < all_items.length; ++i) {          
+            if (all_items[i].text().search(new RegExp(filter, "i")) >= 0) {
+              results.push(all_items[i]);
+              count++;
+            }
+          }          
+          $j.each(results, function(index, result){
+            results_index.append(result);
+          });    
+          results_container.find('.count').text(count);
+          results_container.slideDown();  
+        } else {
+          results_container.slideUp();
+        }
+      }, 750);  
+    });  
+  
+  });
+});

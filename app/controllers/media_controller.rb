@@ -16,6 +16,28 @@ class MediaController < ApplicationController
           Fandom.public_top(5).find(:all, :joins => :common_taggings, :conditions => {:canonical => true, :common_taggings => {:filterable_id => medium.id, :filterable_type => 'Tag'}})
       end
     end
+
+    if params[:query].present?
+      options = params[:query].dup
+      @query = options
+      @tags = TagSearch.search(options)
+    end
+
+    if Rails.env.development?
+      @all_fandoms = Fandom.where(canonical: true)
+    else
+      @all_fandoms = Rails.cache.fetch("all_fandoms", expires_in: 4.hours){Fandom.where(canonical: true)}
+    end
+    all_fandoms = []
+    @all_fandoms.each do |fandom|
+      all_fandoms << {name: fandom.name, url: tag_works_path(fandom)}
+    end
+
+    respond_to do |format|
+      format.json { render :json => all_fandoms.to_json }
+      format.html
+    end
+    
     @page_subtitle = ts("Fandoms")
   end
 

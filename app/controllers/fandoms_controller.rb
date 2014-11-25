@@ -27,6 +27,17 @@ class FandomsController < ApplicationController
       return
     end
     @fandoms_by_letter = @fandoms.group_by {|f| f.sortable_name[0].upcase}
+
+    all_fandoms = []
+    @fandoms.each do |fandom|
+      all_fandoms << {name: fandom.name, url: tag_works_path(fandom)}
+    end
+
+    respond_to do |format|
+      format.json { render :json => all_fandoms.to_json }
+      format.html
+    end
+
   end
   
   def show
