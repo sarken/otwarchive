@@ -525,30 +525,31 @@ function thermometer() {
 
 $j(document).ready(function() {
   var search_field = $j('.live').find('input[type=text]');
-  var results_container = $j('.results');
-  var results_index = results_container.find('.index');
-  var json_url = $j('.live').attr('action');
+      results_container = $j('.results');
+      results_index = results_container.find('.index');
+      json_url = $j('.live').attr('action');
   
   // allow us to set a delay between an event and a function
-  var delay = (function(){
+  var delay = (function() {
     var timer = 0;
-    return function(callback, ms){
+    return function(callback, ms) {
       clearTimeout (timer);
       timer = setTimeout(callback, ms);
     };
   })();
 
   // use JSON data to create an array of items to search
-  $j.getJSON( json_url, function( data ) {
-    var all_items = [];  
-    $j.each( data, function( key, val ) {
-      all_items.push( $j('<li><a href="' + data[key].url + '" class="tag">' + data[key].name + '</a></li>') );
-    });
+  $j.getJSON(json_url, function(data) {
 
-    // 750ms after the search field last receives input, do search-related things
-    search_field.on('input', function(){
-      delay(function(){
-    
+    // testing JSON
+    //for (var i = 0, len=data.length; i < len; i++) {
+      //console.log(data[i]);
+    //}
+
+    // 500ms after the search field last receives input, do search-related things
+    search_field.on('input', function() {
+      delay(function() {
+
         // get the search term and reset the results count to zero
         var filter = search_field.val(), count = 0;
 
@@ -557,24 +558,27 @@ $j(document).ready(function() {
         results_index.empty();
  
         // if a search term is present, loop through the items, find matches, increase the count, and show it all to the user 
-        // otherwise, hide the results section
-        if ( search_field.val().length > 0 ) {       
-          var i;          
-          for (i = 0; i < all_items.length; ++i) {          
-            if (all_items[i].text().search(new RegExp(filter, "i")) >= 0) {
-              results.push(all_items[i]);
+        if (search_field.val().length > 0) {
+          var i;
+          for (i = 0; i < data.length; i++) {
+            if (data[i].name.search(new RegExp(filter, "i")) >= 0) {
+              console.log(data[i].name);
+              results.push($j('<li><a href="' + data[i].url + '" class="tag">' + data[i].name + '</a></li>'));
               count++;
             }
-          }          
-          $j.each(results, function(index, result){
+          }
+                    
+          $j.each(results, function(index, result) {
             results_index.append(result);
           });    
           results_container.find('.count').text(count);
           results_container.slideDown();  
+
+        // if no search term is present, hide the results section
         } else {
           results_container.slideUp();
         }
-      }, 750);  
+      }, 500);  
     });  
   
   });
