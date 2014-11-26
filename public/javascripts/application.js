@@ -528,7 +528,7 @@ $j(document).ready(function() {
       results_container = $j('.results');
       results_index = results_container.find('.index');
       json_url = $j('.live').attr('action');
-  
+
   // allow us to set a delay between an event and a function
   var delay = (function() {
     var timer = 0;
@@ -540,11 +540,6 @@ $j(document).ready(function() {
 
   // use JSON data to create an array of items to search
   $j.getJSON(json_url, function(data) {
-
-    // testing JSON
-    //for (var i = 0, len=data.length; i < len; i++) {
-      //console.log(data[i]);
-    //}
 
     // 500ms after the search field last receives input, do search-related things
     search_field.on('input', function() {
@@ -561,8 +556,7 @@ $j(document).ready(function() {
         if (search_field.val().length > 0) {
           var i;
           for (i = 0; i < data.length; i++) {
-            if (data[i].name.search(new RegExp(filter, "i")) >= 0) {
-              console.log(data[i].name);
+            if (data[i].name.search(new RegExp(filter, 'i')) > -1) {
               results.push($j('<li><a href="' + data[i].url + '" class="tag">' + data[i].name + '</a></li>'));
               count++;
             }
@@ -570,9 +564,9 @@ $j(document).ready(function() {
                     
           $j.each(results, function(index, result) {
             results_index.append(result);
-          });    
+          });
           results_container.find('.count').text(count);
-          results_container.slideDown();  
+          results_container.slideDown();
 
         // if no search term is present, hide the results section
         } else {
@@ -580,6 +574,6 @@ $j(document).ready(function() {
         }
       }, 500);  
     });  
-  
+
   });
 });
