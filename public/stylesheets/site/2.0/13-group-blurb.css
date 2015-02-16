@@ -138,84 +138,230 @@ li.blurb:after, .blurb .blurb:after {
 
 /*icon image replacement*/
 
-.required-tags .rating-general-audience {
-  background: url("/images/imageset.png") -50px -25px;
+.required-tags .text,
+.bookmark .status .text {
+  color: transparent;
+  font-size: 0;
+  visibility: hidden;
 }
 
-.required-tags .rating-explicit {
-  background: url("/images/imageset.png") -25px -25px;
+.required-tags .rating:after,
+.required-tags .warnings:after,
+.required-tags .category:before,
+.required-tags .category:after,
+.required-tags .iswip:after,
+.required-tags .external-work:after,
+.bookmark .status .public:after,
+.bookmark .status .private:after,
+.bookmark .status .rec:after,
+.bookmark .status .count a {
+  background-size: 25px 25px;
+  display: block;
+  color: #fff;
+  content: " ";
+  font-size: 16px;
+  font-weight: 500;
+  height: 25px;
+  line-height: 25px;
+  padding: 0;
+  position: absolute;
+  text-align: center;
+  top: 0;
+  width: 25px;
 }
 
-.required-tags .rating-mature {
-  background: url("/images/imageset.png") -75px -25px;
+.required-tags .warnings:after {
+  top: 28px;
 }
 
-.required-tags .rating-notrated, .required-tags .category-none, .required-tags .warning-no, .status .count {
-  background: url("/images/imageset.png") -150px 0px;
+/* off white: not rated, no warning, no category, bookmark count */
+.required-tags .rating-notrated, .required-tags .warning-no, .required-tags .category-none, .status .count a {
+  background: #e4e3df;
+  background-image: -moz-linear-gradient(top, #ebebe9 0%, #fffffb 100%);
+  background-image: -webkit-linear-gradient(top, #ebebe9 0%, #fffffb 100%);
+  background-image: -o-linear-gradient(top, #ebebe9 0%, #fffffb 100%);
+  background-image: -ms-linear-gradient(top, #ebebe9 0%, #fffffb 100%);
+  background-image: linear-gradient(to bottom, #ebebe9 0%, #fffffb 100%);
+    box-shadow: inset 0 0 0 1px #e4e3df;
 }
 
-.required-tags .rating-teen {
-  background: url("/images/imageset.png") 0px -25px;
+/* green: general audiences gen, complete */
+.required-tags .rating-general-audience, .required-tags .category-gen, .required-tags .complete-yes {
+  background: #78a700;
+  background-image: -moz-linear-gradient(top, #92cb01 0%, #78a700 100%);
+  background-image: -webkit-linear-gradient(top, #92cb01 0%, #78a700 100%);
+  background-image: -o-linear-gradient(top, #92cb01 0%, #78a700 100%);
+  background-image: -ms-linear-gradient(top, #92cb01 0%, #78a700 100%);
+  background-image: linear-gradient(to bottom, #92cb01 0%, #78a700 100%);
+    box-shadow: inset 0 0 0 1px #78a700;
 }
 
-.required-tags .category-femslash {
-  background: url("/images/imageset.png") -25px 0px;
+/* red: explicit, has warnings, incomplete */
+.required-tags .rating-explicit, .required-tags .warning-yes, .required-tags .complete-no {
+  background: #900;
+  background-image: -moz-linear-gradient(top, #b30000 1%, #900 100%);
+  background-image: -webkit-linear-gradient(top, #b30000 1%, #900 100%);
+  background-image: -o-linear-gradient(top, #b30000 1%, #900 100%);
+  background-image: -ms-linear-gradient(top, #b30000 1%, #900 100%);
+  background-image: linear-gradient(to bottom, #b30000 1%, #900 100%);
+    box-shadow: inset 0 0 0 1px #900;
 }
 
-.required-tags .category-gen {
-  background: url("/images/imageset.png") -50px 0px;
+/* orange: mature, chose not to warn */
+.required-tags .rating-mature, .required-tags .warning-choosenotto {
+  background: #e67300;
+  background-image: -moz-linear-gradient(top, #f38f2a 0%, #e67300 100%);
+  background-image: -webkit-linear-gradient(top, #f38f2a 0%, #e67300 100%);
+  background-image: -o-linear-gradient(top, #f38f2a 0%, #e67300 100%);
+  background-image: -ms-linear-gradient(top, #f38f2a 0%, #e67300 100%);
+  background-image: linear-gradient(to bottom, #f38f2a 0%, #e67300 100%);
+    box-shadow: inset 0 0 0 1px #e67300;
 }
 
-.required-tags .category-slash {
-  background: url("/images/imageset.png") 0px 0px;
-}
-
+/* purple: f/m */
 .required-tags .category-het {
-  background: url("/images/imageset.png") -75px 0px;
+  background: #6c004b;
+  background-image: -moz-linear-gradient(top, #9d127f 0%, #6c004b 100%);
+  background-image: -webkit-linear-gradient(top, #9d127f 0%, #6c004b 100%);
+  background-image: -o-linear-gradient(top, #9d127f 0%, #6c004b 100%);
+  background-image: -ms-linear-gradient(top, #9d127f 0%, #6c004b 100%);
+  background-image: linear-gradient(to bottom, #9d127f 0%, #6c004b 100%);
+    box-shadow: inset 0 0 0 1px #6c004b;
 }
 
-.required-tags .category-multi {
-  background: url("/images/imageset.png") -100px -0px;
+/* blue: m/m */
+.required-tags .category-slash {
+  background: #0043a7;
+  background-image: -moz-linear-gradient(top, #0057da 0%, #0043a7 100%);
+  background-image: -webkit-linear-gradient(top, #0057da 0%, #0043a7 100%);
+  background-image: -o-linear-gradient(top, #0057da 0%, #0043a7 100%);
+  background-image: -ms-linear-gradient(top, #0057da 0%, #0043a7 100%);
+  background-image: linear-gradient(to bottom, #0057da 0%, #0043a7 100%);
+    box-shadow: inset 0 0 0 1px #0043a7;
 }
 
+/* pink: femslash */
+.required-tags .category-femslash {
+  background: #a60027;
+  background-image: -moz-linear-gradient(top, #e31042 0%, #a60027 100%);
+  background-image: -webkit-linear-gradient(top, #e31042 0%, #a60027 100%);
+  background-image: -o-linear-gradient(top, #e31042 0%, #a60027 100%);
+  background-image: -ms-linear-gradient(top, #e31042 0%, #a60027 100%);
+  background-image: linear-gradient(to bottom, #e31042 0%, #a60027 100%);
+    box-shadow: inset 0 0 0 1px #a60027;
+}
+
+/* yellow: teen */
+.required-tags .rating-teen {
+  background: #dbc902;
+  background-image: -moz-linear-gradient(top, #f5e42a 0%, #dbc902 100%);
+  background-image: -webkit-linear-gradient(top, #f5e42a 0%, #dbc902 100%);
+  background-image: -o-linear-gradient(top, #f5e42a 0%, #dbc902 100%);
+  background-image: -ms-linear-gradient(top, #f5e42a 0%, #dbc902 100%);
+  background-image: linear-gradient(to bottom, #f5e42a 0%, #dbc902 100%);
+    box-shadow: inset 0 0 0 1px #dbc902;
+}
+
+/* medium blue: bookmarks */
+.required-tags .external-work, .status .rec, .status .private, .status .public {
+  background: #04659c;
+  background-image: -moz-linear-gradient(top, #1483c3 0%, #04659c 100%);
+  background-image: -webkit-linear-gradient(top, #1483c3 0%, #04659c 100%);
+  background-image: -o-linear-gradient(top, #1483c3 0%, #04659c 100%);
+  background-image: -ms-linear-gradient(top, #1483c3 0%, #04659c 100%);
+  background-image: linear-gradient(to bottom, #1483c3 0%, #04659c 100%);
+    box-shadow: inset 0 0 0 1px #04659c;
+}
+
+/* black: other */
 .required-tags .category-other {
-  background: url("/images/imageset.png") -125px 0px;
+  background: #000;
+  background-image: -moz-linear-gradient(top, #555 0%, #000 100%);
+  background-image: -webkit-linear-gradient(top, #555 0%, #000 100%);
+  background-image: -o-linear-gradient(top, #555 0%, #000 100%);
+  background-image: -ms-linear-gradient(top, #555 0%, #000 100%);
+  background-image: linear-gradient(to bottom, #555 0%, #000 100%);
+    box-shadow: inset 0 0 0 1px #000;
 }
 
-.required-tags .complete-no {
-  background: url("/images/imageset.png") -100px -25px;
+.required-tags .rating-general-audience:after {
+  background-image: url("/images/rating-general-audience-georgia.svg");
 }
 
-.required-tags .complete-yes {
-  background: url("/images/imageset.png") -175px -25px;
+.required-tags .rating-teen:after {
+  background-image: url("/images/rating-teen-georgia.svg");
 }
 
-.required-tags .warning-yes {
-  background: url("/images/imageset.png") -150px -25px;
+.required-tags .rating-mature:after {
+  background-image: url("/images/rating-mature-georgia.svg");
 }
 
-.required-tags .warning-choosenotto {
-  background: url("/images/imageset.png") -125px -25px;
+.required-tags .rating-explicit:after {
+  background-image: url("/images/rating-explicit-georgia.svg");
 }
 
-.required-tags .external-work {
-  background: url("/images/imageset.png") -75px -50px;
+.required-tags .warning-choosenotto:after {
+  background-image: url("/images/warning-choosenotto.svg");
 }
 
-.status .private .text {
-  background: url("/images/imageset.png") -175px -50px;
+.required-tags .warning-yes:after {
+  background-image: url("/images/warning-yes.svg");
 }
 
-.status .public {
-  background: url("/images/imageset.png") -125px -50px;
+.required-tags .category-gen:after {
+  background-image: url("/images/category-gen.svg");
 }
 
-.status .hidden {
-  background: url("/images/imageset.png") -150px -50px;
+.required-tags .category-het:after {
+  background-image: url("/images/category-het.svg");
 }
 
-.status .rec {
-  background: url("/images/imageset.png") -100px -50px;
+.required-tags .category-slash:after {
+  background-image: url("/images/category-slash.svg");
+}
+
+.required-tags .category-femslash:after {
+  background-image: url("/images/category-femslash.svg");
+}
+
+.required-tags .category-other:after {
+  background-image: url("/images/category-other.svg");
+}
+
+.required-tags .category-multi:after {
+  background-image: url("/images/category-multi.svg");
+}
+
+.required-tags .complete-no:after {
+  background-image: url("/images/complete-no.svg");
+}
+
+.required-tags .complete-yes:after {
+  background-image: url("/images/complete-yes.svg");
+}
+
+.required-tags .external-work:after {
+  content: "\2388";
+}
+
+.bookmark .status .rec:after {
+  content: "\2764";
+}
+
+.bookmark .status .private:after {
+  content: "\2117";
+}
+
+.bookmark .status .public:after {
+  content: "\25E5";
+}
+
+.bookmark .status .count a {
+  color: #069;
+}
+
+.bookmark .status .count a:hover, .bookmark .status .count a:focus {
+  color: #111;
 }
 
 /*==END icon block rules==*/

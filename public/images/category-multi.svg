@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="25px" height="25px" viewBox="0 0 25 25" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.2.2 (9983) - http://www.bohemiancoding.com/sketch -->
+    <title>category-multi</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#91C83E" offset="0%"></stop>
+            <stop stop-color="#6AA041" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-2">
+            <stop stop-color="#B91C61" offset="0%"></stop>
+            <stop stop-color="#4A0033" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-3">
+            <stop stop-color="#ED0A2F" offset="0%"></stop>
+            <stop stop-color="#A7001C" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-4">
+            <stop stop-color="#0057DA" offset="0%"></stop>
+            <stop stop-color="#0043A7" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="category-multi" sketch:type="MSArtboardGroup">
+            <rect id="Square-1" fill="url(#linearGradient-1)" sketch:type="MSShapeGroup" x="0" y="0" width="12.5" height="12.5"></rect>
+            <rect id="Square-2" fill="url(#linearGradient-2)" sketch:type="MSShapeGroup" x="12.5" y="0" width="12.5" height="12.5"></rect>
+            <rect id="Square-3" fill="url(#linearGradient-3)" sketch:type="MSShapeGroup" x="0" y="12.5" width="12.5" height="12.5"></rect>
+            <rect id="Square-4" fill="url(#linearGradient-4)" sketch:type="MSShapeGroup" x="12.5" y="12.5" width="12.5" height="12.5"></rect>
+        </g>
+    </g>
+</svg>

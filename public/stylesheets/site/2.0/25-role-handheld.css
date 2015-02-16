@@ -181,3 +181,69 @@ h1, h2, h3 {
 .comment h4.byline {
   padding-left: 58px;
 }
+
+/* blurbs */
+
+.blurb .header {
+  padding-top: 1.75em;
+  min-height: 0;
+}
+
+.blurb .header .heading {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.blurb .header h4 {
+  line-height: 1.25;
+}
+
+.blurb ul.required-tags {
+  width: 109px;
+}
+
+.blurb ul.required-tags li {
+  margin-bottom: 0;
+}
+
+.blurb ul.required-tags li + li {
+  left: 28px;
+  position: absolute;
+  top: 0;
+}
+
+.blurb ul.required-tags li + li + li {
+  left: 56px;
+}
+
+.blurb ul.required-tags li + li + li + li {
+  left: 84px;
+  top: 0;
+}
+
+.required-tags .warnings:after {
+  top: 0;
+}
+
+.bookmark p.status {
+  left: 112px;
+  margin-bottom: 0;
+  margin-top: 0;
+  margin-left: 0.75em;
+  right: auto;
+}
+
+.bookmark .datetime {
+  top: 0;
+}
+
+.bookmark .user .datetime {
+  font-size: 0.875em;
+  line-height: 2;
+  margin-left: 0.5714em;
+  position: static;
+}
+
+.bookmark .user .datetime:before {
+  content: "Date Bookmarked: ";
+}
