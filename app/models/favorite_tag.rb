@@ -3,7 +3,11 @@ class FavoriteTag < ActiveRecord::Base
   belongs_to :tag
 
   validates :user_id, presence: true
-  validates :tag_id, presence: true
+  validates :tag_id, presence: true,
+                     uniqueness: { scope: :user_id,
+                                   message: ts("is already in your favorite tags.")
+                                 }
+
   validate :within_limit, on: :create
 
   after_save :expire_cached_home_favorite_tags
@@ -28,7 +32,7 @@ class FavoriteTag < ActiveRecord::Base
 
   def expire_cached_home_favorite_tags
     unless Rails.env.development?
-      Rails.cache.delete("home/index/#{User.current_user.id}/home_favorite_tags")
+      Rails.cache.delete("home/index/#{user_id}/home_favorite_tags")
     end
   end
 end

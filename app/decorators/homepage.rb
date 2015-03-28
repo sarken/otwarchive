@@ -20,16 +20,16 @@ class Homepage
   def favorite_tags
     return unless logged_in?
     if Rails.env.development?
-      @favorite_tags ||= @user.favorite_tags
+      @favorite_tags ||= @user.favorite_tags.to_a.sort_by { |favorite_tag| favorite_tag.tag.sortable_name.downcase }
     else
       @favorite_tags ||= Rails.cache.fetch("home/index/#{@user.id}/home_favorite_tags") do
-        @user.favorite_tags
+        @user.favorite_tags.to_a.sort_by { |favorite_tag| favorite_tag.tag.sortable_name.downcase }
       end
     end
   end
 
   def readings
-    return unless logged_in?
+    return unless logged_in? && @user.preference.try(:history_enabled?)
     if Rails.env.development?
       @readings ||= @user.readings.order("RAND()").
           limit(ArchiveConfig.NUMBER_OF_ITEMS_VISIBLE_ON_HOMEPAGE).
@@ -47,6 +47,6 @@ class Homepage
 
   def inbox_comments
     return unless logged_in?
-    @inbox_comments ||= @user.inbox_comments.for_homepage
+    @inbox_comments ||= @user.inbox_comments.with_feedback_comment.for_homepage
   end
 end
