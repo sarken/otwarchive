@@ -427,6 +427,26 @@ namespace :After do
     end
   end
 
+  desc "Turn unofficial, non-canonical warning tags into freeforms"
+  task(:unofficial_warnings_to_freeforms => :environment) do
+    Warning.where(canonical: false).find_each do |tag|
+      Tag.reset_counters(warning_tag.id, :taggings)
+      tag.type = "Freeform"
+      tag.save
+      puts "#{tag.name} is now a freeform"
+    end
+  end
+
+  desc "Add default warning to works that have no warning"
+  task(:add_default_warning_to_works_without_warnings => :environment) do
+    default_warning = Tag.find_by_name(ArchiveConfig.WARNING_DEFAULT_TAG_NAME)
+    Work.joins("LEFT JOIN taggings ON taggings.taggable_id = works.id LEFT JOIN tags ON tags.id = taggings.tagger_id").where("taggings.taggable_type = 'Work' AND tags.id IS NULL").find_each do |work|
+      work.warnings << default_warning
+      #work.save
+      puts "#{work.id} now has default warning"
+    end
+  end
+
 end # this is the end that you have to put new tasks above
 
 ##################
