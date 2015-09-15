@@ -12,16 +12,11 @@
       <%= text_field_tag "query[name]", @query[:name], id: "search_for_fandoms", :"autocomplete" => "off" %>
 
       <%= hidden_field_tag "query[type]", "Fandom" %>
-      <!--this outputs: input class="text" id="query_type" name="query[type]" type="hidden" value="Fandom"-->
-      <!--normally: select id="query_type" name="query[type]" title="Choose type" & option value="Fandom"-->
-      
       <%= hidden_field_tag "query[canonical]", true %>
-      <!--this outputs: input class="text" id="query_canonical" name="query[canonical]" type="hidden" value="true"-->
-      <!--normally: input id="canonical" name="query[canonical]" type="checkbox" value="true"-->
-      
+
       <%= submit_tag ts("Search") %>
     </p>
-    <div class="results listbox group" style="<% unless @query.present? %>display: none;<% end %> min-height: 0;">
+    <div class="results listbox group"<% unless @query.present? %> style="display: none;"<% end %>>
       <h3 class="heading">
         <span class="count">
           <% if @query.present? %>
@@ -33,7 +28,9 @@
       <ul class="index group">
         <% if @query.present? %>
           <% for tag in @tags %>
-            <li><%= link_to_tag_works_with_text(tag, tag.name) %></li>
+            <li>
+              <%= link_to_tag_works_with_text(tag, tag.name) %>
+            </li>
           <% end %>
         <% end %>
       </ul>
