@@ -210,6 +210,11 @@ dl.stats dd {
   padding-right: 0.5em;
 }
 
+ul.media {
+  float: left;
+  width: 100%;
+}
+
 .statistics .index li {
  padding: 0.643em 0.375em;
 }
