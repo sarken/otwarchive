@@ -29,8 +29,8 @@
   <fieldset>
     <legend><%= t('fandom_search_legend', default: 'Fandom Search') %></legend>
     <p>
-      <%= label_tag('search_for_fandoms', t('fandom_search_label', default: 'Search for Fandom')) %>
-      <%= text_field_tag 'search_for_fandom', nil, :'autocomplete' => 'off' %>    
+      <%= label_tag('search_for_fandoms', t('fandom_search_label', default: 'Search for fandoms')) %>
+      <%= text_field_tag 'search_for_fandoms', nil, :'autocomplete' => 'off' %>    
     </p>
     <div class="results listbox group" style="display: none; min-height: 0;">
       <h3 class="heading">
