@@ -662,8 +662,8 @@ $j(document).ready(function() {
         var results = [];
         results_index.empty();
 
-        // if a search term is present, loop through the items, find matches, increase the count, and show it all to the user 
-        if (search_field.val().length > 0) {
+        // if a search term of two or more characters is present, loop through the items, find matches, increase the count, and show it all to the user 
+        if (search_field.val().length > 1) {
           var i;
           for (i = 0; i < data.length; i++) {
             if (data[i].name.search(new RegExp(filter, 'i')) > -1) {
