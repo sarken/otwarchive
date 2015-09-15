@@ -261,7 +261,7 @@ Feature: Collection
   # check the series
   When I follow "Another Snippet"
     And I follow "New series"
-    And "Issue 1253" is fixed
+    And "AO3-1250" is fixed
   Then I should see "Anonymous"
     # And I should not see "first_user"
   
@@ -383,7 +383,7 @@ Feature: Collection
   When I uncheck the 2nd checkbox with id matching "collection_items_\d+_unrevealed"
     And I submit
   # Issue 2243: emails don't get sent for individual reveals
-  When "Issue 2243" is fixed
+  When "AO3-2240" is fixed
     #Then 1 email should be delivered
     
   # first fic now visible, second still not
@@ -409,5 +409,15 @@ Feature: Collection
       And I fill in "pseud_byline" with "Amos"
       And I press "Post Without Preview"
       And I follow "Entire Work"
-    Then I should not see "Jessica" within "div.preface"
-      And I should not see "Amos" within "div.preface"
+    Then I should see "Anonymous" within "div.preface"
+      And I should see "Jessica" within "div.preface"
+      And I should see "Amos" within "div.preface"
+
+  Scenario: An admin can see the creator's name on an anonymous work
+    Given I have an anonymous collection "Hidden Treasury" with name "hidden_treasury"
+      And I am logged in as "actualname"
+      And I post the work "Troll Work"
+      And I add my work to the collection
+    When I am logged in as an admin
+      And I view the work "Troll Work"
+    Then I should see "actualname"

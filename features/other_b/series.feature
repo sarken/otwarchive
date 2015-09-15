@@ -9,6 +9,7 @@ Feature: Create and Edit Series
       | login         | password   |
       | author        | password   |
       And a warning exists with name: "Choose Not To Use Archive Warnings", canonical: true
+      And the default ratings exist
     When I am logged in as "author" with password "password"
       And I go to the new work page
       And I select "Not Rated" from "Rating"
@@ -97,6 +98,7 @@ Feature: Create and Edit Series
       | login         | password   |
       | author        | password   |
       And a warning exists with name: "Choose Not To Use Archive Warnings", canonical: true
+      And the default ratings exist
     When I am logged in as "author" with password "password"
       And "author" creates the default pseud "Pointless Pseud"
     When I go to the new work page
@@ -194,15 +196,14 @@ Feature: Create and Edit Series
       And I should see "Many a Robot"
     When I view the work "WALL-E"
       Then I should see "Part 1 of the Many a Robot series" within "div#series"
-    # TODO: fix issue 3855
+    And "AO3-3847" is fixed
     #  And I should see "Part 1 of the Many a Robot series" within "dd.series"
 
   Scenario: Post Without Preview
     Given I am logged in as "whoever" with password "whatever"
       And I add the work "public" to series "be_public"
       And I follow "be_public"
-      And "Issue 2169" is fixed
-  # Then I should not see the "title" text "Restricted" within "h2"
+    Then I should not see the image "title" text "Restricted" within "h2"
 
   Scenario: View user's series index
 
