@@ -26,11 +26,11 @@ class MediaController < ApplicationController
     if Rails.env.development?
       @all_fandoms = Fandom.where(canonical: true)
     else
-      @all_fandoms = Rails.cache.fetch("all_fandoms", expires_in: 4.hours){Fandom.where(canonical: true)}
+      @all_fandoms = Rails.cache.fetch("all_fandoms", expires_in: 4.hours){ Fandom.where(canonical: true) }
     end
     all_fandoms = []
     @all_fandoms.each do |fandom|
-      all_fandoms << {name: fandom.name, url: tag_works_path(fandom)}
+      all_fandoms << { name: fandom.name, url: tag_works_path(fandom) }
     end
 
     respond_to do |format|

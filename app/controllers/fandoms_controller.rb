@@ -30,7 +30,7 @@ class FandomsController < ApplicationController
 
     all_fandoms = []
     @fandoms.each do |fandom|
-      all_fandoms << {name: fandom.name, url: tag_works_path(fandom)}
+      all_fandoms << { name: fandom.name, url: tag_works_path(fandom) }
     end
 
     respond_to do |format|

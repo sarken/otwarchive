@@ -4,14 +4,14 @@
 
 <!--main content-->
 <% @query = {} unless @query %>
-<%= form_tag url_for(:controller => 'media', :action => 'index'), :class => 'json-version live simple search', :id => 'fandom-search', :role => "search", :method => :get do %>
+<%= form_tag url_for(controller: "media", action: "index"), class: "json-version live simple search", id: "fandom-search", role: "search", method: :get do %>
   <fieldset>
-    <legend>Search Fandoms</legend>
+    <legend><%= ts("Search Fandoms") %></legend>
     <p>
-      <%= label_tag("search_for_fandoms", t('fandom_search_label', :default => 'Search for fandoms')) %>
-      <%= text_field_tag "query[name]", @query[:name], :id => 'search_for_fandoms', :'autocomplete' => 'off' %>
+      <%= label_tag("search_for_fandoms", ts("Search for fandoms")) %>
+      <%= text_field_tag "query[name]", @query[:name], id: "search_for_fandoms", :"autocomplete" => "off" %>
 
-      <%= hidden_field_tag "query[type]", 'Fandom' %>
+      <%= hidden_field_tag "query[type]", "Fandom" %>
       <!--this outputs: input class="text" id="query_type" name="query[type]" type="hidden" value="Fandom"-->
       <!--normally: select id="query_type" name="query[type]" title="Choose type" & option value="Fandom"-->
       
@@ -19,7 +19,7 @@
       <!--this outputs: input class="text" id="query_canonical" name="query[canonical]" type="hidden" value="true"-->
       <!--normally: input id="canonical" name="query[canonical]" type="checkbox" value="true"-->
       
-      <%= submit_tag ts('Search') %>
+      <%= submit_tag ts("Search") %>
     </p>
     <div class="results listbox group" style="<% unless @query.present? %>display: none;<% end %> min-height: 0;">
       <h3 class="heading">
@@ -28,7 +28,7 @@
             <%= @tags.total_entries %>
           <% end %>
         </span>
-        <%= t('fandom_results_heading', :default => 'Fandoms Found') %>
+        <%= ts("Fandoms Found") %>
       </h3>
       <ul class="index group">
         <% if @query.present? %>
@@ -61,7 +61,7 @@
 
       <% unless @fandom_listing[medium].size < 5 %>
         <p class="actions" role="navigation">
-          <%= link_to ts("All %{media_type}...", :media_type => medium.name), medium_fandoms_path(medium) %>
+          <%= link_to ts("All %{media_type}...", media_type: medium.name), medium_fandoms_path(medium) %>
         </p>
       <% end %>
     </li>

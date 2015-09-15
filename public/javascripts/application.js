@@ -661,7 +661,7 @@ $j(document).ready(function() {
         // always start with an empty results array and empty results index
         var results = [];
         results_index.empty();
- 
+
         // if a search term is present, loop through the items, find matches, increase the count, and show it all to the user 
         if (search_field.val().length > 0) {
           var i;
@@ -671,7 +671,7 @@ $j(document).ready(function() {
               count++;
             }
           }
-                    
+
           $j.each(results, function(index, result) {
             results_index.append(result);
           });
