@@ -640,7 +640,7 @@ $j(document).ready(function() {
       results_container = live_search.find('.results');
       results_heading = results_container.find('.heading');
       results_index = results_container.find('.index');
-      json_url = live_search.attr('action');
+      action_url = live_search.attr('action');
 
   // create invisible ARIA live region to tell screen readers about results
   search_field.parent().append('<span class="accessible-summary landmark" aria-live="polite" aria-atomic="true"></span>');
@@ -655,28 +655,25 @@ $j(document).ready(function() {
     };
   })();
 
-  // use JSON data to create an array of items to search
-  $j.getJSON(json_url, { format: 'json' }, function(data) {
+  // 500ms after the search field last receives input, do the searching
+  search_field.on('input', function() {
+    delay(function() {
 
-    // 500ms after the search field last receives input, do search-related things
-    search_field.on('input', function() {
-      delay(function() {
+      // always start with empty results array and index and a count of 0
+      var results = [];
+      results_index.empty();
+      count = 0;
 
-        // get the search term and reset the results count to zero
-        var filter = search_field.val(), count = 0;
+      var search_params = live_search.serialize();
+      var search_url = action_url + "?" + search_params
 
-        // always start with an empty results array and empty results index
-        var results = [];
-        results_index.empty();
-
-        // if a search term of 2 or more characters is present, loop through the items, find matches, increase the count, and show it all to the user 
-        if (search_field.val().length > 1) {
+      // if a search term of 2 or more characters is present, get the JSON data, format it, increase the count, and show it all to the user 
+      if (search_field.val().length > 1) {
+        $j.getJSON(search_url, { format: 'json' }, function(data) {
           var i;
           for (i = 0; i < data.length; i++) {
-            if (data[i].name.search(new RegExp(filter, 'i')) > -1) {
-              results.push($j('<li><a href="' + data[i].url + '" class="tag">' + data[i].name + '</a></li>'));
-              count++;
-            }
+            results.push($j('<li><a href="' + data[i].url + '" class="tag">' + data[i].name + '</a></li>'));
+            count++;
           }
 
           $j.each(results, function(index, result) {
@@ -684,13 +681,12 @@ $j(document).ready(function() {
           });
           live_search.find('.count').text(count);
           results_container.slideDown().removeAttr('aria-hidden');
-
-        // if no search term of 2 or more characters is present, hide the results section
-        } else {
-          results_container.slideUp().attr('aria-hidden', true);
-        }
-      }, 500);
-    });  
-
+        });
+        
+      // if no search term of 2 or more characters is present, hide the results section
+      } else {
+        results_container.slideUp().attr('aria-hidden', true);
+      }
+    }, 500);
   });
 });

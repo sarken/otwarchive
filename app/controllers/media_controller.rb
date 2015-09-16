@@ -17,28 +17,45 @@ class MediaController < ApplicationController
       end
     end
 
+    #if Rails.env.development?
+      #@all_fandoms = Fandom.where(canonical: true)
+    #else
+      @all_fandoms = Rails.cache.fetch("all_fandoms", expires_in: 4.hours){ Fandom.where(canonical: true) }
+    #end
+    results = []
+    @all_fandoms.each do |fandom|
+      results << { name: fandom.name, url: tag_works_path(fandom) }
+    end
+
+    if params[:query].present?
+      if params[:format] == "json"
+        results = []
+        @all_fandoms.name_like(params[:query][:name]).each do |fandom|
+          results << { name: fandom.name, url: tag_works_path(fandom) }
+        end
+      else
+        options = params[:query].dup
+        @query = options
+        @tags = TagSearch.search(options)
+      end
+    end
+
+    respond_to do |format|
+      format.json { render :json => results.to_json }
+      format.html
+    end
+
+    @page_subtitle = ts("Fandoms")
+  end
+
+  def live_search
+    #@tags = Fandom.where(canonical: true).where("name LIKE ?", "%" + params[:query] + "%")
     if params[:query].present?
       options = params[:query].dup
       @query = options
       @tags = TagSearch.search(options)
     end
-
-    if Rails.env.development?
-      @all_fandoms = Fandom.where(canonical: true)
-    else
-      @all_fandoms = Rails.cache.fetch("all_fandoms", expires_in: 4.hours){ Fandom.where(canonical: true) }
-    end
-    all_fandoms = []
-    @all_fandoms.each do |fandom|
-      all_fandoms << { name: fandom.name, url: tag_works_path(fandom) }
-    end
-
-    respond_to do |format|
-      format.json { render :json => all_fandoms.to_json }
-      format.html
-    end
-    
-    @page_subtitle = ts("Fandoms")
+    render layout: false
   end
 
   def show
