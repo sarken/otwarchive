@@ -26,12 +26,12 @@ $j(document).ready(function() {
     $j('body').addClass('javascript');
 
     // don't let the user submit a live search form
-    $j('.live').submit(function() {
+    $j('form.live').submit(function() {
       return false;
     });
 
     // hide the submit button on live search forms
-    $j('.live').find('[type=submit]').hide();
+    $j('form.live').find('[type=submit]').hide();
 });
 
 ///////////////////////////////////////////////////////////////////
@@ -635,7 +635,7 @@ function thermometer() {
 ///////////////////////////////////////////////////////////////////
 
 $j(document).ready(function() {
-  var live_search = $j('.live');
+  var live_search = $j('form.live');
       search_field = live_search.find('input[type=text]');
       results_container = live_search.find('.results');
       results_heading = results_container.find('.heading');
@@ -643,7 +643,7 @@ $j(document).ready(function() {
       json_url = live_search.attr('action');
 
   // create invisible ARIA live region to tell screen readers about results
-  live_search.find('p').append('<span class="accessible-summary landmark" aria-live="polite" aria-atomic="true"></span>');
+  search_field.parent().append('<span class="accessible-summary landmark" aria-live="polite" aria-atomic="true"></span>');
   $j('.accessible-summary').html(results_heading.html());
 
   // allow us to set a delay between an event and a function
@@ -656,7 +656,7 @@ $j(document).ready(function() {
   })();
 
   // use JSON data to create an array of items to search
-  $j.getJSON(json_url, function(data) {
+  $j.getJSON(json_url, { format: 'json' }, function(data) {
 
     // 500ms after the search field last receives input, do search-related things
     search_field.on('input', function() {
