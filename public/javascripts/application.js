@@ -11,24 +11,25 @@ $j(document).ready(function() {
     attachCharacterCounters();
     setupAccordion();
     setupDropdown();
-    prepareDeleteLinks();
-    thermometer();
-    $j('body').addClass('javascript');
-    
+
     // remove final comma from comma lists in older browsers
     $j('.commas li:last-child').addClass('last');
-    
+
     // add clear to items on the splash page in older browsers
     $j('.splash').children('div:nth-of-type(odd)').addClass('odd');
 
     // make Share buttons on works and own bookmarks visible
     $j('.actions').children('.share').removeClass('hidden');
 
+    prepareDeleteLinks();
+    thermometer();
+    $j('body').addClass('javascript');
+
     // don't let the user submit a live search form
     $j('.live').submit(function() {
       return false;
     });
-  
+
     // hide the submit button on live search forms
     $j('.live').find('[type=submit]').hide();
 });
