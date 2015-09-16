@@ -634,10 +634,16 @@ function thermometer() {
 ///////////////////////////////////////////////////////////////////
 
 $j(document).ready(function() {
-  var search_field = $j('.live').find('input[type=text]');
-      results_container = $j('.results');
+  var live_search = $j('.live');
+      search_field = live_search.find('input[type=text]');
+      results_container = live_search.find('.results');
+      results_heading = results_container.find('.heading');
       results_index = results_container.find('.index');
-      json_url = $j('.live').attr('action');
+      json_url = live_search.attr('action');
+
+  // create invisible ARIA live region to tell screen readers about results
+  live_search.find('p').append('<span class="accessible-summary landmark" aria-live="polite" aria-atomic="true"></span>');
+  $j('.accessible-summary').html(results_heading.html());
 
   // allow us to set a delay between an event and a function
   var delay = (function() {
@@ -662,7 +668,7 @@ $j(document).ready(function() {
         var results = [];
         results_index.empty();
 
-        // if a search term of two or more characters is present, loop through the items, find matches, increase the count, and show it all to the user 
+        // if a search term of 2 or more characters is present, loop through the items, find matches, increase the count, and show it all to the user 
         if (search_field.val().length > 1) {
           var i;
           for (i = 0; i < data.length; i++) {
@@ -675,14 +681,14 @@ $j(document).ready(function() {
           $j.each(results, function(index, result) {
             results_index.append(result);
           });
-          results_container.find('.count').text(count);
-          results_container.slideDown();
+          live_search.find('.count').text(count);
+          results_container.slideDown().removeAttr('aria-hidden');
 
-        // if no search term is present, hide the results section
+        // if no search term of 2 or more characters is present, hide the results section
         } else {
-          results_container.slideUp();
+          results_container.slideUp().attr('aria-hidden', true);
         }
-      }, 500);  
+      }, 500);
     });  
 
   });
