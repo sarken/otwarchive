@@ -4,7 +4,7 @@
 
 <!--main content-->
 <% @query = {} unless @query %>
-<%= form_tag url_for(controller: "media", action: "index"), class: "json-version live simple search", id: "fandom-search", role: "search", method: :get do %>
+<%= form_tag url_for(controller: "media", action: "index"), class: "live simple search", id: "fandom-search", role: "search", method: :get do %>
   <fieldset>
     <legend><%= ts("Search Fandoms") %></legend>
     <p>
@@ -14,7 +14,7 @@
       <%= hidden_field_tag "query[type]", "Fandom" %>
       <%= hidden_field_tag "query[canonical]", true %>
 
-      <%= submit_tag ts("Search") %>
+      <%= submit_tag ts("Search Fandoms") %>
     </p>
     <div class="results listbox group"<% unless @query.present? %> style="display: none;"<% end %>>
       <h3 class="heading">
