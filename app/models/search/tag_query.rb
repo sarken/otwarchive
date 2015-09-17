@@ -13,7 +13,7 @@ class TagQuery < Query
   end
 
   def queries
-    [name_query].compact
+    [name_query, live_name_query].compact
   end
 
   ################
@@ -34,6 +34,10 @@ class TagQuery < Query
 
   def name_query
     { match: { name: options[:name] } } if options[:name]
+  end
+
+  def live_name_query
+    { match_phrase_prefix: { name: options[:live_name] } } if options[:live_name]
   end
 
 end

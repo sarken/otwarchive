@@ -642,6 +642,8 @@ $j(document).ready(function() {
       results_index = results_container.find('.index');
       action_url = live_search.attr('action');
 
+  search_field.attr('name', 'query[live_name]');
+
   // create invisible ARIA live region to tell screen readers about results
   search_field.parent().append('<span class="accessible-summary landmark" aria-live="polite" aria-atomic="true"></span>');
   $j('.accessible-summary').html(results_heading.html());
@@ -666,6 +668,8 @@ $j(document).ready(function() {
 
       var search_params = live_search.serialize();
       var search_url = action_url + "?" + search_params
+
+      console.log(search_url);
 
       // if a search term of 2 or more characters is present, get the JSON data, format it, increase the count, and show it all to the user 
       if (search_field.val().length > 1) {

@@ -28,15 +28,14 @@ class MediaController < ApplicationController
     end
 
     if params[:query].present?
+      options = params[:query].dup
+      @query = options
+      @tags = TagSearch.search(options)
       if params[:format] == "json"
         results = []
-        @all_fandoms.name_like(params[:query][:name]).each do |fandom|
+        @tags.each do |fandom|
           results << { name: fandom.name, url: tag_works_path(fandom) }
         end
-      else
-        options = params[:query].dup
-        @query = options
-        @tags = TagSearch.search(options)
       end
     end
 
@@ -46,16 +45,6 @@ class MediaController < ApplicationController
     end
 
     @page_subtitle = ts("Fandoms")
-  end
-
-  def live_search
-    #@tags = Fandom.where(canonical: true).where("name LIKE ?", "%" + params[:query] + "%")
-    if params[:query].present?
-      options = params[:query].dup
-      @query = options
-      @tags = TagSearch.search(options)
-    end
-    render layout: false
   end
 
   def show
