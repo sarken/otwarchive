@@ -1,12 +1,18 @@
 <!--SEARCHBROWSE Descriptive page name, messages and instructions-->
-<% if @collection %>
-  <h2 class="heading"><%= link_to(@collection.title, @collection) %> > <%= ts("Fandoms") %></h2>
-<% elsif @medium %>
-  <h2 class="heading"><%= link_to ts('Fandoms'), media_path %> > <%= @medium.name %></h2>
-<% else %>
-  <h2 class="heading"><%= link_to ts('Fandoms'), media_path %></h2>
-<% end %>
-<p>You can search this page by pressing <kbd>ctrl F</kbd> / <kbd>cmd F</kbd> and typing in what you are looking for.</p>
+<h2 class="heading">
+  <% if @collection %>
+    <%= link_to(@collection.title, @collection) %> > <%= ts("Fandoms") %>
+  <% elsif @medium %>
+    <%= link_to ts("Fandoms"), media_path %> > <%= @medium.name %>
+  <% else %>
+    <%= link_to ts("Fandoms"), media_path %>
+  <% end %>
+</h2>
+
+<noscript>
+  <p><%= ts("You can search this page by pressing <kbd>CTRL+F</kbd> or <kbd>CMD+F</kbd> and entering what you are looking for.").html_safe %></p>
+</noscript>
+
 <% if @collection %>
   <div class="filters">
     <h3 class="landmark heading"><%= ts('Filters') %></h3>
@@ -19,6 +25,24 @@
 <!--/descriptions-->
 
 <!--main content-->
+<%= form_tag url_for(controller: "fandoms", action: "index"), class: "showme live simple search", id: "fandom-search", role: "search", method: :get, style: "display: none;" do %>
+  <fieldset>
+    <legend><%= ts("Search Fandoms") %></legend>
+    <p>
+      <%= label_tag("query[name]", ts("Search for fandoms")) %>
+      <%= text_field_tag "query[name]", nil, :"autocomplete" => "off" %>
+      <%= hidden_field_tag "query[medium]", @medium.name %>
+    </p>
+    <div class="results listbox group" style="display: none;">
+      <h3 class="heading">
+        <span class="count"></span>
+        <%= ts("Fandoms Found") %>
+      </h3>
+      <ul class="index group"></ul>
+    </div>
+  </fieldset>
+<% end %>
+
 <% if @fandoms_by_letter && !@fandoms_by_letter.empty? %>
   <h3 class="landmark heading"><%= ts('Alphabet Navigation') %></h3>
   <ul class="alphabet actions" id="alphabet" role="navigation">
@@ -48,6 +72,6 @@
     <% end %>
   </ol>
 <% else %>
-  <h3 class="no_fandoms"><%= ts("No fandoms found") %></h3>
+  <h3 class="heading"><%= ts("No fandoms found") %></h3>
 <% end %>
 <!--/content-->

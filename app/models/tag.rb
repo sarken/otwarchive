@@ -423,7 +423,7 @@ class Tag < ActiveRecord::Base
   
   def add_to_autocomplete(score = nil)
     score ||= autocomplete_score
-    if self.is_a?(Character) || self.is_a?(Relationship)
+    if self.is_a?(Character) || self.is_a?(Relationship) || self.is_a?(Fandom)
       parents.each do |parent|
         REDIS_GENERAL.zadd("autocomplete_fandom_#{parent.name.downcase}_#{type.downcase}", score, autocomplete_value) if parent.is_a?(Fandom)
       end
@@ -433,7 +433,7 @@ class Tag < ActiveRecord::Base
 
   def remove_from_autocomplete
     super
-    if self.is_a?(Character) || self.is_a?(Relationship)
+    if self.is_a?(Character) || self.is_a?(Relationship) || self.is_a?(Fandom)
       parents.each do |parent|
         REDIS_GENERAL.zrem("autocomplete_fandom_#{parent.name.downcase}_#{type.downcase}", autocomplete_value) if parent.is_a?(Fandom)
       end
@@ -442,7 +442,7 @@ class Tag < ActiveRecord::Base
   
   def remove_stale_from_autocomplete
     super
-    if self.is_a?(Character) || self.is_a?(Relationship)
+    if self.is_a?(Character) || self.is_a?(Relationship) || self.is_a?(Fandom)
       parents.each do |parent|
         REDIS_GENERAL.zrem("autocomplete_fandom_#{parent.name.downcase}_#{type.downcase}", autocomplete_value_was) if parent.is_a?(Fandom)
       end
@@ -456,6 +456,21 @@ class Tag < ActiveRecord::Base
 
   def autocomplete_score
     taggings_count
+  end
+
+  # look up fandoms that have been wrangled into a given media
+  def self.autocomplete_media_lookup(options = {})
+    options.reverse_merge!({:term => "", :tag_type => "fandom", :media => ""})
+    search_param = options[:term]
+    tag_type = options[:tag_type]
+    media = Tag.get_search_terms(options[:media])
+
+    results = []
+    media.each do |single_media|
+      search_regex = Tag.get_search_regex(search_param)
+      results += REDIS_GENERAL.zrevrange("autocomplete_media_#{single_media}_#{tag_type}", 0, -1).select {|tag| tag.match(search_regex)}
+    end
+    results
   end
   
   # look up tags that have been wrangled into a given fandom

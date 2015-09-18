@@ -27,6 +27,21 @@ class FandomsController < ApplicationController
       return
     end
     @fandoms_by_letter = @fandoms.group_by {|f| f.sortable_name[0].upcase}
+
+    if params[:query].present? && params[:format] == "json"
+      results = []
+      tags = Tag.autocomplete_media_lookup(term: params[:query][:name], tag_type: "fandom", media: params[:query][:medium])
+      tags.each do |fandom|
+        fandom_name = Tag.name_from_autocomplete(fandom)
+        results << { name: fandom_name, url: fandom_name.to_param }
+      end
+    end
+
+    respond_to do |format|
+      format.json { render :json => results.to_json }
+      format.html
+    end
+
   end
   
   def show
