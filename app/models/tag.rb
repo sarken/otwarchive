@@ -426,6 +426,7 @@ class Tag < ActiveRecord::Base
     if self.is_a?(Character) || self.is_a?(Relationship) || self.is_a?(Fandom)
       parents.each do |parent|
         REDIS_GENERAL.zadd("autocomplete_fandom_#{parent.name.downcase}_#{type.downcase}", score, autocomplete_value) if parent.is_a?(Fandom)
+        REDIS_GENERAL.zadd("autocomplete_media_#{parent.name.downcase}_#{type.downcase}", score, autocomplete_value) if parent.is_a?(Media)
       end
     end
     super
@@ -436,6 +437,7 @@ class Tag < ActiveRecord::Base
     if self.is_a?(Character) || self.is_a?(Relationship) || self.is_a?(Fandom)
       parents.each do |parent|
         REDIS_GENERAL.zrem("autocomplete_fandom_#{parent.name.downcase}_#{type.downcase}", autocomplete_value) if parent.is_a?(Fandom)
+        REDIS_GENERAL.zrem("autocomplete_media_#{parent.name.downcase}_#{type.downcase}", autocomplete_value) if parent.is_a?(Media)
       end
     end
   end
@@ -445,6 +447,7 @@ class Tag < ActiveRecord::Base
     if self.is_a?(Character) || self.is_a?(Relationship) || self.is_a?(Fandom)
       parents.each do |parent|
         REDIS_GENERAL.zrem("autocomplete_fandom_#{parent.name.downcase}_#{type.downcase}", autocomplete_value_was) if parent.is_a?(Fandom)
+        REDIS_GENERAL.zrem("autocomplete_media_#{parent.name.downcase}_#{type.downcase}", autocomplete_value_was) if parent.is_a?(Media)
       end
     end
   end
