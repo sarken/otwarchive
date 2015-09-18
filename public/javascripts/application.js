@@ -642,6 +642,8 @@ $j(document).ready(function() {
       results_index = results_container.find('.index');
       action_url = live_search.attr('action');
 
+  search_field.attr('name', 'query[live_name]');
+
   // create invisible ARIA live region to tell screen readers about results
   search_field.parent().append('<span class="accessible-summary landmark" aria-live="polite" aria-atomic="true"></span>');
   $j('.accessible-summary').html(results_heading.html());
@@ -674,7 +676,7 @@ $j(document).ready(function() {
         $j.getJSON(search_url, { format: 'json' }, function(data) {
           var i;
           for (i = 0; i < data.length; i++) {
-            results.push($j('<li><a href="/tags/' + data[i].url + '/works" class="tag">' + data[i].name + '</a></li>'));
+            results.push($j('<li><a href="' + data[i].url + '" class="tag">' + data[i].name + '</a></li>'));
             count++;
           }
 
