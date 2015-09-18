@@ -17,16 +17,6 @@ class MediaController < ApplicationController
       end
     end
 
-    #if Rails.env.development?
-      #@all_fandoms = Fandom.where(canonical: true)
-    #else
-      @all_fandoms = Rails.cache.fetch("all_fandoms", expires_in: 4.hours){ Fandom.where(canonical: true) }
-    #end
-    results = []
-    @all_fandoms.each do |fandom|
-      results << { name: fandom.name, url: tag_works_path(fandom) }
-    end
-
     if params[:query].present?
       options = params[:query].dup
       @query = options
