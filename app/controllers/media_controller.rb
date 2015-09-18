@@ -33,8 +33,10 @@ class MediaController < ApplicationController
       @tags = TagSearch.search(options)
       if params[:format] == "json"
         results = []
-        @tags.each do |fandom|
-          results << { name: fandom.name, url: tag_works_path(fandom) }
+        tags = Tag.autocomplete_lookup(search_param: params[:query][:name], autocomplete_prefix: "autocomplete_tag_fandom")
+        tags.each do |fandom|
+          fandom_name = Tag.name_from_autocomplete(fandom)
+          results << { name: fandom_name, url: fandom_name.to_param }
         end
       end
     end
