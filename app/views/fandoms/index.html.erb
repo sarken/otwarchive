@@ -31,7 +31,9 @@
     <p>
       <%= label_tag("query[name]", ts("Search for fandoms")) %>
       <%= text_field_tag "query[name]", nil, :"autocomplete" => "off" %>
-      <%= hidden_field_tag "query[medium]", @medium.name %>
+      <% if @medium %>
+        <%= hidden_field_tag "query[medium]", @medium.name %>
+      <% end %>
     </p>
     <div class="results listbox group" style="display: none;">
       <h3 class="heading">

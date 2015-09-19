@@ -30,10 +30,31 @@ class FandomsController < ApplicationController
 
     if params[:query].present? && params[:format] == "json"
       results = []
-      tags = Tag.autocomplete_media_lookup(term: params[:query][:name], tag_type: "fandom", media: params[:query][:medium])
-      tags.each do |fandom|
-        fandom_name = Tag.name_from_autocomplete(fandom)
-        results << { name: fandom_name, url: fandom_name.to_param }
+      # this doesn't do fandoms by category and damned if I know why... shouldn't it inherit @fandoms?
+      if @collection && params[:query][:medium]
+        @medium = Media.find_by_name(params[:query][:medium])
+        tags = @medium.fandoms.canonical.where(["filter_taggings.inherited = 0 AND name LIKE ?", '%' + params[:query][:name] + '%']).
+                  for_collections_with_count([@collection] + @collection.children)
+        tags.each do |fandom|
+          results << { name: fandom.name, url: collection_tag_works_path(@collection, fandom) }
+        end
+      elsif @collection
+        tags = @fandoms.where("name LIKE ?", '%' + params[:query][:name] + '%').limit(10)
+        tags.each do |fandom|
+          results << { name: fandom.name, url: collection_tag_works_path(@collection, fandom) }
+        end
+      elsif @medium == Media.uncategorized
+        tags = Media.uncategorized.fandoms.where(["canonical = 0 AND name LIKE ?", '%' + params[:query][:name] + '%']).limit(10)
+        tags.each do |fandom|
+          results << { name: fandom.name, url: tag_path(fandom) }
+        end
+      else
+        tags = Tag.autocomplete_media_lookup(term: params[:query][:name], tag_type: "fandom", media: params[:query][:medium])
+        tags.each do |fandom|
+          fandom_name = Tag.name_from_autocomplete(fandom)
+          works_path = tag_works_path(Tag.find_by_name(fandom_name))
+          results << { name: fandom_name, url: works_path }
+        end
       end
     end
 
