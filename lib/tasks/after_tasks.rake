@@ -442,6 +442,13 @@ namespace :After do
     end
   end
 
+  desc "Add all canonical Fandom tags to autocomplete"
+  task(:canonical_fandoms_to_autocomplete => :environment) do
+    Fandom.canonical.find_each do |fandom|
+      fandom.add_to_autocomplete
+    end
+  end
+
 end # this is the end that you have to put new tasks above
 
 ##################
