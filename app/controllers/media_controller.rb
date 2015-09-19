@@ -23,7 +23,8 @@ class MediaController < ApplicationController
                                        autocomplete_prefix: "autocomplete_tag_fandom")
       fandoms.each do |fandom|
         fandom_name = Tag.name_from_autocomplete(fandom)
-        results << { name: fandom_name, url: fandom_name.to_param }
+        works_path = tag_works_path(Tag.find_by_name(fandom_name))
+        results << { name: fandom_name, url: works_path }
       end
     elsif params[:query].present?
       options = params[:query].dup

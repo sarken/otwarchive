@@ -674,7 +674,7 @@ $j(document).ready(function() {
         $j.getJSON(search_url, { format: 'json' }, function(data) {
           var i;
           for (i = 0; i < data.length; i++) {
-            results.push($j('<li><a href="/tags/' + data[i].url + '/works" class="tag">' + data[i].name + '</a></li>'));
+            results.push($j('<li><a href="' + data[i].url + '" class="tag">' + data[i].name + '</a></li>'));
             count++;
           }
 
