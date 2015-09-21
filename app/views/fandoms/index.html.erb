@@ -2,8 +2,8 @@
 <h2 class="heading">
   <% if @collection %>
     <%= link_to(@collection.title, @collection) %> > <%= ts("Fandoms") %>
-  <% elsif @medium %>
-    <%= link_to ts("Fandoms"), media_path %> > <%= @medium.name %>
+  <% elsif @fandoms_list.medium %>
+    <%= link_to ts("Fandoms"), media_path %> > <%= @fandoms_list.medium.name %>
   <% else %>
     <%= link_to ts("Fandoms"), media_path %>
   <% end %>
@@ -31,8 +31,8 @@
     <p>
       <%= label_tag("query[name]", ts("Search for fandoms")) %>
       <%= text_field_tag "query[name]", nil, :"autocomplete" => "off" %>
-      <% if @medium %>
-        <%= hidden_field_tag "query[medium]", @medium.name %>
+      <% if @fandoms_list.medium %>
+        <%= hidden_field_tag "query[medium]", @fandoms_list.medium.name %>
       <% end %>
     </p>
     <div class="results listbox group" style="display: none;">
@@ -45,16 +45,16 @@
   </fieldset>
 <% end %>
 
-<% if @fandoms_by_letter && !@fandoms_by_letter.empty? %>
+<% if @fandoms_list.fandoms_by_letter && !@fandoms_list.fandoms_by_letter.empty? %>
   <h3 class="landmark heading"><%= ts('Alphabet Navigation') %></h3>
   <ul class="alphabet actions" id="alphabet" role="navigation">
-    <% for letter in @fandoms_by_letter.keys %>
+    <% for letter in @fandoms_list.fandoms_by_letter.keys %>
       <li><%= link_to letter, "#letter-#{letter}" %></li>
     <% end %>
   </ul>
   <h3 class="landmark heading"><%= ts('Alphabetised List of Fandoms') %></h3>
   <ol class="alphabet fandom index group <%= 'collection' if @collection %>">
-    <% @fandoms_by_letter.each_pair do |letter, fandoms| %>
+    <% @fandoms_list.fandoms_by_letter.each_pair do |letter, fandoms| %>
       <li id='letter-<%= letter %>' class='letter listbox group'>
         <h3 class="heading">
           <%= letter %>
