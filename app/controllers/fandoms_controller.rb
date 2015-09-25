@@ -3,7 +3,7 @@ class FandomsController < ApplicationController
 
   def index
     medium = (params[:query].present? && params[:query][:medium]) ? params[:query][:medium] :
-                                                                    params[:medium_id]
+              params[:medium_id]
     @fandoms_list = Fandomslist.new(medium, @collection)
 
     if @collection
@@ -19,29 +19,26 @@ class FandomsController < ApplicationController
       redirect_to media_path(notice: "Please choose a media category to start browsing fandoms.")
       return
     end
+
     if params[:query].present? && params[:format] == "json"
       results = []
       if @collection || (medium.present? && Media.find_by_name(medium) == Media.uncategorized)
-        tags = @fandoms_list.fandoms.where("name LIKE ?", '%' + params[:query][:name] + '%').limit(10)
-        if @collection
-          tags.each do |fandom|
-            results << { name: fandom.name, url: collection_tag_works_path(@collection, fandom) }
-          end
-        else
-          tags.each do |fandom|
-            results << { name: fandom.name, url: tag_path(fandom) }
-          end
+        found_fandoms = @fandoms_list.fandoms.where("name LIKE ?", '%' + params[:query][:name] + '%').limit(10)
+        found_fandoms.each do |fandom|
+          path_for_json = @collection ? collection_tag_works_path(@collection, fandom) : tag_path(fandom)
+          results << { name: fandom.name, url: path_for_json }
         end
       else
-        tags = Tag.autocomplete_media_lookup(term: params[:query][:name], tag_type: "fandom",
-                                             media: params[:query][:medium])
-        tags.each do |fandom|
+        found_fandoms = Tag.autocomplete_media_lookup(term: params[:query][:name], tag_type: "fandom",
+                                                      media: params[:query][:medium])
+        found_fandoms.each do |fandom|
           fandom_name = Tag.name_from_autocomplete(fandom)
-          works_path = tag_works_path(Tag.find_by_name(fandom_name))
-          results << { name: fandom_name, url: works_path }
+          path_for_json = tag_works_path(Tag.find_by_name(fandom_name))
+          results << { name: fandom_name, url: path_for_json }
         end
       end
     end
+
     respond_to do |format|
       format.json { render :json => results.to_json }
       format.html

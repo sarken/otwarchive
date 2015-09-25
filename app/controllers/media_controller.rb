@@ -19,12 +19,12 @@ class MediaController < ApplicationController
 
     if params[:query].present? && params[:format] == "json"
       results = []
-      fandoms = Tag.autocomplete_lookup(search_param: params[:query][:name],
+      found_fandoms = Tag.autocomplete_lookup(search_param: params[:query][:name],
                                        autocomplete_prefix: "autocomplete_tag_fandom")
-      fandoms.each do |fandom|
+      found_fandoms.each do |fandom|
         fandom_name = Tag.name_from_autocomplete(fandom)
-        works_path = tag_works_path(Tag.find_by_name(fandom_name))
-        results << { name: fandom_name, url: works_path }
+        path_for_json = tag_works_path(Tag.find_by_name(fandom_name))
+        results << { name: fandom_name, url: path_for_json }
       end
     elsif params[:query].present?
       options = params[:query].dup

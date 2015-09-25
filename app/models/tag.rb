@@ -471,7 +471,7 @@ class Tag < ActiveRecord::Base
     results = []
     media.each do |single_media|
       search_regex = Tag.get_search_regex(search_param)
-      results += REDIS_GENERAL.zrevrange("autocomplete_media_#{single_media}_#{tag_type}", 0, -1).select {|tag| tag.match(search_regex)}
+      results += REDIS_GENERAL.zrevrange("autocomplete_media_#{single_media}_#{tag_type}", 0, -1).select {|tag| tag.split(AUTOCOMPLETE_DELIMITER)[1].match(search_regex) }
     end
     if options[:fallback] && search_param.length > 0 && media.blank?
       Tag.autocomplete_lookup(:search_param => search_param, :autocomplete_prefix => "autocomplete_tag_fandom")
@@ -479,14 +479,14 @@ class Tag < ActiveRecord::Base
       results
     end
   end
-  
+
   # look up tags that have been wrangled into a given fandom
   def self.autocomplete_fandom_lookup(options = {})
     options.reverse_merge!({:term => "", :tag_type => "character", :fandom => "", :fallback => true})
     search_param = options[:term]
     tag_type = options[:tag_type]
     fandoms = Tag.get_search_terms(options[:fandom])
-      
+
     # fandom sets are too small to bother breaking up
     # we're just getting ALL the tags in the set(s) for the fandom(s) and then manually matching
     results = []
