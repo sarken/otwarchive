@@ -28,6 +28,9 @@ function setupNarrowScreenFilters() {
   var outer = $j('#outer');
   var show_link = $j('#go_to_filters');
   var hide_link = $j('#leave_filters');
+  var top_link_text = hide_link.text();
+
+  $j('<p class="narrow-shown hidden jump"><a href="#main">' + top_link_text + '</a></p>').appendTo('#main');
 
   show_link.click(function(e) {
     e.preventDefault();

@@ -247,6 +247,11 @@ form.filters dl {
   outline: none;
 }
 
+.filtered > p.jump {
+  margin-top: 2em;
+  text-align: right;
+}
+
 /* 22 system: messages */
 
 .announcement .userstuff {
