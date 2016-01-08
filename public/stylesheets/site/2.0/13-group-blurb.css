@@ -92,7 +92,7 @@ li.blurb:after, .blurb .blurb:after {
   margin: 0;
 }
 
-.blurb ul.required-tags li, .blurb ul.required-tags li a, .blurb ul.required-tags li span {
+.blurb .required-tags li, .blurb .required-tags a, .blurb .required-tags span {
   display: block;
   width: 25px;
   height: 25px;
@@ -101,25 +101,28 @@ li.blurb:after, .blurb .blurb:after {
   padding-left: 0;
 }
 
-.blurb ul.required-tags li {
+.blurb .required-tags li {
+  position: absolute;
   margin-bottom: 3px;
 }
 
-.blurb ul.required-tags li+li+li, .blurb ul.required-tags li+li+li+li {
-  position: absolute;
-  left: 28px;
+.blurb .required-tags .warnings {
+  left: 0;
+  top: 28px;
 }
 
-.blurb ul.required-tags li+li+li {
+.blurb .required-tags .categories {
+  left: 28px;
   top: 0;
 }
 
-.blurb ul.required-tags li+li+li+li {
+.blurb .required-tags .iswip {
+  left: 28px;
   top: 28px;
 }
 
 /* keeps the outline to the proper size in Firefox and Opera */
-.blurb ul.required-tags li a:focus {
+.blurb .required-tags a:focus {
   overflow: hidden;
 }
 
@@ -130,7 +133,7 @@ li.blurb:after, .blurb .blurb:after {
   color: transparent;
 }
 
-.blurb ul.required-tags li span {
+.blurb .required-tags span {
   background-repeat: no-repeat;
 }
 
@@ -143,12 +146,7 @@ li.blurb:after, .blurb .blurb:after {
   visibility: hidden;
 }
 
-.required-tags .rating:after,
-.required-tags .warnings:after,
-.required-tags .category:before,
-.required-tags .category:after,
-.required-tags .iswip:after,
-.required-tags .external-work:after,
+.required-tags span:first-of-type:after,
 .bookmark .status .public:after,
 .bookmark .status .private:after,
 .bookmark .status .rec:after,
@@ -166,10 +164,6 @@ li.blurb:after, .blurb .blurb:after {
   text-align: center;
   top: 0;
   width: 25px;
-}
-
-.required-tags .warnings:after {
-  top: 28px;
 }
 
 /* off white: not rated, no warning, no category, bookmark count */
