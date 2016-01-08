@@ -58,7 +58,12 @@ end
 
 Given /^basic languages$/ do
   Language.default
-  Language.find_or_create_by_short_and_name("DE", "Deutsch")
+  german = Language.find_or_create_by_short_and_name("DE", "Deutsch")
+  de = Locale.new
+  de.iso = 'de'
+  de.name = 'Deutsch'
+  de.language_id = german.id
+  de.save!
 end
 
 Given /^advanced languages$/ do
@@ -114,6 +119,40 @@ Given /^I have posted an admin post$/ do
   step("I am logged in as an admin")
     step("I make an admin post")
     step("I am logged out as an admin")
+end
+
+Given /^the fannish next of kin "([^\"]*)" for the user "([^\"]*)"$/ do |kin, user|
+  step %{the user "#{kin}" exists and is activated}
+  step %{the user "#{user}" exists and is activated}
+  step %{I am logged in as an admin}
+  step %{I go to the abuse administration page for "#{user}"}
+  fill_in("Fannish next of kin's username", with: "#{kin}")
+  fill_in("Fannish next of kin's email", with: "testing@foo.com")
+  click_button("Update")
+end
+
+Given /^the user "([^\"]*)" is suspended$/ do |user|
+  step %{the user "#{user}" exists and is activated}
+  step %{I am logged in as an admin}
+  step %{I go to the abuse administration page for "#{user}"}
+  choose("admin_action_suspend")
+  fill_in("suspend_days", with: 30)
+  fill_in("Notes", with: "Why they are suspended")
+  click_button("Update")
+end
+
+Given /^the user "([^\"]*)" is banned$/ do |user|
+  step %{the user "#{user}" exists and is activated}
+  step %{I am logged in as an admin}
+  step %{I go to the abuse administration page for "#{user}"}
+  choose("admin_action_ban")
+  fill_in("Notes", with: "Why they are banned")
+  click_button("Update")
+end
+
+Then /^the user "([^\"]*)" should be permanently banned$/ do |user|
+  u = User.find_by_login(user)
+  assert u.banned?
 end
 
 Given /^I have posted an admin post without paragraphs$/ do
@@ -280,4 +319,24 @@ Then /^I should see the unhidden work "([^\"]*)" by "([^\"]*)"?/ do |work, user|
   step(%{I should see "#{work}"})
   step(%{I view the work "#{work}"})
   step(%{I should see "#{work}"})
+end
+
+Then(/^the work "(.*?)" should not be deleted$/) do |work|
+  w = Work.find_by_title(work)
+  assert w && w.posted?
+end
+
+Then(/^there should be no bookmarks on the work "(.*?)"$/) do |work|
+  w = Work.find_by_title(work)
+  assert w.bookmarks.count == 0
+end
+
+Then(/^there should be no comments on the work "(.*?)"$/) do |work|
+  w = Work.find_by_title(work)
+  assert w.comments.count == 0
+end
+
+When(/^the user "(.*?)" is unbanned in the background/) do |user|
+  u = User.find_by_login(user)
+  u.update_attribute(:banned, false)
 end

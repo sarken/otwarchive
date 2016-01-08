@@ -2,7 +2,7 @@ class Reading < ActiveRecord::Base
   belongs_to :user
   belongs_to :work
 
-  after_save :expire_cached_home_marked_for_later, if: :toread?
+  after_save :expire_cached_home_marked_for_later, if: :toread_changed?
   after_destroy :expire_cached_home_marked_for_later, if: :toread?
 
   # called from show in work controller
@@ -53,7 +53,7 @@ class Reading < ActiveRecord::Base
 
   def expire_cached_home_marked_for_later
     unless Rails.env.development?
-      Rails.cache.delete("home/index/#{User.current_user.id}/home_marked_for_later")
+      Rails.cache.delete("home/index/#{user_id}/home_marked_for_later")
     end
   end
 end

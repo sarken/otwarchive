@@ -31,4 +31,9 @@ class InboxComment < ActiveRecord::Base
     self.count(:conditions => {:read => false})
   end
 
+  # Get only the comments with a feedback_comment that exists
+  def self.with_feedback_comment
+    joins("LEFT JOIN comments ON comments.id = inbox_comments.feedback_comment_id").
+    where("comments.id IS NOT NULL AND comments.is_deleted = 0")
+  end
 end
