@@ -5,9 +5,9 @@ subtypes:
 input[type="submit"], button
 */
 
-.actions * {
+/* .actions * {
   display: inline;
-}
+} */
 
 ul.actions, p.actions, li.actions, span.actions, fieldset.actions, dd.actions {
   padding: 0.429em 0.25em 0.25em 0;
@@ -55,6 +55,10 @@ input[type="submit"] {
 
 p.submit, input.submit, dd.submit {
   text-align: right;
+}
+
+.actions fieldset, .actions legend, .actions p, .actions .heading {
+  display: inline;
 }
 
 .actions input.text, .actions input[type="text"] {

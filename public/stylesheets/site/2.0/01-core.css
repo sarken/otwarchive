@@ -37,7 +37,13 @@ li.blurb, fieldset, form dl {
   overflow: hidden;
 }
 
-.blurb li, .actions>*, .stats>*, .meta ul li {
+/* remove .actions>* and .stats>* */
+
+/* maybe add: .actions > input (various forms, e.g. abuse), 
+.actions > a,
+.actions > label */
+
+.blurb li, .actions > li, .actions > .actions, .actions > .heading, .stats > dt, .stats > dd, .stats > .stats, .meta ul li {
   list-style: none;
   display: inline;
   padding-left: 0.25em;
