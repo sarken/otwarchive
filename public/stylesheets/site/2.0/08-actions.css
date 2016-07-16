@@ -57,7 +57,7 @@ p.submit, input.submit, dd.submit {
   text-align: right;
 }
 
-.actions fieldset, .actions legend, .actions p, .actions .heading {
+.actions fieldset, .actions legend, .actions p, .actions form div, .actions .heading {
   display: inline;
 }
 
