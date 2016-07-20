@@ -24,7 +24,7 @@ $j(document).ready(function() {
     // make Approve buttons on inbox items visible
     $j('#inbox-form, .messages').find('.unreviewed').find('.review').find('a').removeClass('hidden');
 
-    prepareDeleteLinks();
+    if (!$j('#work-form')) { prepareDeleteLinks(); };
     thermometer();
     $j('body').addClass('javascript');
 });

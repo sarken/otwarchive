@@ -1,0 +1,21 @@
+<h2 class="heading"><%= ts("Are you <strong>sure</strong> you want to <strong>delete</strong> this work?").html_safe %>
+<h3 class="caution heading"><%= ts("Bad things will happen if you do not read this!") %></h3>
+
+<p class="notes">
+  <%= ts("Are you sure you want to <strong>PERMANENTLY DELETE</strong> the work <strong>%{work_title}</strong>? This <strong>CANNOT BE UNDONE</strong>.", work_title: @work.title).html_safe %>
+  <% if @work.posted? %>
+    <%= ts("All bookmarks, comments, and kudos will be lost. If you just want to remove your association with this work, you could <a href=\"#{new_orphan_path(work_id: @work.id)}\">Orphan it instead</a>.").html_safe %>
+  <% end %>
+</p>
+
+<!--main content-->
+<%= form_for(@work, :html => {:method => :delete, :class => "simple destroy"}) do |f| %>
+  <p>
+    <%= label_tag "title", ts("Please enter the title of this work to delete it"), for: "title_confirmation" %>
+    <%= text_field_tag "title", "", id: "title_confirmation" %>
+  </p>
+  <p class="actions">
+    <%= f.submit (@work.posted? ? ts("I understand what I am doing; delete my work forever") :
+                                  ts("I understand what I am doing; delete my draft forever")) %>
+  </p>
+<% end %>

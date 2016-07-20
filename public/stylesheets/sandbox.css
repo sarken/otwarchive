@@ -23,3 +23,40 @@ background:purple; color:#555;}
 .edit_external_author ul ul {
   margin-left: 2.75em;
 }
+
+.works-confirm_delete h2 {
+  margin: 0 0 0.5em 0; /* for modal */
+}
+
+.works-confirm_delete .caution {
+  border-bottom: 1px solid #d89e36;
+  padding: 0.25em 0.375em;
+}
+
+.works-confirm_delete form {
+  margin-top: 1.929em;
+}
+
+.works-confirm_delete .actions {
+  margin: 2em 0;
+  text-align: center;
+  width: 100%;
+}
+
+.works-confirm_delete label {
+  display: block;
+}
+
+.works-confirm_delete input {
+  display: block;
+  width: 75%;
+}
+
+.works-confirm_delete input[type="submit"] {
+  margin: 0 auto;
+  font-weight: bold;
+}
+
+.works-confirm_delete input[type="submit"]:focus, .works-confirm_delete input[type="submit"]:hover {
+  color: #900;
+}

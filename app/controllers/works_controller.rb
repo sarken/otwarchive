@@ -1,4 +1,5 @@
 # encoding=utf-8
+require 'cgi'
 
 class WorksController < ApplicationController
 
@@ -517,8 +518,13 @@ class WorksController < ApplicationController
     begin
       was_draft = !@work.posted?
       title = @work.title
+      title_confirmation = params[:title]
+    if title_confirmation == title
       @work.destroy
-      flash[:notice] = ts("Your work %{title} was deleted.", :title => title)
+      flash[:notice] = ts("Your work %{title} was deleted.", title: title).html_safe
+    else
+      flash[:error] = ts("The title you entered (#{title_confirmation}) did not match the title of the work you were trying to delete (#{title}).")
+    end
     rescue
       flash[:error] = ts("We couldn't delete that right now, sorry! Please try again later.")
     end
