@@ -45,6 +45,7 @@ background:purple; color:#555;}
 
 .works-confirm_delete label {
   display: block;
+  margin-bottom: 0.375em;
 }
 
 .works-confirm_delete input {

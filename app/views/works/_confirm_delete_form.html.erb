@@ -1,3 +1,4 @@
+<!--Descriptive page name, messages and instructions-->
 <h2 class="heading"><%= ts("Are you <strong>sure</strong> you want to <strong>delete</strong> this work?").html_safe %>
 <h3 class="caution heading"><%= ts("Bad things will happen if you do not read this!") %></h3>
 
@@ -9,10 +10,11 @@
 </p>
 
 <!--main content-->
-<%= form_for(@work, :html => {:method => :delete, :class => "simple destroy"}) do |f| %>
+<%= form_for(@work, method: :delete, class: "simple destroy") do |f| %>
   <p>
-    <%= label_tag "title", ts("Please enter the title of this work to delete it"), for: "title_confirmation" %>
-    <%= text_field_tag "title", "", id: "title_confirmation" %>
+    <% # Name this field title so it gets same sanitization as the actual title %>
+    <%= label_tag "title", ts("Please enter the title of this work to delete it") %>
+    <%= text_field_tag "title" %>
   </p>
   <p class="actions">
     <%= f.submit (@work.posted? ? ts("I understand what I am doing; delete my work forever") :

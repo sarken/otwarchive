@@ -522,7 +522,8 @@ class WorksController < ApplicationController
       @work.destroy
       flash[:notice] = ts("Your work %{title} was deleted.", title: title).html_safe
     else
-      flash[:error] = ts("The title you entered (#{title_confirmation}) did not match the title of the work you were trying to delete (#{title}).")
+      # Should this redirect somewhere else? Back to the deletion form?
+      flash[:error] = ts("The title you entered (#{title_confirmation}) did not match the title of the work you were trying to delete (#{title}).").html_safe
     end
     rescue
       flash[:error] = ts("We couldn't delete that right now, sorry! Please try again later.")
