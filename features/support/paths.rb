@@ -94,6 +94,9 @@ module NavigationHelpers
     when /^(.*?)(?:'s)? works page$/i
       Work.tire.index.refresh
       user_works_path(user_id: $1)
+    when /^(.*?)(?:'s)? drafts page$/i
+      Work.tire.index.refresh
+      drafts_user_works_path(user_id: $1)
     when /^the "(.*)" work page/
       work_path(Work.find_by_title($1))
     when /^the work page with title (.*)/

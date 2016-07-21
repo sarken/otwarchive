@@ -88,7 +88,12 @@ Feature: Work Drafts
       When I follow "Delete Draft"
       Then I should not see "All bookmarks, comments, and kudos will be lost."
         And I should not see "Orphan Work Instead"
-      When I fill in "Please enter the title of this work to delete it" with "draft to delete"
+      When I fill in "Please enter the title of this work to delete it" with "wrong title"
+        And I press "I understand what I am doing; delete my draft forever"
+      Then I should be on drafter's drafts page
+        And I should see "The title you entered (wrong title) did not match the title of the work you were trying to delete (draft to delete)."
+      When I follow "Delete Draft"
+        And I fill in "Please enter the title of this work to delete it" with "draft to delete"
         And I press "I understand what I am doing; delete my draft forever"
       Then I should see "Your work draft to delete was deleted"
         

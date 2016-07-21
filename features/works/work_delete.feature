@@ -5,14 +5,14 @@ Feature: Delete Works
   Scenario: The deletion process should contain information about deleting a work and require the user to enter the exact title of the work in order to delete it
     Given I am logged in as "houdini"
       And I post the work "K3y$m@š# & >..<"
-      And I follow "Edit"
+    When I follow "Edit"
       And I follow "Delete Work"
     Then I should see "Are you sure you want to PERMANENTLY DELETE the work K3y$m@š# & >..<? This CANNOT BE UNDONE."
       And I should see "All bookmarks, comments, and kudos will be lost. If you just want to remove your association with this work, you could Orphan it instead"
     When I fill in "Please enter the title of this work to delete it" with "The Wrong Title"
       And I press "I understand what I am doing; delete my work forever"
     Then I should be on houdini's works page
-      And I should see "The title you entered (Keysmash) did not match the title of the work you were trying to delete (K3y$m@š# & >..<)."
+      And I should see "The title you entered (The Wrong Title) did not match the title of the work you were trying to delete (K3y$m@š# & >..<)."
     When I follow "K3y$m@š# & >..<"
       And I follow "Edit"
       And I follow "Delete Work"
