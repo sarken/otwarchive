@@ -384,11 +384,11 @@ When /^I browse the "([^"]+)" works with an empty page parameter$/ do |tagname|
   Work.tire.index.refresh
 end
 
-When /^I delete the work "([^\"]*)"$/ do |work|
-  work = Work.find_by_title!(work)
-  visit edit_work_url(work)
-  step %{I follow "Delete Work"}
-  click_button("Yes, Delete Work")
+When /^I delete the work "([^\"]*)"$/ do |title|
+  work = Work.find_by_title!(title)
+  visit confirm_delete_work_path(work)
+  fill_in("title", with: title)
+  click_button("I understand what I am doing; delete my work forever")
   Work.tire.index.refresh
 end
 

@@ -88,7 +88,8 @@ Feature: Work Drafts
       When I follow "Delete Draft"
       Then I should not see "All bookmarks, comments, and kudos will be lost."
         And I should not see "Orphan Work Instead"
-      When I press "Yes, Delete Draft"
+      When I fill in "Please enter the title of this work to delete it" with "draft to delete"
+        And I press "I understand what I am doing; delete my draft forever"
       Then I should see "Your work draft to delete was deleted"
         
     Scenario: Saving changes to an existing draft without posting and then double check that it is saved and I didn't get the success message erroneously
