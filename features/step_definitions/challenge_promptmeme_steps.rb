@@ -95,7 +95,7 @@ When /^I fill in Battle 12 challenge options$/ do
     fill_in("Sign-up opens:", with: Date.yesterday)
     fill_in("Sign-up closes:", with: Date.tomorrow)
     select("(GMT-05:00) Eastern Time (US & Canada)", from: "Time zone")
-    fill_in("prompt_meme_requests_num_allowed" with "3")
+    fill_in("prompt_meme_requests_num_allowed", with: "3")
     check("prompt_meme_request_restriction_attributes_title_allowed")
     step %{I submit}
 end
@@ -104,7 +104,7 @@ When /^I fill in future challenge options$/ do
   step "I fill in prompt meme challenge options"
     fill_in("Sign-up opens:", with: Date.yesterday)
     fill_in("Sign-up closes:", with: Date.tomorrow)
-    fill_in("prompt_meme_requests_num_allowed" with "3")
+    fill_in("prompt_meme_requests_num_allowed", with: "3")
     uncheck("Sign-up open?")
     step %{I submit}
 end
@@ -144,6 +144,12 @@ When /^I fill in multi-prompt challenge options$/ do
   step %{I submit}
 end
 
+# PROMPT MEME CHALLENGE OPTIONS
+# Two prompts required
+# REQUEST SETTINGS
+# Tag type    | Required | Allowed | Any?
+# Fandom      | 1        | 1       | No
+# Freeform    | 0        | 2       | No
 When /^I fill in prompt meme challenge options$/ do
   fill_in("General Sign-up Instructions", with: "Here are some general tips")
   fill_in("Tag Sets To Use:", with: "Standard Challenge Tags")
