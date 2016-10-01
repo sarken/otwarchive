@@ -453,7 +453,7 @@ Feature: Prompt Meme Challenge
   Scenario: User can drop a claim from the prompts page
   
   Given I have Battle 12 prompt meme fully set up
-    ANd everyone has signed up for Battle 12
+    And everyone has signed up for Battle 12
   When I claim a prompt from "Battle 12"
     And I go to "Battle 12" collection's page
     And I follow "Prompts"
