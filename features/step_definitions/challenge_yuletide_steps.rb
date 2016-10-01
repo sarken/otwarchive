@@ -1,3 +1,13 @@
+Given /^I have Yuletide challenge tags set ?up$/ do
+  step "I have standard challenge tags setup"
+  step %{I add the fandom tags "Starsky & Hutch, Tiny fandom, Care Bears, Yuletide Hippos RPF, Unoffered, Unrequested" to the tag set "Standard Challenge Tags"}
+  step %{a canonical fandom "Starsky & Hutch"}
+  step %{a canonical fandom "Tiny fandom"}
+  step %{a canonical fandom "Care Bears"}
+  step %{a canonical fandom "Yuletide Hippos RPF"}
+  step %{a canonical fandom "Unoffered"}
+  step %{a canonical fandom "Unrequested"}
+end
 
 When /^"([^"]*)" posts the fulfilling draft "([^"]*)" in "([^"]*)"$/ do |name, title, fandom|
   step %{I am logged in as "#{name}"}

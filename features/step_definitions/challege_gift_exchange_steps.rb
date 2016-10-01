@@ -185,16 +185,16 @@ end
 
 When /^I sign up for "([^\"]*)" with combination SGA$/ do |title|
   step %{I start signing up for "#{title}"}
-    step %{I fill in "challenge_signup_requests_attributes_0_tag_set_attributes_fandom_tagnames" with "Stargate Atlantis"}
-    fill_in("challenge_signup_requests_attributes_0_title", with: "SGA love")
-    click_button "Submit"
+  fill_in("challenge_signup_requests_attributes_0_tag_set_attributes_fandom_tagnames", with: "Stargate Atlantis")
+  fill_in("challenge_signup_requests_attributes_0_title", with: "SGA love")
+  click_button "Submit"
 end
 
 When /^I sign up for "([^\"]*)" with combination SG-1$/ do |title|
   step %{I start signing up for "#{title}"}
-    step %{I fill in "challenge_signup_requests_attributes_0_tag_set_attributes_fandom_tagnames" with "Stargate SG-1"}
-    fill_in("challenge_signup_requests_attributes_0_title", with: "SG1 love")
-    click_button "Submit"
+  fill_in("challenge_signup_requests_attributes_0_tag_set_attributes_fandom_tagnames", with: "Stargate SG-1")
+  fill_in("challenge_signup_requests_attributes_0_title", with: "SG1 love")
+  click_button "Submit"
 end
 
 When /^I sign up for "([^\"]*)" with missing prompts$/ do |title|
@@ -293,13 +293,13 @@ end
 
 When /^I start to fulfill my assignment$/ do
   step %{I am on my user page}
-  step %{I follow "Assignments ("}
+  step %{I follow "Assignments"}
   step %{I follow "Fulfill"}
-    step %{I fill in "Work Title" with "Fulfilled Story"}
-    step %{I select "Not Rated" from "Rating"}
-    step %{I check "No Archive Warnings Apply"}
-    step %{I fill in "Fandom" with "Final Fantasy X"}
-    step %{I fill in "content" with "This is a really cool story about Final Fantasy X"}
+  fill_in("Work Title", with: "Fulfilled Story")
+  select("Not Rated", from: "Rating")
+  check("No Archive Warnings Apply")
+  fill_in("Fandom", with: "Final Fantasy X")
+  fill_in("content", with: "This is a really cool story about Final Fantasy X")
 end
 
 When /^I fulfill my assignment$/ do
@@ -325,20 +325,4 @@ end
 When /^I refuse my gift story "(.*?)"/ do |work|
   w = Work.find_by_title(work)
   w.gifts.first.toggle!(:rejected)
-end
-
-### WHEN we need the author attribute to be set
-When /^I fulfill my assignment and the author is "([^\"]*)"$/ do |new_user|
-  step %{I start to fulfill my assignment}
-    step %{I select "#{new_user}" from "Author / Pseud(s)"}
-  step %{I press "Preview"}
-    step %{I press "Post"}
-  step %{I should see "Work was successfully posted"}
-end
-
-When /^I have set up matching for "([^\"]*)" with no required matching$/ do |challengename|
-  step %{I am logged in as "mod1"}
-  step %{I have created the gift exchange "Awesome Gift Exchange"}
-  step %{I open signups for "Awesome Gift Exchange"}
-  step %{everyone has signed up for the gift exchange "Awesome Gift Exchange"}
 end

@@ -27,7 +27,7 @@ Given /^I have standard challenge tags set ?up$/ do
       step %{I am logged in as "mod1"}
     end
   rescue
-    step %{I am logged in as "mod1"}    
+    step %{I am logged in as "mod1"}
   end  
   step "I have no tags"
   step "basic tags"
@@ -40,17 +40,6 @@ Given /^I have standard challenge tags set ?up$/ do
     step %{a canonical freeform "Something else weird"}
     step %{a canonical freeform "My extra tag"}
     step %{I set up the tag set "Standard Challenge Tags" with the fandom tags "Stargate Atlantis, Stargate SG-1, Bad Choice", the character tag "John Sheppard"}
-end
-
-Given /^I have Yuletide challenge tags set ?up$/ do
-  step "I have standard challenge tags setup"
-    step %{I add the fandom tags "Starsky & Hutch, Tiny fandom, Care Bears, Yuletide Hippos RPF, Unoffered, Unrequested" to the tag set "Standard Challenge Tags"}
-    step %{a canonical fandom "Starsky & Hutch"}
-    step %{a canonical fandom "Tiny fandom"}
-    step %{a canonical fandom "Care Bears"}
-    step %{a canonical fandom "Yuletide Hippos RPF"}
-    step %{a canonical fandom "Unoffered"}
-    step %{a canonical fandom "Unrequested"}
 end
 
 ### General Challenge Settings
