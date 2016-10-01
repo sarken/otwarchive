@@ -1,28 +1,22 @@
 
 Given /^I have Battle 12 prompt meme set up$/ do
   step %{I am logged in as "mod1"}
-    step "I have standard challenge tags setup"
+  step "I have standard challenge tags setup"
   step "I set up Battle 12 promptmeme collection"
 end
 
 Given /^I have Battle 12 prompt meme fully set up$/ do
-  step %{I am logged in as "mod1"}
-    step "I have standard challenge tags setup"
-  step "I set up Battle 12 promptmeme collection"
+  step "I have Battle 12 prompt meme set up"
   step "I fill in Battle 12 challenge options"
 end
 
 Given /^I have no-column prompt meme fully set up$/ do
-  step %{I am logged in as "mod1"}
-    step "I have standard challenge tags setup"
-  step "I set up Battle 12 promptmeme collection"
+  step "I have Battle 12 prompt meme set up"
   step "I fill in no-column challenge options"
 end
 
 Given /^I have single-prompt prompt meme fully set up$/ do
-  step %{I am logged in as "mod1"}
-    step "I have standard challenge tags setup"
-  step "I set up Battle 12 promptmeme collection"
+  step "I have Battle 12 prompt meme set up"
   step "I fill in single-prompt challenge options"
 end
 
@@ -53,19 +47,16 @@ end
 When /^I set up an?(?: ([^"]*)) promptmeme "([^\"]*)"(?: with name "([^"]*)")?$/ do |type, title, name|
   step %{I am logged in as "mod1"}
   visit new_collection_path
-  if name.nil?
-    fill_in("collection_name", with: "promptcollection")
-  else
-    fill_in("collection_name", with: name)
-  end
+  name ||= "promptcollection"
+  fill_in("collection_name", with: name)
   fill_in("collection_title", with: title)
   if type == "anon"
     check("This collection is unrevealed")
     check("This collection is anonymous")
   end
-  select("Prompt Meme", :from => "challenge_type")
+  select("Prompt Meme", from: "challenge_type")
   step %{I submit}
-  step "I should see \"Collection was successfully created\""
+  step %{I should see "Collection was successfully created"}
 
   check("prompt_meme_signup_open")
   fill_in("prompt_meme_requests_num_allowed", with: ArchiveConfig.PROMPT_MEME_PROMPTS_MAX)
@@ -75,7 +66,7 @@ When /^I set up an?(?: ([^"]*)) promptmeme "([^\"]*)"(?: with name "([^"]*)")?$/
   fill_in("Sign-up opens:", with: Date.yesterday)
   fill_in("Sign-up closes:", with: Date.tomorrow)
   step %{I submit}
-  step "I should see \"Challenge was successfully created\""
+  step %{I should see "Challenge was successfully created"}
 end
 
 When /^I set up Battle 12 promptmeme collection$/ do
@@ -88,9 +79,9 @@ When /^I set up Battle 12 promptmeme collection$/ do
   fill_in("Rules", with: "Be nicer to people")
   check("This collection is unrevealed")
   check("This collection is anonymous")
-  select("Prompt Meme", :from => "challenge_type")
+  select("Prompt Meme", from: "challenge_type")
   step %{I submit}
-  step "I should see \"Collection was successfully created\""
+  step %{I should see "Collection was successfully created"}
 end
 
 When /^I create Battle 12 promptmeme$/ do
@@ -100,11 +91,11 @@ end
 
 When /^I fill in Battle 12 challenge options$/ do
   step "I fill in prompt meme challenge options"
-    step %{I fill in "Sign-up Instructions" with "Please request easy things"}
+    fill_in("Sign-up Instructions", with "Please request easy things")
     fill_in("Sign-up opens:", with: Date.yesterday)
     fill_in("Sign-up closes:", with: Date.tomorrow)
-    step %{I select "(GMT-05:00) Eastern Time (US & Canada)" from "Time zone"}
-    step %{I fill in "prompt_meme_requests_num_allowed" with "3"}
+    select("(GMT-05:00) Eastern Time (US & Canada)", from: "Time zone")
+    fill_in("prompt_meme_requests_num_allowed" with "3")
     check("prompt_meme_request_restriction_attributes_title_allowed")
     step %{I submit}
 end
@@ -113,56 +104,56 @@ When /^I fill in future challenge options$/ do
   step "I fill in prompt meme challenge options"
     fill_in("Sign-up opens:", with: Date.yesterday)
     fill_in("Sign-up closes:", with: Date.tomorrow)
-    step %{I fill in "prompt_meme_requests_num_allowed" with "3"}
-    step %{I uncheck "Sign-up open?"}
+    fill_in("prompt_meme_requests_num_allowed" with "3")
+    uncheck("Sign-up open?")
     step %{I submit}
 end
 
 When /^I fill in past challenge options$/ do
   step "I fill in prompt meme challenge options"
-    step %{I fill in "Sign-up opens" with "2010-09-20 12:40AM"}
-    step %{I fill in "Sign-up closes" with "2010-09-20 12:40AM"}
-    step %{I fill in "prompt_meme_requests_num_allowed" with "3"}
-    step %{I uncheck "Sign-up open?"}
+    fill_in("Sign-up opens", with: "2010-09-20 12:40AM")
+    fill_in("Sign-up closes", with: "2010-09-20 12:40AM")
+    fill_in("prompt_meme_requests_num_allowed", with: "3")
+    uncheck("Sign-up open?")
     step %{I submit}
 end
 
 When /^I fill in no-column challenge options$/ do
-  step %{I fill in "prompt_meme_requests_num_required" with "1"}
-    step %{I fill in "prompt_meme_request_restriction_attributes_fandom_num_allowed" with "0"}
-    step %{I fill in "prompt_meme_request_restriction_attributes_character_num_allowed" with "0"}
-    step %{I fill in "prompt_meme_request_restriction_attributes_relationship_num_allowed" with "0"}
-    step %{I check "Sign-up open?"}
-    fill_in("Sign-up opens:", with: Date.yesterday)
-    fill_in("Sign-up closes:", with: Date.tomorrow)
-    step %{I submit}
+  fill_in("prompt_meme_requests_num_required", with: "1")
+  fill_in("prompt_meme_request_restriction_attributes_fandom_num_allowed", with: "0")
+  fill_in("prompt_meme_request_restriction_attributes_character_num_allowed", with: "0")
+  fill_in("prompt_meme_request_restriction_attributes_relationship_num_allowed", with: "0")
+  check("Sign-up open?")
+  fill_in("Sign-up opens:", with: Date.yesterday)
+  fill_in("Sign-up closes:", with: Date.tomorrow)
+  step %{I submit}
 end
 
 When /^I fill in single-prompt challenge options$/ do
-  step %{I fill in "prompt_meme_requests_num_required" with "1"}
-    step %{I check "Sign-up open?"}
-    check("prompt_meme_request_restriction_attributes_title_allowed")
-    fill_in("Sign-up opens:", with: Date.yesterday)
-    fill_in("Sign-up closes:", with: Date.tomorrow)
-    step %{I submit}
+  fill_in("prompt_meme_requests_num_required", with: "1")
+  check("Sign-up open?")
+  check("prompt_meme_request_restriction_attributes_title_allowed")
+  fill_in("Sign-up opens:", with: Date.yesterday)
+  fill_in("Sign-up closes:", with: Date.tomorrow)
+  step %{I submit}
 end
 
 When /^I fill in multi-prompt challenge options$/ do
   step "I fill in prompt meme challenge options"
-    step %{I fill in "prompt_meme_requests_num_allowed" with "4"}
-    step %{I submit}
+  fill_in("prompt_meme_requests_num_allowed", with: "4")
+  step %{I submit}
 end
 
 When /^I fill in prompt meme challenge options$/ do
-  step %{I fill in "General Sign-up Instructions" with "Here are some general tips"}
-    fill_in("Tag Sets To Use:", with: "Standard Challenge Tags")
-    step %{I fill in "prompt_meme_request_restriction_attributes_fandom_num_required" with "1"}
-    step %{I fill in "prompt_meme_request_restriction_attributes_fandom_num_allowed" with "1"}
-    step %{I fill in "prompt_meme_request_restriction_attributes_freeform_num_allowed" with "2"}
-    step %{I fill in "prompt_meme_requests_num_required" with "2"}
-    step %{I check "Sign-up open?"}
-    fill_in("Sign-up opens:", with: Date.yesterday)
-    fill_in("Sign-up closes:", with: Date.tomorrow)
+  fill_in("General Sign-up Instructions", with: "Here are some general tips")
+  fill_in("Tag Sets To Use:", with: "Standard Challenge Tags")
+  fill_in("prompt_meme_request_restriction_attributes_fandom_num_required", with: "1")
+  fill_in("prompt_meme_request_restriction_attributes_fandom_num_allowed", with: "1")
+  fill_in("prompt_meme_request_restriction_attributes_freeform_num_allowed", with: "2")
+  fill_in("prompt_meme_requests_num_required", with: "2")
+  check("Sign-up open?")
+  fill_in("Sign-up opens:", with: Date.yesterday)
+  fill_in("Sign-up closes:", with: Date.tomorrow)
 end
 
 When /^I sign up for Battle 12$/ do
@@ -219,15 +210,14 @@ end
 
 When /^I sign up for Battle 12 with combination E$/ do
   step "I go to the collections page"
-    step "I follow \"Battle 12\""
-    step "I follow \"Sign Up\""
-    step %{I fill in "Description:" with "Weird description"}
-    step "I press \"Submit\""
+    step %{I follow "Battle 12"}
+    step %{"I follow "Sign Up"}
+    fill_in("Description:", with: "Weird description")
+    click_button "Submit"
 end
 
 When /^I sign up for "([^\"]*)" fixed-fandom prompt meme$/ do |title|
-  visit collection_path(Collection.find_by_title(title))
-  step %{I follow "Sign Up"}
+  visit new_collection_signup_path(Collection.find_by_title(title))
     step %{I check the 1st checkbox with value "Stargate SG-1"}
     step %{I check the 2nd checkbox with value "Stargate SG-1"}
     step %{I check the 2nd checkbox with id matching "anonymous"}
@@ -284,8 +274,7 @@ When /^I add a new prompt to my signup for a prompt meme$/ do
 end
 
 When /^I edit the signup by "([^\"]*)"$/ do |participant|
-  visit collection_path(Collection.find_by_title("Battle 12"))
-  step %{I follow "Prompts ("}
+  visit collection_requests_path(Collection.find_by_title("Battle 12"))
   step %{I follow "Edit Sign-up"}
 end
 
@@ -298,20 +287,17 @@ end
 
 When /^I view unposted claims for "([^\"]*)"$/ do |title|
   visit collection_path(Collection.find_by_title(title))
-  # step %{show me the sidebar}
   step %{I follow "Unposted Claims ("}
 end
 
 When /^I view prompts for "([^\"]*)"$/ do |title|
-  visit collection_path(Collection.find_by_title(title))
-  step %{I follow "Prompts ("}
+  visit collection_requests_path(Collection.find_by_title(title))
 end
 
 ### WHEN claiming
 
 When /^I claim a prompt from "([^\"]*)"$/ do |title|
-  visit collection_path(Collection.find_by_title(title))
-    step %{I follow "Prompts ("}
+  visit collection_requests_path(Collection.find_by_title(title))
     step %{I press "Claim"}
 end
 
@@ -370,28 +356,28 @@ When /^mod fulfills claim$/ do
 end
 
 When /^I delete my prompt in "([^\"]*)"$/ do |title|
-  visit collection_path(Collection.find_by_title(title))
-  step %{I follow "Prompts ("}
+  visit collection_requests_path(Collection.find_by_title(title))
   step %{I press "Delete Prompt"}
 end
 
+When /^I start to delete the signup by "([^\"]*)"$/ do |participant|
+  visit collection_requests_path(Collection.find_by_title("Battle 12"))
+end
+
 When /^I delete the prompt by "([^\"]*)"$/ do |participant|
-  visit collection_path(Collection.find_by_title("Battle 12"))
-  step %{I follow "Prompts ("}
+  visit collection_requests_path(Collection.find_by_title("Battle 12"))
   step %{I follow "Delete Prompt"}
 end
 
 When /^I edit the first prompt$/ do
-  visit collection_path(Collection.find_by_title("Battle 12"))
-  step %{I follow "Prompts ("}
+  visit collection_requests_path(Collection.find_by_title("Battle 12"))
   # The 'Edit Sign-up' and 'Edit Prompt' buttons were removed for mods in
   # Prompt Meme challenges
   #step %{I follow "Edit Prompt"}
 end
 
 When /^I edit the prompt by "([^\"]*)"$/ do |participant|
-  visit collection_path(Collection.find_by_title("Battle 12"))
-  step %{I follow "Prompts ("}
+  visit collection_requests_path(Collection.find_by_title("Battle 12"))
   click_link("#{participant}")
   step %{I follow "Edit"}
 end
