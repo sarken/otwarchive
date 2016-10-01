@@ -51,21 +51,54 @@ Given /^I have created the tagless gift exchange "([^\"]*)"$/ do |challengename|
   step %{I have created the tagless gift exchange "#{challengename}" with name "#{challengename.gsub(/[^\w]/, '_')}"}
 end
 
+# GIFT EXCHANGE SETTINGS
+# Use "Standard Challenge Tags" tag set
+# Match on 1 fandom
+# REQUEST SETTINGS
+# Tag type    | Required | Allowed | Any?
+# Fandom      | 1        | 1       | No
+# Freeform    | 0        | 2       | No
+# OFFER SETTINGS
+# Tag type    | Required | Allowed | Any?
+# Fandom      | 1        | 1       | No
+# Freeform    | 0        | 2       | No
 When /^I fill in gift exchange challenge options$/ do
   current_date = DateTime.current
-  fill_in("Sign-up opens", :with => "#{current_date.months_ago(2)}")
-    fill_in("Sign-up closes", :with => "#{current_date.years_since(1)}")
-    select("(GMT-05:00) Eastern Time (US & Canada)", :from => "gift_exchange_time_zone")
-    fill_in("Tag Sets To Use:", :with => "Standard Challenge Tags")
-    fill_in("gift_exchange_request_restriction_attributes_fandom_num_required", :with => "1")
-    fill_in("gift_exchange_request_restriction_attributes_fandom_num_allowed", :with => "1")
-    fill_in("gift_exchange_request_restriction_attributes_freeform_num_allowed", :with => "2")
-    fill_in("gift_exchange_offer_restriction_attributes_fandom_num_required", :with => "1")
-    fill_in("gift_exchange_offer_restriction_attributes_fandom_num_allowed", :with => "1")
-    fill_in("gift_exchange_offer_restriction_attributes_freeform_num_allowed", :with => "2")
-    select("1", :from => "gift_exchange_potential_match_settings_attributes_num_required_fandoms")
+  fill_in("Sign-up opens", with: "#{current_date.months_ago(2)}")
+  fill_in("Sign-up closes", with: "#{current_date.years_since(1)}")
+  select("(GMT-05:00) Eastern Time (US & Canada)", from: "gift_exchange_time_zone")
+  fill_in("Tag Sets To Use:", with: "Standard Challenge Tags")
+  fill_in("gift_exchange_request_restriction_attributes_fandom_num_required", with: "1")
+  fill_in("gift_exchange_request_restriction_attributes_fandom_num_allowed", with: "1")
+  fill_in("gift_exchange_request_restriction_attributes_freeform_num_allowed", with: "2")
+  fill_in("gift_exchange_offer_restriction_attributes_fandom_num_required", with: "1")
+  fill_in("gift_exchange_offer_restriction_attributes_fandom_num_allowed", with: "1")
+  fill_in("gift_exchange_offer_restriction_attributes_freeform_num_allowed", with: "2")
+  select("1", from: "gift_exchange_potential_match_settings_attributes_num_required_fandoms")
 end
 
+# SINGLE-FANDOM GIFT EXCHANGE SETTINGS
+# Match on 1 character
+# Restrict character to fandom
+# Restrict relationship to fandom
+# REQUEST SETTINGS
+# Tag type    | Required | Allowed | Any?
+# Fandom      | 1        | 1       | No
+# Character   | 1        | 3       | No
+# Relatonship | 0        | 3       | No
+# Rating      | 0        | 5       | No
+# Category    | 0        | 5       | No
+# Warning     | 0        | 5       | No
+# Freeform    | 0        | 2       | No
+# OFFER SETTINGS
+# Tag type    | Required | Allowed | Any?
+# Fandom      | 1        | 1       | No
+# Character   | 0        | 3       | No
+# Relatonship | 0        | 0       | No
+# Rating      | 0        | 0       | Yes
+# Category    | 0        | 0       | Yes
+# Warning     | 0        | 0       | Yes
+# Freeform    | 0        | 2       | No
 When /^I fill in single-fandom gift exchange challenge options$/ do
   current_date = DateTime.current
   fill_in("Sign-up opens", with: current_date.months_ago(2).to_s)
@@ -100,8 +133,8 @@ end
 
 Given /^the gift exchange "([^\"]*)" is ready for signups$/ do |title|
   step %{I am logged in as "mod1"}
-  step %{I have created the gift exchange "Awesome Gift Exchange"}
-  step %{I open signups for "Awesome Gift Exchange"}
+  step %{I have created the gift exchange "#{title}"}
+  step %{I open signups for "#{title}"}
 end
 
 ## Signing up
@@ -149,19 +182,18 @@ When /^I sign up for "([^\"]*)" with a mismatched combination$/ do |title|
     step %{I check the 2nd checkbox with the value "Bad Choice"}
     click_button "Submit"
 end
-  
 
 When /^I sign up for "([^\"]*)" with combination SGA$/ do |title|
   step %{I start signing up for "#{title}"}
     step %{I fill in "challenge_signup_requests_attributes_0_tag_set_attributes_fandom_tagnames" with "Stargate Atlantis"}
-    fill_in("challenge_signup_requests_attributes_0_title", :with => "SGA love")
+    fill_in("challenge_signup_requests_attributes_0_title", with: "SGA love")
     click_button "Submit"
 end
 
 When /^I sign up for "([^\"]*)" with combination SG-1$/ do |title|
   step %{I start signing up for "#{title}"}
     step %{I fill in "challenge_signup_requests_attributes_0_tag_set_attributes_fandom_tagnames" with "Stargate SG-1"}
-    fill_in("challenge_signup_requests_attributes_0_title", :with => "SG1 love")
+    fill_in("challenge_signup_requests_attributes_0_title", with: "SG1 love")
     click_button "Submit"
 end
 
@@ -178,8 +210,7 @@ When /^I start to sign up for "([^\"]*)"$/ do |title|
 end
 
 When /^I start to sign up for "([^\"]*)" tagless gift exchange$/ do |title|
-  visit collection_path(Collection.find_by_title(title))
-  step %{I follow "Sign Up"}
+  visit new_collection_signup_path(Collection.find_by_title(title))
   step %{I fill in "Description" with "random text"}
   step %{I press "Submit"}
   step %{I should see "Sign-up was successfully created"}
@@ -209,7 +240,7 @@ When /^I assign a recipient to herself$/ do
   id = first_recip_field['id']
   if id.match(/assignments_(\d+)_request/)
     num = $1
-    fill_in "challenge_assignments_#{num}_offer_signup_pseud", :with => recip
+    fill_in "challenge_assignments_#{num}_offer_signup_pseud", with: recip
   end
 end
 
@@ -225,7 +256,7 @@ end
 When /^I assign a pinch recipient$/ do
   name = page.all("td").select {|el| el['id'] && el['id'].match(/offer_signup_for/)}[0].text
   pseud = Pseud.find_by_name(name)
-  request_pseud = ChallengeSignup.where(:pseud_id => pseud.id).first.offer_potential_matches.first.request_signup.pseud.name
+  request_pseud = ChallengeSignup.where(pseud_id: pseud.id).first.offer_potential_matches.first.request_signup.pseud.name
   step %{I fill in the 1st field with id matching "request_signup_pseud" with "#{request_pseud}"}
 end
 

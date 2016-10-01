@@ -9,8 +9,8 @@ end
 
 ### Set up dates correctly ###
 Then /^I set up the challenge dates$/ do
-  fill_in("Sign-up opens:", :with => Date.yesterday)
-  fill_in("Sign-up closes:", :with => Date.tomorrow)
+  fill_in("Sign-up opens:", with: Date.yesterday)
+  fill_in("Sign-up closes:", with: Date.tomorrow)
 end
 
 ### Clear out old data
@@ -30,7 +30,7 @@ Given /^I have standard challenge tags set ?up$/ do
     step %{I am logged in as "mod1"}    
   end  
   step "I have no tags"
-    step "basic tags"
+  step "basic tags"
     step %{a canonical fandom "Stargate Atlantis"}
     step %{a canonical fandom "Stargate SG-1"}
     step %{a canonical fandom "Bad Choice"}
@@ -85,7 +85,7 @@ end
 # Open signup
 
 When /^I open signups for "([^\"]*)"$/ do |title|
-  step %{I am logged in as "mod1"}
+  step %{I am logged in as the mod of the "#{title}" challenge}
   visit collection_path(Collection.find_by_title(title))
   step %{I follow "Challenge Settings"}
     step %{I check "Sign-up open?"}
@@ -107,8 +107,7 @@ end
 ### Signup process
 
 When /^I start signing up for "([^\"]*)"$/ do |title|
-  visit collection_path(Collection.find_by_title(title))
-  step %{I follow "Sign Up"}
+  visit new_collection_signup_path(Collection.find_by_title(title))
 end
 
 ### Editing signups
@@ -121,8 +120,9 @@ end
 ### WHEN other
 
 When /^I close signups for "([^\"]*)"$/ do |title|
-  step %{I am logged in as "mod1"}
-  visit collection_path(Collection.find_by_title(title))
+  collection = Collection.find_by_title(title)
+  step %{I am logged in as the mod of the "#{title}" challenge}
+  visit collection_path(collection)
   step %{I follow "Challenge Settings"}
     step %{I uncheck "Sign-up open?"}
     step %{I press "Update"}
@@ -142,8 +142,7 @@ When /^I delete my signup for the gift exchange "([^\"]*)"$/ do |title|
 end
 
 When /^I start to delete the signup by "([^\"]*)"$/ do |participant|
-  visit collection_path(Collection.find_by_title("Battle 12"))
-  step %{I follow "Prompts ("}
+  visit collection_requests_path(Collection.find_by_title("Battle 12"))
 end
 
 When /^I delete the signup by "([^\"]*)"$/ do |participant|
@@ -158,16 +157,14 @@ When /^I delete the signup$/ do
 end
 
 When /^I edit the prompt by "([^\"]*)"$/ do |participant|
-  visit collection_path(Collection.find_by_title("Battle 12"))
-  step %{I follow "Prompts ("}
+  visit collection_requests_path(Collection.find_by_title("Battle 12"))
   click_link("#{participant}")
   step %{I follow "Edit"}
 end
 
 When /^I reveal the "([^\"]*)" challenge$/ do |title|
-  step %{I am logged in as "mod1"}
-  visit collection_path(Collection.find_by_title(title))
-    step %{I follow "Collection Settings"}
+  step %{I am logged in as the mod of the "#{title}" challenge}
+  visit edit_collection_path(Collection.find_by_title(title))
     step %{I uncheck "This collection is unrevealed"}
     step %{I press "Update"}
 end
@@ -175,18 +172,21 @@ end
 When /^I approve the first item in the collection "([^\"]*)"$/ do |collection|
   collection = Collection.find_by_title(collection)
   collection_item = collection.collection_items.first.id
-  visit collection_path(collection)
-  step %{I follow "Manage Items"}
+  visit collection_items_path(collection)
   step %{I select "Approved" from "collection_items_#{collection_item}_collection_approval_status"}
   step %{I press "Submit"}
 end
 
-
 When /^I reveal the authors of the "([^\"]*)" challenge$/ do |title|
-  step %{I am logged in as "mod1"}
-  visit collection_path(Collection.find_by_title(title))
-    step %{I follow "Collection Settings"}
+  step %{I am logged in as the mod of the "#{title}" challenge}
+  visit edit_collection_path(Collection.find_by_title(title))
     step %{I uncheck "This collection is anonymous"}
     step %{I press "Update"}
 end
 
+When /^I am logged in as the mod of the "([^\"]*)" challenge$/ do |title|
+  collection = Collection.find_by_title(title)
+  user_id = collection.all_owners.first.user_id
+  mod_login = User.find_by_id(user_id).login
+  step %{I am logged in as "#{mod_login}"}
+end
