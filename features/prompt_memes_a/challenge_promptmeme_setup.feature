@@ -140,8 +140,6 @@ Feature: Prompt Meme Challenge
   When I go to "Battle 12" collection's page
     And I follow "Profile"
   Then I should see "Prompts: 2"
-    # TODO: Was the claimed prompts count intentionally removed from profile?
-    # And I should see "Claimed prompts: 0"
 
   Scenario: Prompt count shows on collections index
 
@@ -185,7 +183,7 @@ Feature: Prompt Meme Challenge
   Given I have Battle 12 prompt meme fully set up
   When I am logged in as "myname1"
   When I sign up for Battle 12 with combination A
-  And I am logged in as "myname2"
+    And I am logged in as "myname2"
   When I sign up for Battle 12 with combination B
   When I view prompts for "Battle 12"
     And I follow "Date"
@@ -196,7 +194,7 @@ Feature: Prompt Meme Challenge
   Given I have Battle 12 prompt meme fully set up
   When I am logged in as "myname1"
   When I sign up for Battle 12 with combination A
-  And I am logged in as "myname2"
+    And I am logged in as "myname2"
   When I sign up for Battle 12 with combination B
   When I view prompts for "Battle 12"
     And I follow "Fandom 1"
@@ -215,8 +213,6 @@ Feature: Prompt Meme Challenge
   When I am logged in as "myname1"
   When I sign up for Battle 12 with combination E
   When I claim a prompt from "Battle 12"
-  # TODO: check design: regular user doesn't get link to unposted claims anymore
-  # When I view unposted claims for "Battle 12"
   Then I should see "Weird description"
   
   Scenario: Sort by fandom shouldn't show when there aren't any fandoms
@@ -233,8 +229,8 @@ Feature: Prompt Meme Challenge
   Given I have Battle 12 prompt meme fully set up
   When I am logged in as "myname1"
   When I sign up for Battle 12 with combination B
-  And I am logged in as "myname4"
-  And I claim a prompt from "Battle 12"
+    And I am logged in as "myname4"
+    And I claim a prompt from "Battle 12"
   Then I should see a prompt is claimed
 
   Scenario: Claim count shows on profile?
@@ -246,8 +242,6 @@ Feature: Prompt Meme Challenge
   When I go to "Battle 12" collection's page
     And I follow "Profile"
   Then I should see "Prompts: 2"
-    # TODO: have these been removed by design or by accident?
-    # And I should see "Claimed prompts: 1"
   
   Scenario: Mod can view signups
   
@@ -295,7 +289,7 @@ Feature: Prompt Meme Challenge
   Scenario: User has more than one pseud on signup form
   
   Given "myname1" has the pseud "othername"
-  Given I have Battle 12 prompt meme fully set up
+    And I have Battle 12 prompt meme fully set up
   When I am logged in as "myname1"
   When I start to sign up for "Battle 12"
   Then I should see "othername"
@@ -303,7 +297,7 @@ Feature: Prompt Meme Challenge
   Scenario: User changes pseud on a challenge signup
   
   Given "myname1" has the pseud "othername"
-  Given I have Battle 12 prompt meme fully set up
+    And I have Battle 12 prompt meme fully set up
   When I am logged in as "myname1"
   When I sign up for Battle 12 with combination A
   Then I should see "Sign-up was successfully created"
@@ -422,7 +416,7 @@ Feature: Prompt Meme Challenge
   Scenario: Claims are shown to mod
   
   Given I have Battle 12 prompt meme fully set up
-  Given everyone has signed up for Battle 12
+    And everyone has signed up for Battle 12
   When I claim a prompt from "Battle 12"
   When I close signups for "Battle 12"
   Then claims are shown
@@ -430,18 +424,16 @@ Feature: Prompt Meme Challenge
   Scenario: Claims are hidden from ordinary user
   
   Given I have Battle 12 prompt meme fully set up
-  Given everyone has signed up for Battle 12
+    And everyone has signed up for Battle 12
   When I claim a prompt from "Battle 12"
   When I close signups for "Battle 12"
   When I am logged in as "myname4"
   Then I should not see "Unposted Claims"
-  # TODO: they got really hidden, since ordinary user can't get to that page at all
-  # Then claims are hidden
 
   Scenario: User cannot see unposted claims to delete
   
   Given I have Battle 12 prompt meme fully set up
-  Given everyone has signed up for Battle 12
+    And everyone has signed up for Battle 12
   When I claim a prompt from "Battle 12"
   When I am logged in as "myname1"
   Then I should not see "Unposted Claims"
@@ -449,7 +441,7 @@ Feature: Prompt Meme Challenge
   Scenario: User can delete their own claim
   
   Given I have Battle 12 prompt meme fully set up
-  Given everyone has signed up for Battle 12
+    And everyone has signed up for Battle 12
   When I claim a prompt from "Battle 12"
     And I go to "Battle 12" collection's page
     And I follow "My Claims"
@@ -461,7 +453,7 @@ Feature: Prompt Meme Challenge
   Scenario: User can drop a claim from the prompts page
   
   Given I have Battle 12 prompt meme fully set up
-  Given everyone has signed up for Battle 12
+    ANd everyone has signed up for Battle 12
   When I claim a prompt from "Battle 12"
     And I go to "Battle 12" collection's page
     And I follow "Prompts"
@@ -470,7 +462,7 @@ Feature: Prompt Meme Challenge
   Scenario: User can't delete another user's claim
 
   Given I have Battle 12 prompt meme fully set up
-  Given everyone has signed up for Battle 12
+    And everyone has signed up for Battle 12
   When I claim a prompt from "Battle 12"
   When I am logged in as "otheruser"
     And I go to "Battle 12" collection's page
@@ -480,7 +472,7 @@ Feature: Prompt Meme Challenge
   Scenario: User can delete their own claim from the user claims list
 
   Given I have Battle 12 prompt meme fully set up
-  Given everyone has signed up for Battle 12
+    And everyone has signed up for Battle 12
   When I claim a prompt from "Battle 12"
   When I am on my user page
     And I follow "Claims"
@@ -494,7 +486,7 @@ Feature: Prompt Meme Challenge
   Scenario: Mod or owner can delete a claim from the user claims list
   
   Given I have Battle 12 prompt meme fully set up
-  Given everyone has signed up for Battle 12
+    And everyone has signed up for Battle 12
   When I claim a prompt from "Battle 12"
   When I am logged in as "mod1"
     And I view unposted claims for "Battle 12"

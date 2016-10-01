@@ -44,6 +44,14 @@ Given /^an anon has signed up for Battle 12$/ do
   step %{I sign up for Battle 12 with combination B}
 end
 
+# PROMPT MEME CHALLENGE OPTIONS
+# 1 prompt required
+# 2 prompts allowed
+# PROMPT SETTINGS
+# Tag type     | Required | Allowed
+# Fandom       | 1        | 2
+# Character    | 0        | 1
+# Relationship | 0        | 1
 When /^I set up an?(?: ([^"]*)) promptmeme "([^\"]*)"(?: with name "([^"]*)")?$/ do |type, title, name|
   step %{I am logged in as "mod1"}
   visit new_collection_path
@@ -60,9 +68,9 @@ When /^I set up an?(?: ([^"]*)) promptmeme "([^\"]*)"(?: with name "([^"]*)")?$/
 
   check("prompt_meme_signup_open")
   fill_in("prompt_meme_requests_num_allowed", with: ArchiveConfig.PROMPT_MEME_PROMPTS_MAX)
-  fill_in("prompt_meme_requests_num_required", with: 1)
-  fill_in("prompt_meme_request_restriction_attributes_fandom_num_required", with: 1)
-  fill_in("prompt_meme_request_restriction_attributes_fandom_num_allowed", with: 2)
+  fill_in("prompt_meme_requests_num_required", with: "1")
+  fill_in("prompt_meme_request_restriction_attributes_fandom_num_required", with: "1")
+  fill_in("prompt_meme_request_restriction_attributes_fandom_num_allowed", with: "2")
   fill_in("Sign-up opens:", with: Date.yesterday)
   fill_in("Sign-up closes:", with: Date.tomorrow)
   step %{I submit}
@@ -91,7 +99,7 @@ end
 
 When /^I fill in Battle 12 challenge options$/ do
   step "I fill in prompt meme challenge options"
-    fill_in("Sign-up Instructions", with "Please request easy things")
+    fill_in("Sign-up Instructions", with: "Please request easy things")
     fill_in("Sign-up opens:", with: Date.yesterday)
     fill_in("Sign-up closes:", with: Date.tomorrow)
     select("(GMT-05:00) Eastern Time (US & Canada)", from: "Time zone")
@@ -118,6 +126,14 @@ When /^I fill in past challenge options$/ do
     step %{I submit}
 end
 
+# NO-COLUMN PROMPT MEME CHALLENGE OPTIONS
+# 1 prompt required
+# 5 prompts allowed
+# PROMPT SETTINGS
+# Tag type     | Required | Allowed
+# Fandom       | 0        | 0
+# Character    | 0        | 0
+# Relationship | 0        | 0
 When /^I fill in no-column challenge options$/ do
   fill_in("prompt_meme_requests_num_required", with: "1")
   fill_in("prompt_meme_request_restriction_attributes_fandom_num_allowed", with: "0")
@@ -129,6 +145,15 @@ When /^I fill in no-column challenge options$/ do
   step %{I submit}
 end
 
+# SINGLE-PROMPT MEME CHALLENGE OPTIONS
+# 1 prompt required
+# 5 prompts allowed
+# Title allowed
+# PROMPT SETTINGS
+# Tag type     | Required | Allowed
+# Fandom       | 0        | 1
+# Character    | 0        | 1
+# Relationship | 0        | 1
 When /^I fill in single-prompt challenge options$/ do
   fill_in("prompt_meme_requests_num_required", with: "1")
   check("Sign-up open?")
@@ -138,6 +163,14 @@ When /^I fill in single-prompt challenge options$/ do
   step %{I submit}
 end
 
+# MULTI-PROMPT MEME CHALLENGE OPTIONS
+# 4 prompt required
+# 5 prompts allowed
+# PROMPT SETTINGS
+# Tag type     | Required | Allowed
+# Fandom       | 0        | 1
+# Character    | 0        | 1
+# Relationship | 0        | 1
 When /^I fill in multi-prompt challenge options$/ do
   step "I fill in prompt meme challenge options"
   fill_in("prompt_meme_requests_num_allowed", with: "4")
@@ -145,11 +178,14 @@ When /^I fill in multi-prompt challenge options$/ do
 end
 
 # PROMPT MEME CHALLENGE OPTIONS
-# Two prompts required
-# REQUEST SETTINGS
-# Tag type    | Required | Allowed | Any?
-# Fandom      | 1        | 1       | No
-# Freeform    | 0        | 2       | No
+# 2 prompts required
+# 5 prompts allowed
+# PROMPT SETTINGS
+# Tag type     | Required | Allowed
+# Fandom       | 1        | 1
+# Character    | 0        | 1
+# Relationship | 0        | 1
+# Freeform     | 0        | 2
 When /^I fill in prompt meme challenge options$/ do
   fill_in("General Sign-up Instructions", with: "Here are some general tips")
   fill_in("Tag Sets To Use:", with: "Standard Challenge Tags")
@@ -217,7 +253,7 @@ end
 When /^I sign up for Battle 12 with combination E$/ do
   step "I go to the collections page"
     step %{I follow "Battle 12"}
-    step %{"I follow "Sign Up"}
+    step %{I follow "Sign Up"}
     fill_in("Description:", with: "Weird description")
     click_button "Submit"
 end
@@ -318,11 +354,11 @@ When /^I start to fulfill my claim with "([^\"]*)"$/ do |title|
   step %{I am on my user page}
   step %{I follow "Claims ("}
   step %{I follow "Fulfill"}
-    step %{I fill in "Work Title" with "#{title}"}
-    step %{I select "Not Rated" from "Rating"}
-    step %{I check "No Archive Warnings Apply"}
-    step %{I fill in "Fandom" with "Stargate Atlantis"}
-    step %{I fill in "content" with "This is an exciting story about Atlantis"}
+    fill_in("Work Title", with: "#{title}")
+    select("Not Rated", from: "Rating")
+    check("No Archive Warnings Apply")
+    fill_in("Fandom", with: "Stargate Atlantis")
+    fill_in("content", with: "This is an exciting story about Atlantis")
 end
 
 When /^I start to fulfill my claim$/ do
@@ -341,11 +377,11 @@ When /^I fulfill my claim again$/ do
   step %{I follow "Claims ("}
   step %{I follow "Fulfilled Claims"}
   step %{I follow "Fulfill"}
-  step %{I fill in "Work Title" with "Second Story"}
-    step %{I select "Not Rated" from "Rating"}
-    step %{I check "No Archive Warnings Apply"}
-    step %{I fill in "Fandom" with "Stargate Atlantis"}
-    step %{I fill in "content" with "This is an exciting story about Atlantis"}
+  fill_in("Work Title", with: "Second Story")
+  select("Not Rated", from: "Rating")
+  check("No Archive Warnings Apply")
+  fill_in("Fandom", with: "Stargate Atlantis")
+  fill_in("content", with: "This is an exciting story about Atlantis")
   step %{I press "Preview"}
     step %{I press "Post"}
   step %{I should see "Work was successfully posted"}
@@ -355,8 +391,8 @@ When /^mod fulfills claim$/ do
   step %{I am logged in as "mod1"}
   step %{I claim a prompt from "Battle 12"}
   step %{I start to fulfill my claim}
-    step %{I fill in "Work Title" with "Fulfilled Story-thing"}
-    step %{I fill in "content" with "This is an exciting story about Atlantis, but in a different universe this time"}
+  fill_in("Work Title", with: "Fulfilled Story-thing")
+  fill_in("content", with: "This is an exciting story about Atlantis, but in a different universe this time")
   step %{I press "Preview"}
     step %{I press "Post"}
 end
