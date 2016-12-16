@@ -106,6 +106,8 @@ module NavigationHelpers
       work_path(Work.find_by_title($1)).sub("http://www.example.com", "//")
     when /^the work page with title (.*)/
       work_path(Work.find_by_title($1)).sub("http://www.example.com", "//")
+    when /^the "(.*)" edit work page/
+      edit_work_path(Work.find_by_title($1))
     when /^(.*?)(?:'s)? bookmarks page$/i
       Bookmark.tire.index.refresh
       user_bookmarks_path(user_id: $1)

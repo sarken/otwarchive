@@ -361,4 +361,31 @@ Scenario: Restricted works listed as Inspiration show up [Restricted] for guests
     And the email should not contain "&lt;a href=&quot;http://archiveofourown.org/users/inspired/pseuds/inspired&quot;"
     And the email should link to misterdeejay's user url
     And the email should not contain "&lt;a href=&quot;http://archiveofourown.org/users/misterdeejay/pseuds/misterdeejay&quot;"
-  
+
+Scenario: Creator of the child work (remix, translation) can remove the
+relationship to the parent from their related works page
+
+  Given I have related works setup
+    And a related work has been posted and approved
+  When I am logged in as "remixer"
+    And I go to my related works page
+    And I follow "Remove"
+  Then I should be on my related works page
+    And I should not see "Worldbuilding by inspiration"
+  When I view the work "Worldbuilding"
+  Then I should not see the related work listed on the original work
+
+Scenario: Creator of the child work (remix, translation) can remove the
+relationship to the parent by editing their work
+
+  Given I have related works setup
+    And a related work has been posted and approved
+  When I am logged in as "remixer"
+    And I view the work "Followup"
+    And I follow "Edit"
+    And I follow "Remove"
+  Then I should be on the "Followup" edit work page
+    And I should not see "Worldbuilding"
+  When I view the work "Worldbuilding"
+  Then I should not see the related work listed on the original work
+

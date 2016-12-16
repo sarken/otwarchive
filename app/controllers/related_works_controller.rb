@@ -66,7 +66,7 @@ class RelatedWorksController < ApplicationController
       end
     end
     @related_work.destroy
-    redirect_back_or_default(user_related_works_path(current_user))
+    redirect_to request.referer || user_related_works_path(current_user)
   end
 
   private
