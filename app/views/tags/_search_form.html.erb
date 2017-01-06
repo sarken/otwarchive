@@ -1,12 +1,20 @@
 <% @query = {} unless @query %>
 <%= form_tag url_for(:controller => 'tags', :action => 'search'), :class => 'simple search', :role => "search", :method => :get do %>
-<fieldset class="search tags">
-  <legend>Search tags</legend>
-  <p>
-	<%= link_to_help "tag-search-text-help" %> <%= text_field_tag "query[name]", @query[:name], :id => 'tag_search', :title => ts("Enter tags")  %>
-    <%= select_tag "query[type]", options_for_select([""] + Tag::USER_DEFINED, @query[:type]), :title => ts("Choose type") %>
-    <label for="canonical" class="action">Canonical <%= check_box_tag "query[canonical]", true, @query[:canonical], :id => 'canonical' %></label>
-  <span class="submit actions"><%= submit_tag ts("Search tags"), :name => nil %></span>
-</p>
-</fieldset>
+  <fieldset role="search">
+    <legend><%= ts("Search Tags") %></legend>
+    <p>
+	    <%= link_to_help "tag-search-text-help" %>
+	    <%= label_tag "query[name]", ts("Tag Name:"), :class => 'landmark' %>
+	    <%= text_field_tag "query[name]", @query[:name], :id => 'tag_search', :title => ts("Enter tags")  %>
+	    <%= label_tag "query[type]", ts("Tag Type:"), :class => 'landmark' %>
+      <%= select_tag "query[type]", options_for_select([""] + Tag::USER_DEFINED, @query[:type]), :title => ts("Choose type") %>
+      <label for="canonical" class="action">
+        <%= check_box_tag "query[canonical]", true, @query[:canonical], :id => 'canonical' %>
+        <%= ts("Canonical") %> 
+      </label>
+      <span class="submit actions">
+        <%= submit_tag ts("Search Tags"), :name => nil %>
+      </span>
+    </p>
+  </fieldset>
 <% end %>

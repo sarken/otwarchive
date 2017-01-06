@@ -32,7 +32,7 @@
       <li id='letter-<%= letter %>' class='letter listbox group'>
         <h3 class="heading">
           <%= letter %>
-          <span class="action top" title="top"><%= link_to '&#8593;'.html_safe, "#alphabet" %></span>
+          <%= link_to '&#8593;'.html_safe, "#alphabet", :class => "top action", :title => ts("top") %>
         </h3>
         <ul class="tags index group">
           <% for fandom in fandoms %>

@@ -22,7 +22,7 @@
 
   <fieldset>
     <legend><%= ts('Post Work') %></legend>
-    <p class="submit cancel edit actions">
+    <p class="submit actions">
   	<% if @work.posted? %>
   		<%= submit_tag ts('Update'), :name => 'update_button' %>
   	<% else %>

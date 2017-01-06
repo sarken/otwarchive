@@ -1,28 +1,30 @@
 <!--Descriptive page name, messages and instructions-->
-<h2 class="heading"><%= logged_in_as_admin? ? (@user.login + "'s") : "Your" %> Invitations</h2>
+<h2 class="heading"><%= ts("Manage Invitations for %{user_name}", :user_name => @user.login) %></h2>
 <!--/descriptions-->
 
 <!--subnav -->
-<%= render "user_invitations_navigation" %>
+<div class="actions module">
+  <%= render "user_invitations_navigation" %>
 
-<ul class="navigation actions" role="navigation">
-  <li><h4 class="heading"><%= ts("Manage:") %></h4></li>
-  <li>
-    <%= span_if_current("unsent (#{@user.invitations.unsent.count.to_s})", 
-      manage_user_invitations_path(@user, :status => :unsent)) %>
-  </li>
-  <li>
-    <%= span_if_current("sent but not used (#{@user.invitations.unredeemed.count.to_s})", 
-      manage_user_invitations_path(@user, :status => :unredeemed)) %>
-  </li>
-  <li>
-    <%= span_if_current("used (#{@user.invitations.redeemed.count.to_s})", 
-      manage_user_invitations_path(@user, :status => :redeemed)) %>
-  </li>
-  <li class="last">
-    <%= link_to 'all', manage_user_invitations_path(@user) %>
-  </li>
-</ul>
+  <ul class="navigation actions" role="navigation">
+    <li><h4 class="heading"><%= ts("Manage") %></h4></li>
+    <li>
+      <%= span_if_current ts("Unsent (%{unsent_count})", :unsent_count => @user.invitations.unsent.count.to_s), 
+        manage_user_invitations_path(@user, :status => :unsent) %>
+    </li>
+    <li>
+      <%= span_if_current ts("Sent But Not Used (%{unredeemed_count})", :unredeemed_count => @user.invitations.unredeemed.count.to_s), 
+        manage_user_invitations_path(@user, :status => :unredeemed) %>
+    </li>
+    <li>
+      <%= span_if_current ts("Used (%{redeemed_count})", :redeemed_count => @user.invitations.redeemed.count.to_s), 
+        manage_user_invitations_path(@user, :status => :redeemed) %>
+    </li>
+    <li>
+      <%= link_to ts("All"), manage_user_invitations_path(@user) %>
+    </li>
+  </ul>
+</div>
 
 <!--/subnav-->
 

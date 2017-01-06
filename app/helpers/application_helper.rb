@@ -514,9 +514,9 @@ module ApplicationHelper
     css_class
   end
   
-  def check_all_none(all_text="All", none_text="None", name_filter=nil)
+  def check_all_none(all_text=ts("All"), none_text=ts("None"), name_filter=nil)
     filter_attrib = (name_filter ? " checkbox_name_filter=\"#{name_filter}\"" : '')    
-    ('<ul class="actions">
+    ('<ul class="check actions">
       <li><a href="#" class="check_all"' + 
       "#{filter_attrib}>#{all_text}</a></li>" +
       '<li><a href="#" class="check_none"' + 

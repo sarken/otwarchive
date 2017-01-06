@@ -2,7 +2,7 @@
 http://media.transformativeworks.org/training/front_end_coding/patterns/supertypes.html
 notice that CSS3 declarations sit are indented twice (four spaces) and always come last*/
 
-#header input, #header #search>*, #header #search .submit {
+#header input, #header .search fieldset , #header .search .actions {
   display: inline;
   float: none;
 }
@@ -13,14 +13,12 @@ notice that CSS3 declarations sit are indented twice (four spaces) and always co
   border: none;
 }
 
-/* check login and greeting; was a quick fix to remove bg */
-#header a, #header .current, #header fieldset, #header form, #header p, #header li, #header h1, #small_login dl {
+#header a, #header .current, #header fieldset, #header form, #header p, #header h1, #small_login dl {
   background: transparent;
   font-size: 100%;
   border: none;
   padding: 0;
   margin: 0;
-    border-radius: 0;
     box-shadow: none;
 }
 
@@ -32,8 +30,8 @@ notice that CSS3 declarations sit are indented twice (four spaces) and always co
 }
 
 #header li {
-  display: block;
-  float: left;
+  margin: 0;
+  padding: 0;
   position: relative;
 }
 
@@ -78,10 +76,10 @@ notice that CSS3 declarations sit are indented twice (four spaces) and always co
 
 #header .menu, #small_login, #header .dropdown:hover .current + .menu {
   background: #ddd;
+  border: none;
   display: none;
   padding: 0.25em 0;
   position: absolute;
-  width: 20em;
   z-index: 55;
     box-shadow: 1px 1px 3px -1px #444;
     background-image: -moz-linear-gradient(top, rgba(221, 221, 221, 0.98) 0%, rgba(204, 204, 204, 0.98) 100%);
@@ -274,8 +272,7 @@ notice that CSS3 declarations sit are indented twice (four spaces) and always co
  
 #header #search .button {
   height: auto;
-  margin-bottom: 0;
-  margin-top: 0;
+  margin: 0 0.375em 0 0; /* back to margin-bottom 0 margin-top 0 */
 }
  
 /*CONTEXT: collections*/

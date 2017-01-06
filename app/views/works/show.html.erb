@@ -25,6 +25,7 @@
 <!-- BEGIN revealed -->
 <% if !@work.unrevealed? || logged_in_as_admin? || is_author_of?(@work) || (@work.unrevealed? && can_see_work(@work, current_user)) %>
 <!-- BEGIN work -->
+<div class="work"><p class="landmark"><a name="top">&nbsp;</a></p>
 <!--work description, metadata, notes and messages-->
   <%= render :partial => 'works/work_header' %>
   <% if logged_in_as_admin? %>
@@ -68,6 +69,7 @@
   
   </div>
   <!-- END work skin -->
+</div>
 <!-- END work -->
 
 <!-- BEGIN comment section -->

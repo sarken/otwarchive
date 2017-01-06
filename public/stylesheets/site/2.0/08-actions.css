@@ -1,21 +1,42 @@
 /*==ACTIONS: buttons!
 http://media.transformativeworks.org/training/front_end_coding/patterns/actions.html
 subtypes:
-.action, .navigation, .sorting, .submit, .cancel, .close, .delete, .pagination, .current, .landmark, #skiplinks
+.action, .navigation, .sorting, .check, .submit, .cancel, .close, .delete, .pagination, .current, .landmark, #skiplinks
 input[type="submit"], button
 */
 
-.actions * {
-  display: inline;
+.actions > *, .blurb .actions li {
+  float: left;
 }
 
-ul.actions, p.actions, li.actions, span.actions, fieldset.actions, dd.actions {
+.actions li {
+  margin: 0 0 0.25em 0.25em;
+}
+
+.actions li:first-child, ul.actions input, ul.actions label {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.actions li.action {
+  margin-left: 0.429em;
+}
+
+.actions li form {
+  padding-left: 0;
+}
+
+ul.actions, p.actions, li.actions, span.actions, dd.actions {
   padding: 0.429em 0.25em 0.25em 0;
   float: right;
   text-align: center;
 }
 
-.actions a, .action, .actions input, input[type="submit"], button, .current, .actions label {
+/* li class="action" on the download CSV + help links in challenge signups, li class="status action" on manage collection items, li class="action" on a checkbox on inbox, and span class="action" on the shuffles etc on tag set pages are the only places action is not the clickable item itself */
+
+/* we need to make it so ACTION is only ever applied to SOMETHING CLICKABLE, eg a, input, button, label */
+
+.actions a, .action, a.action, .actions input, input[type="submit"], button, .current, th a.current, .actions label, .navigation .disabled {
   background: #eee;
   color: #444;
   width: auto;
@@ -32,75 +53,101 @@ ul.actions, p.actions, li.actions, span.actions, fieldset.actions, dd.actions {
   text-decoration: none;
   border: 1px solid #bbb;
   border-bottom: 1px solid #aaa;
-    background-image: -moz-linear-gradient(#fff 2%,#ddd 95%, #bbb 100%);
-    background-image: -webkit-linear-gradient(#fff 2%,#ddd 95%, #bbb 100%);
-    background-image: -o-linear-gradient(#fff 2%,#ddd 95%, #bbb 100%);
-    background-image: -ms-linear-gradient(#fff 2%,#ddd 95%, #bbb 100%);
-    background-image: linear-gradient(#fff 2%,#ddd 95%, #bbb 100%);
-    border-radius: 0.25em;
+    background-image: -moz-linear-gradient(#fff 2%, #ddd 95%, #bbb 100%);
+    background-image: -webkit-linear-gradient(#fff 2%, #ddd 95%, #bbb 100%);
+    background-image: -o-linear-gradient(#fff 2%, #ddd 95%, #bbb 100%);
+    background-image: linear-gradient(#fff 2%, #ddd 95%, #bbb 100%);
+    border-radius: 0; /* set this explicitly for iPhone */
     box-shadow: none;
 }
 
-label.action {
-  padding: 0.15em 0.375em;
-}
-
 input[type="submit"] {
-  height: 1.929em;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
 }
 
-p.submit, input.submit, dd.submit {
+/* do something about .submit .actions which is a span, dd, or p -- don't forget span.submit -- there is a slight invisible problem with clears on the tag wranglers page submit button for the Assign Wranglers to Fandoms field, and there might be a problem on admin/user_invite_requests and there is a problem with the remember me login box */
+p.submit, dd.submit {
   text-align: right;
+}
+
+p.submit {
+  display: block;
+  float: none;
+}
+
+.submit input, .submit a {
+  float: none;
+  margin-right: 0;
 }
 
 .actions input.text, .actions input[type="text"] {
   cursor: text;
 }
 
-.actions input[type="checkbox"] {
+.actions input[type="checkbox"], .actions input[type="checkbox"]:hover, .actions input[type="checkbox"]:focus {
   background: transparent;
   border: none;
   padding: 0;
+    box-shadow: none;
 }
 
-/*subtypes and modes 
-test note: this pagination clear needs to be kept an eye on*/
+/* subtypes and modes */
 
-ol.pagination, div.pagination, ol.year {
+.pagination, ol.year {
   text-align: center;
   clear: right;
   margin: 0.643em auto;
 }
 
-.actions a:visited {
+.pagination li, .year li {
+  float: none;
+  margin: 0;
+  padding: 0;
+}
+
+.actions a:visited, a.action:visited {
   color: #111;
 }
 
-.actions a:hover, .actions input:hover, .actions a:focus, .actions input:focus, label.action:hover {
+.actions a:hover, .actions input:hover, input[type="submit"]:hover, button:hover, .actions label:hover, label.action:hover, a.action:hover, .listbox .heading a.action:hover, a.current:hover, .actions a:focus, .actions input:focus, input[type="submit"]:focus, button:focus, .actions label:focus, label.action:focus, a.action:focus, .listbox .heading a.action:focus, a.current:focus {
   color: #900;
   border-top: 1px solid #999;
   border-left: 1px solid #999;
+  border-bottom: 1px solid #900;
     box-shadow: inset 2px 2px 2px #bbb;
 }
 
-.actions a:active, .current, a.current, .current a:visited {
+.actions a:active, .current, th a.current, a.current, .current a:visited {
   color: #111;
   background: #ccc;
   border-color: #fff;
     box-shadow: inset 1px 1px 3px #333;
 }
 
-.actions label.disabled {
-  background: #ccc;
+.actions label.disabled, .current, .navigation span.disabled {
+  cursor: default;
 }
 
-.delete a, span.delete {
+.actions label.disabled {
+  background: #ccc;
+  border-color: #bbb;
+  color: #444;
+    box-shadow: none;
+}
+
+.navigation .disabled {
+  background: transparent;
+  border: none;
+}
+
+.delete a {
+  border: none;
   color: #900;
   font-weight: 900;
   margin-right: 0.375em;
-  padding: 0 0.1em 0.15em;
-  cursor: pointer;
-    box-shadow: -1px -1px 2px rgba(0,0,0,0.75);
+  padding: 0 0.15em 0.15em;
+    box-shadow: -1px -1px 2px rgba(0, 0, 0, 0.75);
     border-radius: 0.875em;
 }
 
@@ -114,7 +161,7 @@ ul#skiplinks, .landmark, .landmark a, .index .heading.landmark {
     opacity: 0;
 }
 
-.secondary {
+.secondary, .dropdown .menu {
   background: #fff;
   position: absolute;
   z-index: 99;
@@ -124,19 +171,22 @@ ul#skiplinks, .landmark, .landmark a, .index .heading.landmark {
   overflow: hidden;
   right: 2.5em;
     box-shadow: 2px 2px 5px #bbb;
-    border-radius: 0.15em;
 }
 
 /* CONTEXTS */
 
 .heading .actions, .heading .action, .heading span.actions {
   height: auto;
-  font: 100 75%/1.286 'Lucida Grande', 'Lucida Sans Unicode', 'Arial Unicode MS', 'GNU Unifont',sans-serif;
+  font: 75%/1.286 'Lucida Grande', 'Lucida Sans Unicode', 'Arial Unicode MS', 'GNU Unifont', sans-serif;
   padding: 0.15em 0.375em;
 }
 
-th .actions, td .actions {
+th .actions {
   float: none;
+}
+
+td .actions {
+  padding: 0;
 }
 
 dl.stats + h6 + .actions {
@@ -145,14 +195,6 @@ dl.stats + h6 + .actions {
 
 dl.stats + h6 + .actions, li.news .actions {
   margin: -1.75em auto 0;
-}
-
-.actions .secondary .submit, .nomination .actions {
-  float: none;
-}
-
-.chapter .secondary, .download .secondary {
-  top: 3.5em;
 }
 
 .dashboard .landmark {
@@ -167,6 +209,60 @@ dl.stats + h6 + .actions, li.news .actions {
   border: 0;
   background: none;
   padding: 0 0 0.15em 0;
+}
+
+/* mod: dropdown */
+
+.actions .dropdown {
+  position: relative;
+}
+
+.actions .dropdown .menu {
+  display: none;
+  position: absolute;
+  right: auto;
+  text-align: left;
+  width: 20em;
+}
+
+.actions .open .menu, .actions .dropdown .menu li, .actions .dropdown .menu a {
+  display: block;
+}
+
+.actions .dropdown .menu li {
+  border-bottom: 1px solid #888;
+  margin: 0 0.25em;
+  text-align: left;
+}
+
+.actions .dropdown .menu li:last-child {
+  border-bottom: none;
+}
+
+.actions .dropdown .menu a {
+  background: transparent;
+  border: none;
+  height: auto;
+  padding: 0.75em 0.5em 0.5em;
+  white-space: pre-wrap;
+}
+
+.actions .dropdown .menu a:hover, .actions .dropdown .menu a:focus, .actions .dropdown .menu a:active {
+  background: #ddd;
+  border: none;
+    box-shadow: none;
+}
+
+.actions .dropdown .menu .current {
+  background: #ccc;
+}
+
+.actions .chapter {
+  clear: both;
+}
+
+.chapter .dropdown .menu {
+  right: 0;
 }
 
 /*END== */

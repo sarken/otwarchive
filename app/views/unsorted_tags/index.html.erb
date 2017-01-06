@@ -8,7 +8,7 @@
 
   <%= form_tag mass_update_unsorted_tags_path do %>
 
-    <p class="submit"><%= submit_tag ts("Update") %></p>
+    <p class="submit actions"><%= submit_tag ts("Update") %></p>
 
     <%= hidden_field_tag :page, params[:page] %>
 
@@ -34,7 +34,7 @@
       </tbody>
     </table>
 
-    <p class="submit"><%= submit_tag ts("Update") %></p>
+    <p class="submit actions"><%= submit_tag ts("Update") %></p>
   
     <%= will_paginate @tags %>
 

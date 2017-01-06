@@ -212,4 +212,11 @@ dl.stats dd {
   padding-right: 0.5em;
 }
 
+/* contexts */
+
+/* for the love of all things holy, WATCH THIS */
+.dashboard .module + .listbox {
+  clear: none;
+}
+
 /*END== */

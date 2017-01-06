@@ -9,6 +9,8 @@ http://media.transformativeworks.org/training/front_end_coding/patterns/supertyp
 }
 
 #dashboard li {
+  float: none;
+  margin: 0;
   padding: 0;
 }
 
@@ -21,6 +23,7 @@ http://media.transformativeworks.org/training/front_end_coding/patterns/supertyp
   padding: 0 0.5625em;
   border: none;
   background: transparent;
+    border-radius: 0.25em;
     word-wrap: break-word;
     box-shadow: none;
 }

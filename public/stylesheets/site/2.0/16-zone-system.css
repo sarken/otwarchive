@@ -60,6 +60,10 @@ SUBSECTIONS:
     text-shadow: -1px -2px 3px #fff;
 }
 
+.splash #signup a {
+  float: none;
+} /* take out if you unfloat actions > * */
+
 .splash .module h3  {
   color: #900;
   border-bottom: 1px solid #c8c8c8;

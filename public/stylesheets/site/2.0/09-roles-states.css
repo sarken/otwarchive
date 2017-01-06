@@ -27,11 +27,9 @@ span.unread, .replied, span.claimed, .actions span.defaulted {
   white-space: nowrap;
   overflow: visible;
   position: relative;
-  cursor: pointer;
   text-decoration: none;
   border: 1px solid #bbb;
   border-bottom: 1px solid #aaa;
-    border-radius: 0.25em;
 }
 
 .actions span.defaulted {
@@ -60,11 +58,11 @@ span.offered.requested {
 
 /* Arrows for the accordion widget */
 
-.collapsed:after { 
+.collapsed:after, .work .open .dropdown-toggle:after { 
   content: " \2191";
 }
 
-.expanded:after {
+.expanded:after, .work .dropdown .dropdown-toggle:after {
   content: " \2193";
 }
 

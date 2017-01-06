@@ -83,4 +83,27 @@ user home, collections and challenges home, tag home, admin comms home
   clear: left;
 }
 
+/*(inline filters)*/
+
+.home .navigation .filters dl {
+  background: transparent none;
+  border: 0;
+  margin: 0 0 0.25em;
+  padding: 0;
+    box-shadow: none;
+}
+
+.home .navigation .filters dt, .home .navigation .filters dd {
+  border: none;
+  clear: none;
+  margin: 0 0.25em 0 0;
+  min-width: 0;
+  padding: 0;
+  width: auto;
+}
+
+.home .navigation .filters dd:last-of-type {
+  margin-right: 0;
+}
+
 /*END== */

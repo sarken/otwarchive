@@ -2,7 +2,7 @@
 linearise content, suppress large images, suppress custom fonts and other large downloads
 pasted in the Slim Shaded look temporarily to try to fix for iphone--needs test*/
 
-#outer {
+#outer { 
   font-size: 12px;
 }
 
@@ -104,6 +104,10 @@ dl.stats + h6 + .actions {
 }
 
 /*zone: home*/
+
+.home .primary .navigation {
+  margin-left: 100px;
+}
 
 #inbox-form {
   clear: both;

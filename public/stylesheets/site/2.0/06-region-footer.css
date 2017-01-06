@@ -26,6 +26,7 @@ http://media.transformativeworks.org/training/front_end_coding/patterns/supertyp
 #footer li {
   position: relative;
   display: block;
+  margin: 0.643em 0;
 }
 
 #footer a, #footer .secondary {
@@ -37,7 +38,6 @@ http://media.transformativeworks.org/training/front_end_coding/patterns/supertyp
   padding: 0;
   vertical-align: baseline;
     box-shadow: none;
-    border-radius: 0;
 }
 
 #footer a {
@@ -69,11 +69,6 @@ http://media.transformativeworks.org/training/front_end_coding/patterns/supertyp
 
 #footer .secondary {
   position: static;
-    box-shadow: none;
-}
-
-#footer .secondary li {
-  display: block;
 }
 
 /*END== */

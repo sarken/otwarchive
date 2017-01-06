@@ -93,13 +93,22 @@ form.filters dl {
   outline: none;
 }
 
-.filters dd, .filters dt, .filters .submit input {
+.filters dd, .filters dt {
   width: 100%;
 }
 
-.filters .submit {
-  text-align: center;
+/* next two blocks keep the filters buttons the right width */
+.filters .submit, .filters .submit input {
+  display: block;
+  float: none;
+  padding-left: 0;
   padding-right: 0;
+  text-align: center;
+}
+
+.filters .submit input {
+  margin: auto;
+  width: 98%;
 }
 
 form.filters dl dl {

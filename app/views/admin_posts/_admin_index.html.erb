@@ -1,18 +1,17 @@
 <!--Descriptive page name, messages and instructions-->
-<h2 class="heading"><%= ts("AO3 News (includes Release Notes)") %></h2>
+<h2 class="heading"><%= ts("AO3 News and Release Notes") %></h2>
 <!--/descriptions-->
 <!--subnav-->
-<%= render 'filters' %>
 <%= render :partial => 'admin/admin_nav' %>
 <!--/subnav-->
 
 <!--main content-->
-<h3 class="heading">Manage News Postings</h3>
+<h3 class="heading"><%= ts("Manage News Postings") %></h3>
 <dl class="news index group">
   <% @admin_posts.each do |admin_post| %>
   <dt><%= link_to admin_post.title, admin_post %></dt>
     <dd>
-      <p class="datetime">Created at <%= admin_post.created_at %> and updated at <%= admin_post.updated_at %></p>
+      <p class="datetime"><%= ts("Created at %{created_at} and updated at %{updated_at}", :created_at => admin_post.created_at, :updated_at => admin_post.updated_at) %></p>
       <ul class="navigation actions">
 	      <li><%= link_to ts("Show"), admin_post %></li>
 			  <li><%= link_to ts("Edit"), edit_admin_post_path(admin_post) %></li>

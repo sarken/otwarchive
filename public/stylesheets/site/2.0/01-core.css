@@ -1,7 +1,7 @@
 /*==CORE:basic functional layout
 http://media.transformativeworks.org/training/front_end_coding/css-shorthand.html */
 
-body, .toggled form, .dynamic form, .secondary, .dropdown {
+body, .toggled form, .dynamic form, .secondary, autocomplete div.dropdown ul {
   background: #fff;
   color: #2a2a2a;
   font: 100%/1.125 'Lucida Grande', 'Lucida Sans Unicode', 'GNU Unifont', Verdana, Helvetica, sans-serif;

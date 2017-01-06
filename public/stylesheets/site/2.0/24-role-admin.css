@@ -31,8 +31,12 @@ div.admin + h3.landmark {
   clear: none;
 }
 
-.admin .navigation a {
+.admin .actions a {
   border-bottom: 3px solid #066;
+ }
+
+.admin .actions a:hover, .admin .actions a:focus {
+  color: #066;
 }
 
 .admin .abuse.comment {

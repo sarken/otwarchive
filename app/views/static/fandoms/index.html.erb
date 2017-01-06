@@ -24,7 +24,7 @@
         <li id='letter-<%= letter %>' class='letter listbox group'>
           <h3 class="heading">
             <%= letter %>
-            <span class="action top"><%= link_to "top", "#main" %></span>
+            <%= link_to "top", "#main", :class => "top action", :title => ts("top") %>
           </h3>
           <ul class="tags index group">
             <% for fandom in fandoms %>

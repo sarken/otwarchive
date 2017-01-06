@@ -352,8 +352,6 @@ qTip2 Copyright 2009-2010 Craig Michael Thompson - http://craigsworks.com*/
 
 /* WIDGET: MODAL DIALOGS (called by help links) */
 
-a.modal.help { cursor: help; }
-
 #modal-bg, #modal-wrap {
   display: none;
   height: 100%;
@@ -471,7 +469,7 @@ a.modal.help { cursor: help; }
 }
 
 #modal.img .content img {
-  border: 1px solid rgba(0,0,0,0.5);
+  border: 1px solid rgba(0, 0, 0, 0.5);
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
   max-height: 100%;
   max-width: 100%;
@@ -495,15 +493,15 @@ a.modal.help { cursor: help; }
   text-align: center;
 }
 
-#modal .footer .action.modal-closer {
+#modal .modal-closer {
   bottom: 8px;
   position: absolute;
   right: 8px;
 }
 
-#modal .content > h1:first-child, 
-#modal .content > h2:first-child, 
-#modal .content > .heading:first-child { margin-top: 0.5em; }
+#modal .content > h1:first-child, #modal .content > h2:first-child, #modal .content > .heading:first-child { 
+  margin-top: 0.5em;
+}
 
 /*MODE: DYNAMIC is in early dev and so currently sharing styles with toggled */
 

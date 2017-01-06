@@ -10,10 +10,10 @@
   <%= will_paginate @inbox_comments %>
 
   <%= form_tag user_inbox_path(@user, :filters => params[:filters]), :method => :put, :id => 'inbox-form' do %>
-    <fieldset class="actions">
+    <fieldset>
       <legend><%= ts("Mass Edit Options") %></legend>
 
-      <ul role="menu">
+      <ul class="actions" role="menu">
         <li><a class="check_all"><%= ts("Select All") %></a></li>
         <li><a class="check_none"><%= ts("Select None") %></a></li>
         <li><%= submit_tag ts("Mark Read"), :name => 'read' %></li>
@@ -85,10 +85,10 @@
       </ol>
     </fieldset>
 
-    <fieldset class="actions">
+    <fieldset>
       <legend><%= ts("Mass Edit Options") %></legend>
 
-      <ul role="menu">
+      <ul class="actions" role="menu">
         <li><a class="check_all"><%= ts("Select All") %></a></li>
         <li><a class="check_none"><%= ts("Select None") %></a></li>
         <li><%= submit_tag ts("Mark Read"), :name => 'read' %></li>
