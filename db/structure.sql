@@ -118,6 +118,18 @@ CREATE TABLE `admins` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=112 DEFAULT CHARSET=utf8;
 
+CREATE TABLE `api_keys` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `access_token` varchar(255) NOT NULL,
+  `banned` tinyint(1) NOT NULL DEFAULT '0',
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `index_api_keys_on_name` (`name`),
+  UNIQUE KEY `index_api_keys_on_access_token` (`access_token`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `archive_faq_translations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `archive_faq_id` int(11) DEFAULT NULL,
@@ -1968,6 +1980,8 @@ INSERT INTO schema_migrations (version) VALUES ('20130327164311');
 INSERT INTO schema_migrations (version) VALUES ('20130707160714');
 
 INSERT INTO schema_migrations (version) VALUES ('20130707160814');
+
+INSERT INTO schema_migrations (version) VALUES ('20140208200234');
 
 INSERT INTO schema_migrations (version) VALUES ('20140326130206');
 
