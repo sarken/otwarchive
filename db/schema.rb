@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150901132832) do
+ActiveRecord::Schema.define(:version => 201604030319571) do
 
   create_table "abuse_reports", :force => true do |t|
     t.string   "email"
@@ -20,8 +20,11 @@ ActiveRecord::Schema.define(:version => 20150901132832) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "ip_address"
-    t.string   "category"
     t.integer  "comment_sanitizer_version", :limit => 2, :default => 0, :null => false
+    t.string   "summary"
+    t.string   "summary_sanitizer_version"
+    t.string   "language"
+    t.string   "username"
   end
 
   create_table "admin_activities", :force => true do |t|
@@ -41,6 +44,14 @@ ActiveRecord::Schema.define(:version => 20150901132832) do
     t.string  "banner_type"
     t.boolean "active",                                 :default => false, :null => false
   end
+
+  create_table "admin_blacklisted_emails", :force => true do |t|
+    t.string   "email"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "admin_blacklisted_emails", ["email"], :name => "index_admin_blacklisted_emails_on_email", :unique => true
 
   create_table "admin_post_taggings", :force => true do |t|
     t.integer  "admin_post_tag_id"
@@ -93,6 +104,7 @@ ActiveRecord::Schema.define(:version => 20150901132832) do
     t.boolean  "disable_filtering",                        :default => false,                 :null => false
     t.boolean  "request_invite_enabled",                   :default => false,                 :null => false
     t.boolean  "creation_requires_invite",                 :default => false,                 :null => false
+    t.boolean  "downloads_enabled",                        :default => true
   end
 
   add_index "admin_settings", ["last_updated_by"], :name => "index_admin_settings_on_last_updated_by"
@@ -106,17 +118,6 @@ ActiveRecord::Schema.define(:version => 20150901132832) do
     t.string   "salt"
     t.string   "persistence_token", :null => false
   end
-
-  create_table "api_keys", :force => true do |t|
-    t.string   "name",                            :null => false
-    t.string   "access_token",                    :null => false
-    t.boolean  "banned",       :default => false, :null => false
-    t.datetime "created_at",                      :null => false
-    t.datetime "updated_at",                      :null => false
-  end
-
-  add_index "api_keys", ["access_token"], :name => "index_api_keys_on_access_token", :unique => true
-  add_index "api_keys", ["name"], :name => "index_api_keys_on_name", :unique => true
 
   create_table "archive_faq_translations", :force => true do |t|
     t.integer  "archive_faq_id"
@@ -450,6 +451,16 @@ ActiveRecord::Schema.define(:version => 20150901132832) do
   add_index "external_creatorships", ["creation_id", "creation_type"], :name => "index_external_creatorships_on_creation_id_and_creation_type"
   add_index "external_creatorships", ["external_author_name_id"], :name => "index_external_creatorships_on_external_author_name_id"
 
+  create_table "external_work_type_taggings", :force => true do |t|
+    t.integer  "external_work_id"
+    t.integer  "work_type_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "external_work_type_taggings", ["external_work_id", "work_type_id"], :name => "external_work_types_unique", :unique => true
+  add_index "external_work_type_taggings", ["work_type_id"], :name => "index_external_work_type_taggings_on_work_type_id"
+
   create_table "external_works", :force => true do |t|
     t.string   "url",                                                       :null => false
     t.string   "author",                                                    :null => false
@@ -490,6 +501,8 @@ ActiveRecord::Schema.define(:version => 20150901132832) do
     t.integer  "summary_sanitizer_version", :limit => 2, :default => 0,     :null => false
     t.boolean  "approved",                               :default => false, :null => false
     t.string   "ip_address"
+    t.string   "username"
+    t.string   "language"
   end
 
   create_table "filter_counts", :force => true do |t|
@@ -504,7 +517,8 @@ ActiveRecord::Schema.define(:version => 20150901132832) do
   add_index "filter_counts", ["public_works_count"], :name => "index_public_works_count"
   add_index "filter_counts", ["unhidden_works_count"], :name => "index_unhidden_works_count"
 
-  create_table "filter_taggings", :force => true do |t|
+  create_table "filter_taggings", :id => false, :force => true do |t|
+    t.integer  "id",                                                :null => false
     t.integer  "filter_id",       :limit => 8,                      :null => false
     t.integer  "filterable_id",   :limit => 8,                      :null => false
     t.string   "filterable_type", :limit => 100
@@ -554,11 +568,22 @@ ActiveRecord::Schema.define(:version => 20150901132832) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "pseud_id"
+    t.boolean  "rejected",       :default => false, :null => false
   end
 
   add_index "gifts", ["pseud_id"], :name => "index_gifts_on_pseud_id"
   add_index "gifts", ["recipient_name"], :name => "index_gifts_on_recipient_name"
   add_index "gifts", ["work_id"], :name => "index_gifts_on_work_id"
+
+  create_table "hit_counters", :force => true do |t|
+    t.integer "work_id"
+    t.integer "hit_count",      :default => 0, :null => false
+    t.string  "last_visitor"
+    t.integer "download_count", :default => 0, :null => false
+  end
+
+  add_index "hit_counters", ["hit_count"], :name => "index_hit_counters_on_hit_count"
+  add_index "hit_counters", ["work_id"], :name => "index_hit_counters_on_work_id", :unique => true
 
   create_table "inbox_comments", :force => true do |t|
     t.integer  "user_id"
@@ -626,8 +651,10 @@ ActiveRecord::Schema.define(:version => 20150901132832) do
   add_index "kudos", ["pseud_id"], :name => "index_kudos_on_pseud_id"
 
   create_table "languages", :force => true do |t|
-    t.string "short", :limit => 4
-    t.string "name"
+    t.string  "short",                   :limit => 4
+    t.string  "name"
+    t.boolean "support_available",                    :default => false, :null => false
+    t.boolean "abuse_support_available",              :default => false, :null => false
   end
 
   add_index "languages", ["short"], :name => "index_languages_on_short"
@@ -742,30 +769,12 @@ ActiveRecord::Schema.define(:version => 20150901132832) do
     t.boolean  "assigned",            :default => false, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "max_tags_matched"
   end
 
   add_index "potential_matches", ["collection_id"], :name => "index_potential_matches_on_collection_id"
   add_index "potential_matches", ["offer_signup_id"], :name => "index_potential_matches_on_offer_signup_id"
   add_index "potential_matches", ["request_signup_id"], :name => "index_potential_matches_on_request_signup_id"
-
-  create_table "potential_prompt_matches", :force => true do |t|
-    t.integer  "potential_match_id"
-    t.integer  "offer_id"
-    t.integer  "request_id"
-    t.integer  "num_fandoms_matched"
-    t.integer  "num_characters_matched"
-    t.integer  "num_relationships_matched"
-    t.integer  "num_freeforms_matched"
-    t.integer  "num_categories_matched"
-    t.integer  "num_ratings_matched"
-    t.integer  "num_warnings_matched"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "potential_prompt_matches", ["offer_id"], :name => "index_potential_prompt_matches_on_offer_id"
-  add_index "potential_prompt_matches", ["potential_match_id"], :name => "index_potential_prompt_matches_on_potential_match_id"
-  add_index "potential_prompt_matches", ["request_id"], :name => "index_potential_prompt_matches_on_request_id"
 
   create_table "preferences", :force => true do |t|
     t.integer  "user_id"
@@ -1013,15 +1022,6 @@ ActiveRecord::Schema.define(:version => 20150901132832) do
   add_index "roles_users", ["role_id", "user_id"], :name => "index_roles_users_on_role_id_and_user_id"
   add_index "roles_users", ["user_id", "role_id"], :name => "index_roles_users_on_user_id_and_role_id"
 
-  create_table "saved_works", :force => true do |t|
-    t.integer  "user_id",    :null => false
-    t.integer  "work_id",    :null => false
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
-  add_index "saved_works", ["user_id", "work_id"], :name => "index_saved_works_on_user_id_and_work_id", :unique => true
-
   create_table "searches", :force => true do |t|
     t.integer  "user_id"
     t.string   "name"
@@ -1265,6 +1265,22 @@ ActiveRecord::Schema.define(:version => 20150901132832) do
   end
 
   add_index "work_links", ["work_id", "url"], :name => "work_links_work_id_url", :unique => true
+
+  create_table "work_type_taggings", :force => true do |t|
+    t.integer  "work_id"
+    t.integer  "work_type_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "work_type_taggings", ["work_id", "work_type_id"], :name => "index_work_type_taggings_on_work_id_and_work_type_id", :unique => true
+  add_index "work_type_taggings", ["work_type_id"], :name => "index_work_type_taggings_on_work_type_id"
+
+  create_table "work_types", :force => true do |t|
+    t.string "name", :default => "", :null => false
+  end
+
+  add_index "work_types", ["name"], :name => "index_work_types_on_name", :unique => true
 
   create_table "works", :force => true do |t|
     t.integer  "expected_number_of_chapters",               :default => 1
