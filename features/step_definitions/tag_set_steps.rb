@@ -1,4 +1,11 @@
 # encoding: utf-8
+Given /^the tag ?set "([^\"]*)" with existing nominations$/ do |title|
+  step %{I am logged in as "tagsetter"}
+  step %{I set up the nominated tag set "#{title}" with 5 fandom noms and 5 character noms}
+  step %{I nominate 3 fandoms and 3 characters in the "#{title}" tag set as "nominator"}
+  step %{I submit}
+end
+
 When /^I follow the add new tag ?set link$/ do
   step %{I follow "New Tag Set"}
 end
