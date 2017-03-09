@@ -211,3 +211,52 @@ Feature: Nominating and reviewing nominations for a tag set
       And I should see "Delete Tag Set Nomination?"
     When I press "Yes, Delete Tag Set Nominations"
     Then I should see "Your nominations were deleted."
+
+  Scenario: A user can't nominate a tag that is already in the Archive as another type
+    Given the following typed tags exists
+        | name    | type         | canonical |
+        | Fandom  | Fandom       | false     |
+        | Ship    | Relationship | false     |
+        | Person  | Character    | false     |
+        | Concept | Freeform     | false     |
+      And I am logged in as "tagsetter"
+      And I set up the nominated tag set "Nominated Tags" with 2 fandom noms and 2 character noms
+    When I start to nominate fandoms "Fandom, Ship" and characters "Person, Concept" in "Nominated Tags"
+      And I submit
+    Then I should see "Sorry! We couldn't save this tag set nomination because:"
+      And I should see "The tag Ship is already in the archive as a Relationship tag."
+      And I should see "The tag Concept is already in the archive as a Freeform tag."
+      And I should see "(All tags have to be unique.) Try being more specific, for instance tacking on the medium or the fandom."
+
+  Scenario: A user can't nominate the same tag someone else has already nominated in a different fandom
+    Given I am logged in as "tagsetter"
+      And I set up the nominated tag set "Nominated Tags" with 1 fandom nom and 1 character nom
+      And I nominate fandom "Fandom 1" and character "Character" in "Nominated Tags"
+    When I am logged in as "nominator2"
+      And I start to nominate fandom "Fandom 2" and character "Character" in "Nominated Tags"
+      And I submit
+    Then I should see "Sorry! We couldn't save this tag set nomination because:"
+      And I should see "Someone else has already nominated the tag Character for this set but in fandom Fandom 1."
+      And I should see "(All nominations have to be unique for the approval process to work.) Try making your nomination more specific, for instance tacking on (Fandom 2)."
+    
+    Scenario: The moderator can choose to accept a nomination for the canonical version of a tag instead
+      Given a canonical character "Canon Name"
+        And a synonym "Fanon Name" of the tag "Canon Name"
+        And I am logged in as "tagsetter"
+        And I set up the nominated tag set "Tag Set" with 1 fandom nom and 1 character nom
+        And I nominate fandom "Fandom 1" and character "Fanon Name" in "Tag Set"
+      When I review nominations for "Tag Set"
+      Then I should see "Fanon Name"
+        And I should see "Choose Canon Name instead"
+      When I check "Choose Canon Name instead"
+        And I submit
+      Then I should see "Successfully added to set: Canon Name"
+        And I should not see "Fanon Name"
+ 
+    Scenario: Two users can nominate the same tag and the moderator can see it has been nominated twice
+      Given I am logged in as "tagsetter"
+        And I set up the nominated tag set "Tag Set" with 1 fandom nom and 1 character nom
+        And I nominate fandom "BSG" and character "Laura Roslin" in "Tag Set"
+        And I nominate fandom "BSG" and character "Kara Thrace" in "Tag Set" as "nominator2"
+      When I review nominations for "Tag Set"
+      Then I should see "x2"

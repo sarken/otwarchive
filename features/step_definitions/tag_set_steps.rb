@@ -92,8 +92,7 @@ When /^I have (?:a|the) nominated tag ?set "([^\"]*)"/ do |title|
   step %{I should see a success message}
 end
 
-When /^I nominate fandoms? "([^\"]*)" and characters? "([^\"]*)" in "([^\"]*)"/ do |fandom, char, title|
-  step %{I am logged in as "nominator"}
+When /^I start to nominate fandoms? "([^\"]*)" and characters? "([^\"]*)" in "([^\"]*)"/ do |fandom, char, title|
   step %{I go to the "#{title}" tag set page}
   step %{I follow "Nominate"}
   @fandoms = fandom.split(/, ?/)
@@ -107,6 +106,12 @@ When /^I nominate fandoms? "([^\"]*)" and characters? "([^\"]*)" in "([^\"]*)"/ 
       char_index += 1
     end
   end
+end
+
+When /^I nominate fandoms? "([^"]*)" and characters? "([^"]*)" in "([^\"]*)"?(?: as "([^"]*)")?/ do |fandom, char, title, user|
+  user ||= "nominator"
+  step %{I am logged in as "#{user}"}
+  step %{I start to nominate fandoms "#{fandom}" and characters "#{char}" in "#{title}"}
   step %{I submit}
   step %{I should see a success message}
 end
