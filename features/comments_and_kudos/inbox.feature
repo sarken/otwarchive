@@ -35,11 +35,24 @@ Feature: Get messages in the inbox
   Scenario: Logged in comments in my inbox should have timestamps
     Given I am logged in as "boxer" with password "10987tko"
       And I post the work "Down for the Count"
-    When I post the comment "The fight game's complex." on the work "Down for the Count" as a guest
+      And I post the comment "The fight game's complex." on the work "Down for the Count" as a guest
     When I am logged in as "boxer" with password "10987tko"
       And I go to my inbox page
     Then I should see "guest on Down for the Count"
       And I should see "less than 1 minute ago"
+
+  @javascript
+  Scenario: I can reply to comments from my inbox
+    Given I am logged in as "boxer" with password "10987tko"
+      And I post the work "Pre-Fight Coverage"
+      And "cutman" posts the comment "That's a haymaker? I actually never knew that." on the work "Pre-Fight Coverage"
+    When I am logged in as "boxer" with password "10987tko"
+      And I go to my inbox page
+      And I press "Reply"
+      And I fill in "Comment" with "Yes, it was a haymaker!"
+      And I press "Comment"
+    Then I should be on my inbox page
+      And I should see "Comment created!"
 
   Scenario: A user can see some of their unread comments on the homepage
     Given I am logged in as "boxer" with password "10987tko"
