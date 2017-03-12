@@ -7,8 +7,7 @@ Feature: Get messages in the inbox
     Given I am logged in as "boxer" with password "10987tko"
       And I post the work "Another Round"
       And I set my preferences to turn off messages to my inbox about comments
-    When I am logged in as "cutman"
-      And I post the comment "You should not receive this in your inbox." on the work "Another Round"
+      And "cutman" posts the comment "You should not receive this in your inbox." on the work "Another Round"
     When I am logged in as "boxer" with password "10987tko"
       And I go to my inbox page
     Then I should not see "cutman on Another Round"
@@ -18,8 +17,7 @@ Feature: Get messages in the inbox
     Given I am logged in as "boxer" with password "10987tko"
       And I post the work "The Fight"
       And I set my preferences to turn on messages to my inbox about comments
-    When I am logged in as "cutman"
-      And I post the comment "You should receive this in your inbox." on the work "The Fight"
+      And "cutman" posts the comment "You should receive this in your inbox." on the work "The Fight"
     When I am logged in as "boxer" with password "10987tko"
       And I go to my inbox page
     Then I should see "cutman on The Fight"
@@ -28,8 +26,7 @@ Feature: Get messages in the inbox
   Scenario: Logged in comments in my inbox should have timestamps
     Given I am logged in as "boxer" with password "10987tko"
       And I post the work "Down for the Count"
-    When I am logged in as "cutman"
-      And I post the comment "It was a right hook... with a bit of a jab. (And he did it with his left hand.)" on the work "Down for the Count"
+      And "cutman" posts the comment "It was a right hook... with a bit of a jab. (And he did it with his left hand.)" on the work "Down for the Count"
     When I am logged in as "boxer" with password "10987tko"
       And I go to my inbox page
     Then I should see "cutman on Down for the Count"
@@ -47,8 +44,7 @@ Feature: Get messages in the inbox
   Scenario: A user can see some of their unread comments on the homepage
     Given I am logged in as "boxer" with password "10987tko"
       And I post the work "Pre-Fight Coverage"
-    When I am logged in as "cutman"
-      And I post the comment "That's a haymaker? I actually never knew that." on the work "Pre-Fight Coverage"
+      And "cutman" posts the comment "That's a haymaker? I actually never knew that." on the work "Pre-Fight Coverage"
     When I am logged in as "boxer" with password "10987tko"
       And I go to the homepage
     Then I should see "Unread messages"
@@ -60,8 +56,7 @@ Feature: Get messages in the inbox
   Scenario: A user can delete an unread comment on the homepage
     Given I am logged in as "boxer" with password "10987tko"
       And I post the work "The Gladiators of Old"
-    When I am logged in as "cutman"
-      And I post the comment "I can still make you cry, you know." on the work "The Gladiators of Old"
+      And "cutman" posts the comment "I can still make you cry, you know." on the work "The Gladiators of Old"
     When I am logged in as "boxer" with password "10987tko"
       And I go to the homepage
     Then I should see "cutman on The Gladiators of Old"
@@ -79,8 +74,7 @@ Feature: Get messages in the inbox
   Scenario: A user can mark an unread comment read on the homepage
     Given I am logged in as "boxer" with password "10987tko"
       And I post the work "Special Coverage"
-    When I am logged in as "cutman"
-      And I post the comment "Is there anything we can do to make the fight go longer?" on the work "Special Coverage"
+      And "cutman" posts the comment "Is there anything we can do to make the fight go longer?" on the work "Special Coverage"
     When I am logged in as "boxer" with password "10987tko"
       And I go to the homepage
     Then I should see "cutman on Special Coverage"

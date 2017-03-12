@@ -127,6 +127,11 @@ When /^I post the comment "([^"]*)" on the work "([^"]*)" as a guest(?: with ema
   click_button "Comment"
 end
 
+When /^"([^"]*)" posts the comment "([^"]*)" on the work "([^"]*)"$/ do |user, comment_text, work|
+  step %{I am logged in as "#{user}"}
+  step %{I post the comment "#{comment_text}" on the work "#{work}"}
+end
+
 When /^I edit a comment$/ do
   step %{I follow "Edit"}
   fill_in("comment[content]", with: "Edited comment")
