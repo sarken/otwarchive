@@ -351,7 +351,7 @@ protected
       :description,
       :_destroy,
       tag_set_attributes: [
-        # :id,
+        :id,
         :updated_at,
         :character_tagnames,
         :relationship_tagnames,
