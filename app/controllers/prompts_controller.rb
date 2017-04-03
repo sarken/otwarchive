@@ -169,6 +169,7 @@ class PromptsController < ApplicationController
       :url,
       :anonymous,
       :description,
+      # possibly needed because of the merge in #create
       # :challenge_signup_id,
       :any_fandom,
       :any_character,

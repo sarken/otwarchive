@@ -336,7 +336,7 @@ protected
 
   def nested_prompt_params
     [
-      :id,
+      # :id,
       :collection_id,
       :title,
       :url,
@@ -351,7 +351,7 @@ protected
       :description,
       :_destroy,
       tag_set_attributes: [
-        :id,
+        # :id,
         :updated_at,
         :character_tagnames,
         :relationship_tagnames,
@@ -369,7 +369,7 @@ protected
         fandom_tagnames: [],
       ],
       optional_tag_set_attributes: [
-        :tagnames, tagnames: []
+        :tagnames
       ]
     ]
   end
