@@ -336,7 +336,7 @@ protected
 
   def nested_prompt_params
     [
-      # :id,
+      :id,
       :collection_id,
       :title,
       :url,
