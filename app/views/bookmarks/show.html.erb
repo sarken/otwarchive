@@ -24,5 +24,5 @@
 
 <% # FRONT END NOTE: Twitter widget JavaScript included here for share/_share to ensure it is only loaded once per page %>
 <% content_for :footer_js do %>
-  <script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
+  <script>!function(d,s,id){var js,ajs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://assets.tumblr.com/share-button.js";ajs.parentNode.insertBefore(js,ajs);}}(document, "script", "tumblr-js");</script>
 <% end %>
