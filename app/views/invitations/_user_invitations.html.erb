@@ -7,7 +7,7 @@
         <th scope="col"><%= ts('Sent To') %></th>
         <th scope="col"><%= ts('User Name') %></th>
         <th scope="col"><%= ts('External Author') %></th>
-        <th scope="col"><%= ts('Copy Link') %></th>
+        <th scope="col"><%= ts('Sign-up URL') %></th>
       </tr>
 	  </thead>
 	  <tbody>
@@ -19,10 +19,10 @@
           <td><%= invitation.external_author ? "#{invitation.external_author.email} (#{invitation.external_author.names.collect(&:name).delete_if {|name| name == invitation.external_author.email}.join(",")})" : "" %></td>
           <td>
             <% unless invitation.redeemed_at %>
-            <% if invitation.external_author %>
-              <%= link_to ts("copy and use"), claim_path(:invitation_token => invitation.token) %>
-            <% else %>
-              <%= link_to ts("copy and use"), signup_path(:invitation_token => invitation.token) %><% end %>
+              <% url = invitation.external_author ?
+                         claim_url(invitation_token: invitation.token) :
+                         signup_url(invitation_token: invitation.token) %>
+              <input type="text" id="signup_url_<%= invitation.token %>" value="<%= url %>" />
             <% end %>
           </td>
           <% if logged_in_as_admin? && invitation.redeemed_at.blank? %>
