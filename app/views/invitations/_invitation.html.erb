@@ -1,35 +1,38 @@
-<dl>
-	<dt>Sender</dt>
-    <dd><%= creator_link(invitation) %></dd>
- 	<dt>Invitation token</dt>
-    <dd><%= invitation.token %></dd>
- 	<dt>Sign-up URL</dt>
-    <dd>
-      <% unless invitation.redeemed_at %>
-        <% url = invitation.external_author ?
-                   claim_url(invitation_token: invitation.token) :
-                   signup_url(invitation_token: invitation.token) %>
-        <input type="text" id="signup_url_<%= invitation.token %>" value="<%= url %>" title="<%= ts("Sign-up URL") %>" />
-      <% end %>
-    </dd>
- 	<dt>Sent to</dt>
-    <% if invitation.redeemed_at %>
-    <dd><%= invitation.invitee_email %></dd>
-    <% else %>
-    <dd>
-      <%= form_for(invitation) do |f| %>
-        <p><label for="invitee_email">Enter an email address:</label> <%= f.text_field :invitee_email %></p>
-        <p><%= hidden_field_tag :user_id, @user.try(:login) %></p>
-        <p class="submit actions"><%= f.submit %></p>
-      <% end %>
-    </dd>
+<dl class="invitation index">
+  <dt><%= ts("Sender") %></dt>
+  <dd><%= creator_link(invitation) %></dd>
+  <dt><%= ts("Invitation token") %></dt>
+  <dd><%= invitation.token %></dd>
+  <dt><label for="signup_url"><%= ts("Sign-up URL") %></label></dt>
+  <dd>
+    <% unless invitation.redeemed_at %>
+      <% url = invitation.external_author ?
+                 claim_url(invitation_token: invitation.token) :
+                 signup_url(invitation_token: invitation.token) %>
+      <input type="text" id="signup_url" value="<%= url %>" title="<%= ts("Sign-up URL") %>" />
     <% end %>
- <dt>Redeemed by</dt>
-    <dd><%= invitee_link(invitation) %></dd>
- <dt>Created at</dt>
-    <dd><%= invitation.created_at %></dd>
- <dt>Sent at</dt>
-    <dd><%= invitation.sent_at %></dd>
- <dt>Redeemed at</dt>
-    <dd><%= invitation.redeemed_at %></dd>
+  </dd>
+  <dt><%= ts("Sent to") %></dt>
+  <dd>
+    <% if invitation.redeemed_at %>
+      <%= invitation.invitee_email %>
+    <% else %>
+      <%= form_for invitation, html: { class: "simple" } do |f| %>
+        <p>
+          <%= f.label :invitee_email, ts("Enter an email address") %>
+          <%= f.text_field :invitee_email %>
+          <%= hidden_field_tag :user_id, @user.try(:login) %>
+          <span class="submit actions"><%= f.submit %></span>
+        </p>
+      <% end %>
+    <% end %>
+  </dd>
+  <dt><%= ts("Sent at") %></dt>
+  <dd><%= invitation.sent_at %></dd>
+  <dt><%= ts("Redeemed by") %></dt>
+  <dd><%= invitee_link(invitation) %></dd>
+  <dt><%= ts("Redeemed at") %></dt>
+  <dd><%= invitation.redeemed_at %></dd>
+  <dt><%= ts("Created at") %></dt>
+  <dd><%= invitation.created_at %></dd>
 </dl>

@@ -1,9 +1,1 @@
-<!--subnav-->
-<% if @user %>
-<p class="navigation actions" role="navigation"><%= link_to 'Back to invitations', user_invitations_path(@user) %></p>
-<% end %>
-<!--/subnav-->
-
-<!--main content-->
-<%= render :partial => 'invitations/invitation', :locals => {:user => @user, :invitation => @invitation} %>
-<!--/content-->
+<!--Descriptive page name, messages and instructions--><h2 class="heading"><%= ts("Invitation Details") %></h2><!--/descriptions--><!--subnav--><% if @user && logged_in_as_admin? %>  <p class="navigation actions">    <%= link_to ts("Invitations"), user_invitations_path(@user) %>  <p><% else %>  <%= render "user_invitations_navigation" %><% end %><!--/subnav--><!--main content--><%= render "invitations/invitation", user: @user, invitation: @invitation %><!--/content-->
