@@ -27,11 +27,24 @@ class ApplicationController < ActionController::Base
     cookies[:flash_is_set] = 1 unless flash.empty?
   end
 
+  before_filter :ensure_admin_credentials
+  def ensure_admin_credentials
+    if logged_in_as_admin?
+      # if we are logged in as an admin and we don't have the admin_credentials
+      # set then set that cookie
+      cookies[:admin_credentials] = 1 unless cookies[:admin_credentials]
+    else
+      # if we are NOT logged in as an admin and we have the admin_credentials
+      # set then delete that cookie
+      cookies.delete :admin_credentials unless cookies[:admin_credentials].nil?
+    end
+  end
+
   # So if there is not a user_credentials cookie and the user appears to be logged in then
   # redirect to the logout page
   before_filter :logout_if_not_user_credentials
   def logout_if_not_user_credentials
-    if logged_in? && cookies[:user_credentials]==nil && controller_name != "user_sessions"
+    if logged_in? && cookies[:user_credentials].nil? && controller_name != "user_sessions"
       logger.error "Forcing logout"
       @user_session = UserSession.find
       if @user_session
@@ -50,6 +63,10 @@ class ApplicationController < ActionController::Base
   # def setflash (this is here in case someone is grepping for the definition of the method)
   alias :setflash :set_flash_cookie
 
+  def current_user
+    @current_user ||= current_user_session && current_user_session.record
+  end
+
 protected
 
   def record_not_found (exception)
@@ -62,22 +79,6 @@ protected
   def current_user_session
     return @current_user_session if defined?(@current_user_session)
     @current_user_session = UserSession.find
-  end
-
-  def current_user
-    @current_user = current_user_session && current_user_session.record
-    # if Rails.env.development? && params[:force_current_user].present?
-    #   @current_user = User.find_by_login(params[:force_current_user])
-    # end
-  end
-
-  def current_admin_session
-    return @current_admin_session if defined?(@current_admin_session)
-    @current_admin_session = AdminSession.find
-  end
-
-  def current_admin
-    @current_admin = current_admin_session && current_admin_session.record
   end
 
   def logged_in?
@@ -111,13 +112,19 @@ public
       @admin_settings = Rails.cache.fetch("admin_settings"){AdminSetting.first}
     end
   end
-  
+
   before_filter :load_admin_banner
   def load_admin_banner
     if Rails.env.development?
       @admin_banner = AdminBanner.where(:active => true).last
     else
-      @admin_banner = Rails.cache.fetch("admin_banner"){AdminBanner.where(:active => true).last}
+      # http://stackoverflow.com/questions/12891790/will-returning-a-nil-value-from-a-block-passed-to-rails-cache-fetch-clear-it
+      # Basically we need to store a nil separately.
+      @admin_banner = Rails.cache.fetch("admin_banner") do
+        banner = AdminBanner.where(:active => true).last
+        banner.nil? ? "" : banner
+      end
+      @admin_banner = nil if @admin_banner == ""
     end
   end
 
@@ -149,9 +156,23 @@ public
     end
   end
 
+  def after_sign_in_path_for(resource)
+    admin_users_path
+  end
+
+  def authenticate_admin!
+    if admin_signed_in?
+      super
+    else
+      redirect_to root_path, notice: "I'm sorry, only an admin can look at that area"
+      ## if you want render 404 page
+      ## render :file => File.join(Rails.root, 'public/404'), :formats => [:html], :status => 404, :layout => false
+    end
+  end
+
   # Filter method - keeps users out of admin areas
   def admin_only
-    logged_in_as_admin? || admin_only_access_denied
+    authenticate_admin! || admin_only_access_denied
   end
 
   # Filter method to prevent admin users from accessing certain actions
@@ -222,6 +243,12 @@ public
   def set_current_user
     User.current_user = logged_in_as_admin? ? current_admin : current_user
     @current_user = current_user
+    unless current_user.nil?
+      @current_user_subscriptions_count, @current_user_visible_work_count, @current_user_bookmarks_count, @current_user_owned_collections_count, @current_user_challenge_signups_count, @current_user_offer_assignments, @current_user_unposted_works_size=
+             Rails.cache.fetch("user_menu_counts_#{current_user.id}",
+                               expires_in: 2.hours,
+                               race_condition_ttl: 5) { "#{current_user.subscriptions.count}, #{current_user.visible_work_count}, #{current_user.bookmarks.count}, #{current_user.owned_collections.count}, #{current_user.challenge_signups.count}, #{current_user.offer_assignments.undefaulted.count + current_user.pinch_hit_assignments.undefaulted.count}, #{current_user.unposted_works.size}" }.split(",").map(&:to_i)
+    end
   end
 
   def load_collection
@@ -272,32 +299,6 @@ public
     uncategorized = Media.uncategorized
     @menu_media = Media.by_name - [Media.find_by_name(ArchiveConfig.MEDIA_NO_TAG_NAME), uncategorized] + [uncategorized]
   end
-
-  ### GLOBALIZATION ###
-
-#  before_filter :load_locales
-#  before_filter :set_preferred_locale
-
-#  I18n.backend = I18nDB::Backend::DBBased.new
-#  I18n.record_missing_keys = false # if you want to record missing translations
-  protected
-
-  def load_locales
-    @loaded_locales ||= Locale.order(:iso)
-  end
-
-  # Sets the locale
-  def set_preferred_locale
-    # Loading the current locale
-    if session[:locale] && @loaded_locales.detect { |loc| loc.iso == session[:locale]}
-      set_locale session[:locale].to_sym
-    else
-      set_locale Locale.find_main_cached.iso.to_sym
-    end
-    @current_locale = Locale.find_by_iso(I18n.locale.to_s)
-  end
-
-  ### -- END GLOBALIZATION -- ###
 
   public
 
@@ -401,7 +402,7 @@ public
     if model.to_s.downcase == 'work'
       allowed = ['author', 'title', 'date', 'created_at', 'word_count', 'hit_count']
     elsif model.to_s.downcase == 'tag'
-      allowed = ['name', 'created_at', 'suggested_fandoms', 'taggings_count']
+      allowed = ['name', 'created_at', 'suggested_fandoms', 'taggings_count_cache']
     elsif model.to_s.downcase == 'collection'
       allowed = ['collections.title', 'collections.created_at']
     elsif model.to_s.downcase == 'prompt'

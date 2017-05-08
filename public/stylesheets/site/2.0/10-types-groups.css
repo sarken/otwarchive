@@ -166,12 +166,30 @@ li.relationships a {
   background: #eee;
 }
 
+.actions .reindex a {
+  border-bottom: 3px solid #900;
+}
+
 .series.footnote {
   font-size: 100%;
   float: none;
 }
 
-.kudos {
+/* circle dividers for series navigation on works */
+
+span.series .divider {
+  color: #777;
+}
+
+span.series .previous + .divider:before {
+  content: "\0020\25CF";
+}
+
+span.series .position + .divider:after {
+  content: "\25CF\0020";
+}
+
+p.kudos {
   background: url("/images/imageset.png") no-repeat -110px -580px;
   padding: 0.5em 0.5em 0.5em 60px;
   margin: 2em 0;
@@ -216,10 +234,6 @@ dl.stats dd {
 
 .statistics .index li:nth-of-type(even) {
   background: #eee;
-}
-
-.statistics dt:after {
-  content: ":";
 }
 
 .concise li { 

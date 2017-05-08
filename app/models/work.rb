@@ -5,8 +5,11 @@ class Work < ActiveRecord::Base
   include Bookmarkable
   include Pseudable
   include Searchable
+  include BookmarkCountCaching
   include WorkStats
+  include WorkChapterCountCaching
   include Tire::Model::Search
+  include ActiveModel::ForbiddenAttributesProtection
   # include Tire::Model::Callbacks
 
   ########################################################################
@@ -184,22 +187,62 @@ class Work < ActiveRecord::Base
   before_save :check_for_invalid_tags
   before_update :validate_tags
   after_update :adjust_series_restriction
-  
+
   after_save :expire_caches
-  
+  after_destroy :expire_caches
+
   def expire_caches
-    self.pseuds.each do |pseud|
+    pseuds.each do |pseud|
       pseud.update_works_index_timestamp!
       pseud.user.update_works_index_timestamp!
     end
-    
-    self.all_collections.each do |collection|
-      collection.update_works_index_timestamp!
+
+    collections.each do |this_collection|
+      collection = this_collection
+      # Flush this collection and all its parents
+      loop do
+        collection.update_works_index_timestamp!
+        collection = collection.parent
+        break unless collection
+      end
     end
 
-    self.filters.each do |tag|
+    filters.each do |tag|
       tag.update_works_index_timestamp!
     end
+
+    tags.each do |tag|
+      tag.update_tag_cache
+    end
+    Work.expire_work_tag_groups_id(id)
+    Work.flush_find_by_url_cache unless imported_from_url.blank?
+
+    Work.expire_work_tag_groups_id(self.id)
+  end
+
+  def self.work_blurb_tag_cache_key(id)
+    "/v1/work_blurb_tag_cache_key/#{id}"
+  end
+
+  def self.work_blurb_tag_cache(id)
+    Rails.cache.fetch(Work.work_blurb_tag_cache_key(id), raw: true) { rand(1..1000) }
+  end
+
+  def self.expire_work_tag_groups_id(id)
+    Rails.cache.delete(Work.tag_groups_key_id(id))
+    Rails.cache.increment(Work.work_blurb_tag_cache_key(id))
+  end
+
+  def expire_work_tag_groups
+    Rails.cache.delete(self.tag_groups_key)
+  end
+
+  def self.tag_groups_key_id(id)
+    "/v2/work_tag_groups/#{id}"
+  end
+
+  def tag_groups_key
+    Work.tag_groups_key_id(self.id)
   end
 
   def expire_pseud(pseud)
@@ -221,7 +264,7 @@ class Work < ActiveRecord::Base
     pseuds = Pseud.select("pseuds.id, pseuds.user_id").
                     joins(:creatorships).
                     where(creatorships: {
-                      creation_id: ids, 
+                      creation_id: ids,
                       creation_type: 'Work'
                       }
                     )
@@ -274,43 +317,48 @@ class Work < ActiveRecord::Base
     Resque.enqueue(Work, id, method, *args)
   end
 
-  # SECTION IN PROGRESS -- CONSIDERING MOVE OF WORK CODE INTO HERE
-
-  ########################################################################
-  # ERRORS
-  ########################################################################
-  # class Error < DuplicateError; end
-  # class Error < DraftSaveError; end
-  # class Error < PostingError; end
-
-
   ########################################################################
   # IMPORTING
   ########################################################################
-  # def self.import_from_url(url)
-  #   storyparser = StoryParser.new
-  #   if Work.find_by_imported_from_url(url)
-  #     raise DuplicateWorkError(t('already_imported', :default => "Work already imported from this url."))
-  #
-  #   work = storyparser.download_and_parse_story(url)
-  #   work.imported_from_url = url
-  #   work.expected_number_of_chapters = work.chapters.length
-  #   work.pseuds << current_user.default_pseud unless work.pseuds.include?(current_user.default_pseud)
-  #   chapters_saved = 0
-  #   work.chapters.each do |uploaded_chapter|
-  #     uploaded_chapter.pseuds << current_user.default_pseud unless uploaded_chapter.pseuds.include?(current_user.default_pseud)
-  #     uploaded_chapter.posted = true
-  #     chapters_saved += uploaded_chapter.save ? 1 : 0
-  #   end
-  #
-  #   raise DraftSaveError unless work.save && chapters_saved == work.chapters.length
-  # end
-  
-  def self.find_by_url(url)
+
+  def self.find_by_url_generation_key
+    "/v1/find_by_url_generation_key"
+  end
+
+  def self.find_by_url_generation
+    Rails.cache.fetch(Work.find_by_url_generation_key, raw: true) { rand(1..1000) }
+  end
+
+  def self.flush_find_by_url_cache
+    Rails.cache.increment(Work.find_by_url_generation_key)
+  end
+
+  def self.find_by_url_cache_key(url)
     url = UrlFormatter.new(url)
-    Work.where(:imported_from_url => url.original).first ||
-      Work.where(:imported_from_url => [url.minimal, url.no_www, url.with_www, url.encoded, url.decoded]).first ||
-      Work.where("imported_from_url LIKE ? OR imported_from_url LIKE ?", "%#{url.encoded}%", "%#{url.decoded}%").first
+    "/v1/find_by_url/#{Work.find_by_url_generation}/#{url.encoded}"
+  end
+
+  # Match `url` to a work's imported_from_url field using progressively fuzzier matching:
+  # 1. first exact match
+  # 2. first exact match with variants of the provided url
+  # 3. first match on variants of both the imported_from_url and the provided url if there is a partial match
+
+  def self.find_by_url_uncached(url)
+    url = UrlFormatter.new(url)
+    Work.where(imported_from_url: url.original).first ||
+      Work.where(imported_from_url: [url.minimal, url.no_www, url.with_www, url.encoded, url.decoded]).first ||
+      Work.where("imported_from_url LIKE ?", "%#{url.minimal_no_http}%").select { |w|
+        work_url = UrlFormatter.new(w.imported_from_url)
+        ['original', 'minimal', 'no_www', 'with_www', 'encoded', 'decoded'].any? { |method|
+          work_url.send(method) == url.send(method)
+        }
+      }.first
+  end
+
+  def self.find_by_url(url)
+    Rails.cache.fetch(Work.find_by_url_cache_key(url)) do
+      find_by_url_uncached(url)
+    end
   end
 
   ########################################################################
@@ -334,8 +382,8 @@ class Work < ActiveRecord::Base
       self.ambiguous_pseuds = results[:ambiguous_pseuds]
       if results[:banned_pseuds].present?
         self.errors.add(
-          :base, 
-          ts("%{name} has been banned and cannot be listed as a co-creator",
+          :base,
+          ts("%{name} is currently banned and cannot be listed as a co-creator.",
              name: results[:banned_pseuds].to_sentence
           )
         )
@@ -359,17 +407,21 @@ class Work < ActiveRecord::Base
     end
   end
 
-  # Transfer ownership of the work from one user to another
-  def change_ownership(old_user, new_user, new_pseud=nil)
-    raise "No new user provided, cannot change ownership" unless new_user
-    new_pseud = new_user.default_pseud if new_pseud.nil?
+  def add_creator(creator_to_add, new_pseud = nil)
+    new_pseud = creator_to_add.default_pseud if new_pseud.nil?
     self.pseuds << new_pseud
     self.chapters.each do |chapter|
       chapter.pseuds << new_pseud
       chapter.save
     end
     save
-    self.remove_author(old_user) if old_user && users.include?(old_user)
+  end
+
+  # Transfer ownership of the work from one user to another
+  def change_ownership(old_user, new_user, new_pseud = nil)
+    raise "No new user provided, cannot change ownership" unless new_user
+    add_creator(new_user, new_pseud)
+    remove_author(old_user) if old_user && users.include?(old_user)
   end
 
   def set_challenge_info
@@ -406,18 +458,30 @@ class Work < ActiveRecord::Base
   def recipients=(recipient_names)
     new_recipients = [] # collect names of new recipients
     gifts = [] # rebuild the list of associated gifts using the new list of names
-    recipient_names.split(',').each do |name|
+    # add back in the rejected gift recips; we don't let users delete rejected gifts in order to prevent regifting
+    recip_names = recipient_names.split(',') + self.gifts.are_rejected.collect(&:recipient)
+    recip_names.uniq.each do |name|
       name.strip!
       gift = self.gifts.for_name_or_byline(name).first
-      new_recipients << name unless (gift && self.posted) # all recipients are new if work isn't posted
-      gifts << gift unless !gift # new gifts are added after saving, not now
+      if gift
+        gifts << gift # new gifts are added after saving, not now
+        new_recipients << name unless self.posted # all recipients are new if work not posted
+      else
+        # check that the gift would be valid
+        g = Gift.new(work: self, recipient: name)
+        if g.valid?
+          new_recipients << name # new gifts are added after saving, not now
+        else
+          errors.add(:base, ts("You cannot give a gift to the same user twice."))
+        end
+      end
     end
     self.new_recipients = new_recipients.uniq.join(",")
     self.gifts = gifts
   end
 
-  def recipients
-    names = self.gifts.collect(&:recipient)
+  def recipients(for_form = false)
+    names = (for_form ? self.gifts.not_rejected : self.gifts).collect(&:recipient)
     unless self.new_recipients.blank?
       self.new_recipients.split(",").each do |name|
         names << name unless names.include? name
@@ -430,7 +494,10 @@ class Work < ActiveRecord::Base
     unless self.new_recipients.blank?
       self.new_recipients.split(',').each do |name|
         gift = self.gifts.for_name_or_byline(name).first
-        self.gifts << Gift.new(:recipient => name) unless gift
+        unless gift.present?
+          g = Gift.new(recipient: name, work: self)
+          g.save
+        end
       end
     end
   end
@@ -504,25 +571,27 @@ class Work < ActiveRecord::Base
   end
 
   def set_revised_at(date=nil)
-    date ||= self.chapters.where(:posted => true).maximum('published_at') || 
+    date ||= self.chapters.where(:posted => true).maximum('published_at') ||
         self.revised_at || self.created_at
     date = date.instance_of?(Date) ? DateTime::jd(date.jd, 12, 0, 0) : date
     self.revised_at = date
   end
-  
+
   def set_revised_at_by_chapter(chapter)
     return if self.posted? && !chapter.posted?
+    # Invalidate chapter count cache
+    self.invalidate_work_chapter_count(self)
     if (self.new_record? || chapter.posted_changed?) && chapter.published_at == Date.today
       self.set_revised_at(Time.now) # a new chapter is being posted, so most recent update is now
-    elsif self.revised_at.nil? || 
-        chapter.published_at > self.revised_at.to_date || 
+    elsif self.revised_at.nil? ||
+        chapter.published_at > self.revised_at.to_date ||
         chapter.published_at_changed? && chapter.published_at_was == self.revised_at.to_date
       # revised_at should be (re)evaluated to reflect the chapter's pub date
       max_date = self.chapters.where('id != ? AND posted = 1', chapter.id).maximum('published_at')
       max_date = max_date.nil? ? chapter.published_at : [max_date, chapter.published_at].max
       self.set_revised_at(max_date)
-    # else 
-      # In all other cases, we don't want to touch revised_at, since the chapter's pub date doesn't 
+    # else
+      # In all other cases, we don't want to touch revised_at, since the chapter's pub date doesn't
       # affect it. Setting revised_at to any Date will change its time to 12:00, likely changing the
       # work's position in date-sorted indexes, so don't do it unnecessarily.
     end
@@ -635,14 +704,18 @@ class Work < ActiveRecord::Base
 
   # Get the total number of chapters for a work
   def number_of_chapters
-    self.chapters.count
+    Rails.cache.fetch(key_for_chapter_total_counting(self)) do
+      self.chapters.count
+    end
   end
 
   # Get the total number of posted chapters for a work
   # Issue 1316: total number needs to reflect the actual number of chapters posted
   # rather than the total number of chapters indicated by user
   def number_of_posted_chapters
-    self.chapters.posted.count
+    Rails.cache.fetch(key_for_chapter_posted_counting(self)) do
+      self.chapters.posted.count
+    end
   end
 
   def chapters_in_order(include_content = true)
@@ -688,6 +761,7 @@ class Work < ActiveRecord::Base
 
   after_save :update_complete_status
   def update_complete_status
+    # self.chapters.posted.count ( not self.number_of_posted_chapter , here be dragons )
     self.complete = self.chapters.posted.count == expected_number_of_chapters
     if self.complete_changed?
       Work.update_all("complete = #{self.complete}", "id = #{self.id}")
@@ -711,9 +785,13 @@ class Work < ActiveRecord::Base
   end
 
   # Set the value of word_count to reflect the length of the chapter content
+  # Called before_save
   def set_word_count
     if self.new_record?
-      self.word_count = self.chapters.first.set_word_count
+      self.word_count = 0
+      chapters.each do |chapter|
+        self.word_count += chapter.set_word_count
+      end
     else
       self.word_count = Chapter.select("SUM(word_count) AS work_word_count").where(:work_id => self.id, :posted => true).first.work_word_count
     end
@@ -737,7 +815,7 @@ class Work < ActiveRecord::Base
 
   def download_fandoms
     string = self.fandoms.size > 3 ? ts("Multifandom") : self.fandoms.string
-    string = string.to_ascii 
+    string = string.to_ascii
     string.gsub(/[^[\w _-]]+/, '')
   end
 
@@ -754,7 +832,7 @@ class Work < ActiveRecord::Base
   end
 
   def download_title
-    string = title.to_ascii.gsub(/[^[\w _-]]+/, '')
+    string = title.to_ascii.gsub(/[^[\w _]]+/, '')
     string = "Work by " + download_authors if string.blank?
     string.gsub(/ +/, " ").strip.gsub(/^(.{24}[\w.]*).*/) {$1}
   end
@@ -769,10 +847,19 @@ class Work < ActiveRecord::Base
   #######################################################################
 
   def tag_groups
-    if self.placeholder_tags
-      self.placeholder_tags.values.flatten.group_by { |t| t.type.to_s }
-    else
-      self.tags.group_by { |t| t.type.to_s }
+    Rails.cache.fetch(self.tag_groups_key) do
+      if self.placeholder_tags
+        result = self.placeholder_tags.values.flatten.group_by { |t| t.type.to_s }
+      else
+        result = self.tags.group_by { |t| t.type.to_s }
+      end
+      result["Fandom"] ||= []
+      result["Rating"] ||= []
+      result["Warning"] ||= []
+      result["Relationship"] ||= []
+      result["Character"] ||= []
+      result["Freeform"] ||= []
+      result
     end
   end
 
@@ -852,7 +939,7 @@ class Work < ActiveRecord::Base
   # Calls reset_filter_count on all the work's filters
   def adjust_filter_counts
     if self.should_reset_filters
-      self.filters.reload.each {|filter| filter.reset_filter_count }
+      self.filters.reload.each {|filter| filter.async(:reset_filter_count) }
     end
     return true
   end
@@ -920,7 +1007,7 @@ class Work < ActiveRecord::Base
   # Virtual attribute for parent work, via related_works
   def parent_attributes=(attributes)
     unless attributes[:url].blank?
-      if attributes[:url].include?(ArchiveConfig.APP_URL)
+      if attributes[:url].include?(ArchiveConfig.APP_HOST)
         if attributes[:url].match(/\/works\/(\d+)/)
           begin
             self.new_parent = {:parent => Work.find($1), :translation => attributes[:translation]}
@@ -1026,7 +1113,7 @@ class Work < ActiveRecord::Base
   scope :visible_to_owner, posted
   scope :all_with_tags, includes(:tags)
 
-  scope :giftworks_for_recipient_name, lambda {|name| select("DISTINCT works.*").joins(:gifts).where("recipient_name = ?", name)}
+  scope :giftworks_for_recipient_name, lambda { |name| select("DISTINCT works.*").joins(:gifts).where("recipient_name = ?", name).where("gifts.rejected = FALSE") }
 
   scope :non_anon, where(:in_anon_collection => false)
   scope :unrevealed, where(:in_unrevealed_collection => true)
@@ -1274,7 +1361,7 @@ class Work < ActiveRecord::Base
 
   def to_indexed_json
     to_json(
-      except: [:spam, :spam_checked_at],
+      except: [:spam, :spam_checked_at, :moderated_commenting_enabled],
       methods: [
         :rating_ids,
         :warning_ids,
@@ -1300,11 +1387,11 @@ class Work < ActiveRecord::Base
       root: false,
       only: [:id, :title, :summary, :hidden_by_admin, :restricted, :posted,
         :created_at, :revised_at, :language_id, :word_count],
-      methods: [:tag, :filter_ids, :rating_ids, :warning_ids, :category_ids, 
-        :fandom_ids, :character_ids, :relationship_ids, :freeform_ids, 
+      methods: [:tag, :filter_ids, :rating_ids, :warning_ids, :category_ids,
+        :fandom_ids, :character_ids, :relationship_ids, :freeform_ids,
         :pseud_ids, :creators, :collection_ids, :work_types]
     ).merge(
-      anonymous: anonymous?, 
+      anonymous: anonymous?,
       unrevealed: unrevealed?,
       bookmarkable_type: 'Work'
     )

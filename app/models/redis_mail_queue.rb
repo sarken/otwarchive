@@ -25,15 +25,11 @@ class RedisMailQueue
           REDIS_KUDOS.del(key)
         end
 
-        # add the guest count as the last "name"
-        names << "#{guest_count} guests" if guest_count > 1
-        names << "a guest" if guest_count == 1
-
         # get the commentable
         prefix, author, commentable_type, commentable_id = key.split("_")
 
         # batch it
-        user_kudos["#{commentable_type}_#{commentable_id}"] = names
+        user_kudos["#{ commentable_type }_#{ commentable_id }"] = {names: names, guest_count: guest_count}
       end
 
       next if user_kudos.blank?
@@ -78,7 +74,7 @@ class RedisMailQueue
   def self.clear_queue(notification_type)
     redis = redis_for_type(notification_type)
     keys = redis.keys("#{notification_type}_*")
-    redis.del(*keys)
+    redis.del(*keys) unless keys.empty?
     redis.del("notification_#{notification_type}")
   end
 

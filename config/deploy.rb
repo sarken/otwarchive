@@ -2,12 +2,12 @@
 # To describe the idea here -- these are capistrano "recipes" which are a bit like rake tasks
 # You wrap all the fiddly systems scripts and things that you need to do for a deploy into these nice neat little individual tasks
 # and then you can chain the tasks together
-# 
+#
 # when you run "cap deploy:migrate" let's say, all the things you've told to run before or after it go automatically
 # eg this line in deploy/production.rb:
 #    before "deploy:migrate", "production_only:backup_db"
-# says, if I run "cap deploy:migrate production" then before doing any of the actual work of the deploy, 
-# run the task called "production_only:backup_db" which is defined in deploy.rb 
+# says, if I run "cap deploy:migrate production" then before doing any of the actual work of the deploy,
+# run the task called "production_only:backup_db" which is defined in deploy.rb
 #
 # namespace :production_only do
 #   # Back up the production database
@@ -18,11 +18,11 @@
 #
 # which says, run this script backup_database.sh
 # and run it on the machine that has the ":db" role
-# 
-# The roles are defined in each of deploy/production.rb and deploy/staging.rb, 
+#
+# The roles are defined in each of deploy/production.rb and deploy/staging.rb,
 # and can be set differently for whichever system you are deploying to.
 #
-# Several tasks run automatically based on behind-the-scenes magic 
+# Several tasks run automatically based on behind-the-scenes magic
 #
 require './config/boot'
 require 'new_relic/recipes'
@@ -37,7 +37,7 @@ set :default_stage, "staging"
 #require 'capistrano/gitflow_version'
 
 # use rvm
-require "rvm/capistrano"    
+require "rvm/capistrano"
 set :rvm_ruby_string, ENV['GEM_HOME'].gsub(/.*\//, "")
 set :rvm_type, :user
 
@@ -61,11 +61,16 @@ set :scm, :git
 set :repository, "git://github.com/otwcode/otwarchive.git"
 set :deploy_via, :remote_cache
 
+
 # overwrite default capistrano deploy tasks
 namespace :deploy do
   desc "Restart the unicorns"
-  task :restart, :roles => :app do
-    run "/home/ao3app/bin/unicorns_reload"
+  task :restart  do
+    find_servers(roles: [:app, :web]).each do |server|
+      puts "restart on #{server.host}"
+      run "cd ~/app/current ; bundle exec rake skins:cache_all_site_skins RAILS_ENV=#{rails_env}" , :hosts => server.host
+      run "/home/ao3app/bin/unicorns_reload", :hosts => server.host
+    end
   end
 
   desc "Restart the resque workers"
@@ -78,7 +83,6 @@ namespace :deploy do
     run "/home/ao3app/bin/scheduler_reload"
   end
 
-
   desc "Get the config files"
   task :update_configs, :roles => [ :app , :web ] do
     run "/home/ao3app/bin/create_links_on_install"
@@ -90,7 +94,7 @@ namespace :deploy do
     run "echo cron entries are currently managed by hand"
   end
 
-  # This should only be one machine 
+  # This should only be one machine
   desc "update the crontab for whatever machine should run the scheduled tasks"
   task :update_cron, :roles => :app, :only => {:primary => true} do
     # run "bundle exec whenever --update-crontab #{application}"
@@ -98,9 +102,13 @@ namespace :deploy do
   end
 
   # Needs to run on web (front-end) servers, but they must also have rails installed
-  desc "Re-caches the site skins and puts the new versions into the static files area"
-  task :reload_site_skins, :roles => :web do
-    run "cd ~/app/current ; bundle exec rake skins:load_site_skins RAILS_ENV=#{rails_env}"
+  desc "Re-caches the site skins"
+  task :reload_site_skins do
+    find_servers(:roles => :web).each do |server|
+      puts "Caching skins on #{server.host}"
+      run "cd ~/app/current ; bundle exec rake skins:cache_all_site_skins  RAILS_ENV=#{rails_env} ; cd ~/app ; rm web_old ; ln -f -s `readlink -f current` web_new ; mv web web_old ; mv web_new web", :hosts => server.host
+      sleep (10)
+    end
   end
 end
 
@@ -111,7 +119,7 @@ end
 #       deploy:symlink
 #   deploy:restart
 #
-# Calling "cap deploy:migrations" inserts the task "deploy:migrate" before deploy:symlink 
+# Calling "cap deploy:migrations" inserts the task "deploy:migrate" before deploy:symlink
 #
 
 # after and before task triggers that should run on both staging and production

@@ -1,4 +1,6 @@
 class PromptMeme < ActiveRecord::Base
+  include ActiveModel::ForbiddenAttributesProtection
+
   PROMPT_TYPES = %w(requests)
   include ChallengeCore
 
@@ -30,7 +32,7 @@ class PromptMeme < ActiveRecord::Base
   end
 
   before_validation :update_allowed_values, :update_allowed_prompts
-  
+
   # make sure that challenge sign-up / close / open dates aren't contradictory
   validate :validate_signup_dates
 
@@ -44,6 +46,9 @@ class PromptMeme < ActiveRecord::Base
 
   #FIXME hack because time zones are being html encoded. couldn't figure out why.
   before_save :fix_time_zone
+
+  #  When Challenges are deleted, there are two references left behind that need to be reset to nil
+  before_destroy :clear_challenge_references
 
   def user_allowed_to_see_signups?(user)
     return true

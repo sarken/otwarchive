@@ -35,9 +35,9 @@ Feature: Edit chapters
     And I fill in "chapter_position" with "2"
     And I fill in "chapter_wip_length" with "100"
     And I fill in "content" with "original chapter two"
-    And "Issue 3306" is fixed
+    And "AO3-3300" is fixed
     # All the commented out bits in the following examples need to be changed
-    # back once Issue 3306 has bee fixed.
+    # back once AO3-3300 has bee fixed.
     #And I press "Preview"
   #Then I should see "This is a draft chapter in a posted work. It will be kept unless the work is deleted."
   #When I press "Post"
@@ -278,3 +278,14 @@ Feature: Edit chapters
       And I press "Post Without Preview"
       And I go to the works page
     Then "First work" should appear before "A Whole New Work"
+
+  Scenario: Users can't set a chapter publication date that is in the future, e.g. set 
+  the date to April 30 when it is April 26
+    Given I am logged in
+      And it is currently Wed Apr 26 22:00:00 UTC 2017
+      And I post the work "Futuristic"
+      And a chapter is set up for "Futuristic"
+    When I select "30" from "chapter[published_at(3i)]"
+      And I press "Post Without Preview"
+    Then I should see "Publication date can't be in the future."
+    When I jump in our Delorean and return to the present

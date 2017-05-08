@@ -61,7 +61,7 @@ li.search fieldset {
 /* INTERACTION: FILTER */
 
 form.filters {
-  width: 22.5%;
+  width: 23%;
   float: right;
 }
 
@@ -78,6 +78,10 @@ form.filters dl {
   padding: 0;
 }
 
+.filters dt, .filters select {
+  min-width: 0;
+}
+
 .filters dt a {
   border: none;
 }
@@ -92,6 +96,10 @@ form.filters dl {
 
 .filters dd, .filters dt, .filters .submit input {
   width: 100%;
+}
+
+.filters input + label {
+  padding-left: 0;
 }
 
 .filters .submit {

@@ -4,25 +4,19 @@ Feature: Collection
   As a humble user
   I want to create a collection and post to it
 
-Scenario: Create a collection then edit its name
+Scenario: Create a collection
 
   Given I am logged in as "first_user"
-  When I post the work "Test work thingy"
   When I go to the collections page
   Then I should see "Collections in the "
     And I should not see "My Collection Thing"
   When I follow "New Collection"
-    And I fill in "Display Title" with "My Collection Thing"
-    And I fill in "Collection Name" with "collection_thing"
+    And I fill in "Display title" with "My Collection Thing"
+    And I fill in "Collection name" with "collection_thing"
     And I fill in "Introduction" with "Welcome to the collection"
     And I fill in "FAQ" with "<dl><dt>What is this thing?</dt><dd>It's a collection</dd></dl>"
     And I fill in "Rules" with "Be nice to people"
-    And I check the 1st checkbox with id matching "collection_collection_preference_attributes_moderated"
-    And I check the 1st checkbox with id matching "collection_collection_preference_attributes_closed"
-    And I check the 1st checkbox with id matching "collection_collection_preference_attributes_unrevealed"
-    And I check the 1st checkbox with id matching "collection_collection_preference_attributes_anonymous"
-    And I check the 1st checkbox with id matching "collection_collection_preference_attributes_show_random"
-    And I check the 1st checkbox with id matching "collection_collection_preference_attributes_email_notify"
+    And I check all the collection settings checkboxes
     And I submit
   Then I should see "Collection was successfully created"
   When I follow "Profile"
@@ -30,17 +24,17 @@ Scenario: Create a collection then edit its name
     And I should see "What is this thing?" within "#faq"
     And I should see "It's a collection" within "#faq"
     And I should see "Be nice to people" within "#rules"
-  Then I follow "Collection Settings"
-    And I fill in "Collection Name" with " "
+  When I follow "Collection Settings"
+    And I fill in "Collection name" with " "
     And I submit
     And I should see "Please enter a name for your collection"
-  Then I fill in "Collection Name" with "collection_thing2"
+  When I fill in "Collection name" with "collection_thing2"
     And I submit
     And I should see "Collection was successfully updated"
+    And the name of the collection "My Collection Thing" should be "collection_thing2"
     
 Scenario: Post to collection from the work edit page
-  Given I have the collection "My Collection Thing" with name "collection_thing"
-    And basic tags
+  Given the collection "My Collection Thing" with name "collection_thing"
     And I am logged in as "first_user"
   When I post the work "collect-y work"
     And I go to first_user's user page
@@ -76,8 +70,8 @@ Scenario: Create a subcollection
   When I go to the collections page
     And I follow "New Collection"
     And I fill in "collection_parent_name" with "collection_thing"
-    And I fill in "Display Title" with "My SubCollection"
-    And I fill in "Collection Name" with "subcollection_thing"
+    And I fill in "Display title" with "My SubCollection"
+    And I fill in "Collection name" with "subcollection_thing"
     And I submit
   Then I should see "Collection was successfully created"
   
@@ -88,30 +82,30 @@ Scenario: Fill out new collection form with faulty data
 
    When I follow "New Collection"
    And I fill in the following:
-   | Collection Name                 | faulty name         |
-   | Display Title                   | Awesome Collection  |
-   | Email                           | fangirl@example.org |
-   | Brief Description               | My Description      |
+   | Collection name                 | faulty name         |
+   | Display title                   | Awesome Collection  |
+   | Collection email                | fangirl@example.org |
+   | Brief description               | My Description      |
    | Introduction                    | My Introduction     |
    | FAQ                             | My FAQ              |
    | Rules                           | My Rules            |
-   | Assignment Notification Message | My Message          |
-   | Gift Notification Message       | My Other Message    |
+   | Assignment notification message | My Message          |
+   | Gift notification message       | My Other Message    |
 
    And I check "This collection is closed"
    And I select "Gift Exchange" from "Type of challenge, if any"
    And I submit
 
    Then I should see a save error message
-   And I should see "faulty name" in the "Collection Name" input
-   And I should see "Awesome Collection" in the "Display Title" input
-   And I should see "fangirl@example.org" in the "Email" input
-   And I should see "My Description" in the "Brief Description" input
+   And I should see "faulty name" in the "Collection name" input
+   And I should see "Awesome Collection" in the "Display title" input
+   And I should see "fangirl@example.org" in the "Collection email" input
+   And I should see "My Description" in the "Brief description" input
    And I should see "My Introduction" in the "Introduction" input
    And I should see "My FAQ" in the "FAQ" input
    And I should see "My Rules" in the "Rules" input
-   And I should see "My Message" in the "Assignment Notification Message" input
-   And I should see "My Other Message" in the "Gift Notification Message" input
+   And I should see "My Message" in the "Assignment notification message" input
+   And I should see "My Other Message" in the "Gift notification message" input
    And the "This collection is closed" checkbox should not be disabled
    And "Gift Exchange" should be selected within "Type of challenge, if any"
 
@@ -132,8 +126,8 @@ Given I have the collection "Scotts Collection" with name "scotts_collection"
   When I go to the collections page
     And I follow "New Collection"
     And I fill in "collection_parent_name" with "temporary_top_collection"
-    And I fill in "Display Title" with "Temporary Subcollection"
-    And I fill in "Collection Name" with "temporary_subcollection"
+    And I fill in "Display title" with "Temporary Subcollection"
+    And I fill in "Collection name" with "temporary_subcollection"
     And I press "Submit"
   Then I should see "Collection was successfully created"
   When I follow "Collection Settings"
@@ -155,8 +149,8 @@ Given I have the collection "Scotts Collection" with name "scotts_collection"
   When I go to the collections page
     And I follow "New Collection"
     And I fill in "collection_parent_name" with "parent_collection"
-    And I fill in "Display Title" with "Child"
-    And I fill in "Collection Name" with "child_collection"
+    And I fill in "Display title" with "Child"
+    And I fill in "Collection name" with "child_collection"
     And I press "Submit"
   Then I should see "Collection was successfully created"
   When I go to the collections page
@@ -166,3 +160,55 @@ Given I have the collection "Scotts Collection" with name "scotts_collection"
     And I press "Yes, Delete Collection"
   Then I should see "Collection was successfully deleted."
     And I should not see "Parent"
+
+  Scenario: Moderator cannot list one collection's subcollection as another
+  collection's parent
+
+  Given I am logged in as "collector"
+    And I add the subcollection "Subcollection" to the parent collection named "parent_collection"
+  When I go to the new collection page 
+    And I fill in "Parent collection (that you maintain)" with "subcollection"
+    And I fill in "Display title" with "Sub-Subcollection"
+    And I fill in "Collection name" with "sub_subcollection"
+    And I press "Submit"
+  Then I should see "Sorry, but Subcollection is a subcollection, so it can't also be a parent collection."
+
+  Scenario: Moderator cannot specify a parent collection that does not exist
+
+  Given I am logged in
+  When I go to the new collection page 
+    And I fill in "Parent collection (that you maintain)" with "nonexistent_collection"
+    And I fill in "Display title" with "Collection"
+    And I fill in "Collection name" with "Collection"
+    And I press "Submit"
+  Then I should see "We couldn't find a collection with name nonexistent_collection."
+
+  Scenario: Moderator cannot make a collection its own parent
+
+  Given I am logged in
+    And I create the collection "Collection" with name "collection"
+  When I go to "Collection" collection edit page
+    And I fill in "Parent collection (that you maintain)" with "collection"
+    And I press "Update"
+  Then I should see "You can't make a collection its own parent."
+
+  Scenario: Moderator cannot list a parent collection they do not own
+
+  Given I am logged in as "collector"
+    And I create the collection "Collection" with name "collection"
+  When I am logged in as "other_collector"
+    And I go to the new collection page
+    And I fill in "Display title" with "Other Collection"
+    And I fill in "Collection name" with "other_collection"
+    And I fill in "Parent collection (that you maintain)" with "collection"
+    And I press "Submit"
+  Then I should see "You have to be a maintainer of collection to make a subcollection."
+
+  Scenario: Collection display title can't contain commas
+
+  Given I am logged in
+    And I am on the new collection page
+  When I fill in "Display title" with "Hey, You"
+    And I fill in "Collection name" with "hey_you"
+    And I press "Submit"
+  Then I should see "Sorry, the ',' character cannot be in a collection Display Title."

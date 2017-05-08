@@ -2,9 +2,9 @@ class ChaptersController < ApplicationController
   # only registered users and NOT admin should be able to create new chapters
   before_filter :users_only, :except => [ :index, :show, :destroy, :confirm_delete ]
   before_filter :load_work, :except => [:index, :auto_complete_for_pseud_name, :update_positions]
-  before_filter :set_instance_variables, :only => [ :new, :create, :edit, :update, :preview, :post, :confirm_delete ]
   # only authors of a work should be able to edit its chapters
-  before_filter :check_ownership, :only => [ :edit, :update, :manage, :destroy, :confirm_delete ]
+  before_filter :check_ownership, :only => [ :new, :create, :edit, :update, :manage, :destroy, :confirm_delete ]
+  before_filter :set_instance_variables, :only => [ :new, :create, :edit, :update, :preview, :post, :confirm_delete ]
   before_filter :check_visibility, :only => [ :show]
   before_filter :check_user_status, :only => [:new, :create, :edit, :update]
 
@@ -25,6 +25,7 @@ class ChaptersController < ApplicationController
   # GET /work/:work_id/chapters/:id
   # GET /work/:work_id/chapters/:id.xml
   def show
+    @tag_groups = @work.tag_groups
     if params[:view_adult]
       session[:adult] = true
     elsif @work.adult? && !see_adult?
@@ -52,10 +53,10 @@ class ChaptersController < ApplicationController
         @next_chapter = @chapters[chapter_position+1]
       end
       @commentable = @work
-      @comments = @chapter.comments
+      @comments = @chapter.comments.reviewed
 
       @page_title = @work.unrevealed? ? ts("Mystery Work - Chapter %{position}", :position => @chapter.position.to_s) :
-        get_page_title(@work.fandoms.string,
+        get_page_title(@tag_groups["Fandom"][0].name,
           @work.anonymous? ? ts("Anonymous") : @work.pseuds.sort.collect(&:byline).join(', '),
           @work.title + " - Chapter " + @chapter.position.to_s)
 
@@ -66,10 +67,11 @@ class ChaptersController < ApplicationController
                                                          :subscribable_type => 'Work').first ||
                         current_user.subscriptions.build(:subscribable => @work)
       end
+      # update the history.
+      Reading.update_or_create(@work, current_user) if current_user
 
       # TEMPORARY hack-like thing to fix the fact that chaptered works weren't hit-counted or added to history at all
       if chapter_position == 0
-        Reading.update_or_create(@work, current_user) if current_user
         Rails.logger.debug "Chapter remote addr: #{request.remote_ip}"
         @work.increment_hit_count(request.remote_ip)
       end
@@ -133,7 +135,7 @@ class ChaptersController < ApplicationController
   # PUT /work/:work_id/chapters/1
   # PUT /work/:work_id/chapters/1.xml
   def update
-    @chapter.attributes = params[:chapter]
+    @chapter.attributes = chapter_params
     @work.wip_length = params[:chapter][:wip_length]
     load_pseuds
 
@@ -269,10 +271,11 @@ class ChaptersController < ApplicationController
     if params[:id] # edit, update, preview, post
       @chapter = @work.chapters.find(params[:id])
       if params[:chapter]  # editing, save our changes
-        @chapter.attributes = params[:chapter]
+        # @chapter.attributes = params[:chapter]
+        @chapter.attributes = chapter_params
       end
     elsif params[:chapter] # create
-      @chapter = @work.chapters.build(params[:chapter])
+      @chapter = @work.chapters.build(chapter_params)
     else # new
       @chapter = @work.chapters.build(:position => @work.number_of_chapters + 1)
     end
@@ -282,6 +285,13 @@ class ChaptersController < ApplicationController
     @coauthors = @allpseuds.select{ |p| p.user.id != current_user.id}
     to_select = @chapter.authors.blank? ? @chapter.pseuds.blank? ? @work.pseuds : @chapter.pseuds : @chapter.authors
     @selected_pseuds = to_select.collect {|pseud| pseud.id.to_i }
+    
+    # make sure at least one of the pseuds is actually owned by this user
+    user_ids = Pseud.where(id: @selected_pseuds).value_of(:user_id).uniq
+    unless user_ids.include?(current_user.id)
+      flash.now[:error] = ts("You're not allowed to use that pseud.")
+      render :new and return
+    end
 
   end
 
@@ -290,5 +300,15 @@ class ChaptersController < ApplicationController
       @work.update_attribute(:posted, true)
     end
     flash[:notice] = ts('Chapter has been posted!')
+  end
+
+  private
+
+  def chapter_params
+    params.require(:chapter).permit(:title, :position, :wip_length, :"published_at(3i)",
+                                    :"published_at(2i)", :"published_at(1i)", :summary,
+                                    :notes, :endnotes, :content, :published_at,
+                                    author_attributes: [:byline, ids: [], coauthors: []])
+
   end
 end

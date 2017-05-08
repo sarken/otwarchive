@@ -1,7 +1,9 @@
 # encoding=utf-8
 
 class Chapter < ActiveRecord::Base
+  include ActiveModel::ForbiddenAttributesProtection
   include HtmlCleaner
+  include WorkChapterCountCaching
   
   has_many :creatorships, :as => :creation
   has_many :pseuds, :through => :creatorships
@@ -77,12 +79,24 @@ class Chapter < ActiveRecord::Base
     end
   end
   
-  before_destroy :fix_positions_after_destroy
+  after_save :invalidate_chapter_count,
+    if: Proc.new { |chapter| chapter.posted_changed? }
+  before_destroy :fix_positions_after_destroy, :invalidate_chapter_count
   def fix_positions_after_destroy
     if work && position
       chapters = work.chapters.where(["position > ?", position])
       chapters.each{|c| c.update_attribute(:position, c.position + 1)}
     end
+  end
+
+  def invalidate_chapter_count
+    if work
+      invalidate_work_chapter_count(work)
+    end
+  end
+
+  def moderated_commenting_enabled?
+    work && work.moderated_commenting_enabled?
   end
 
   # strip leading spaces from title
@@ -177,7 +191,7 @@ class Chapter < ActiveRecord::Base
 
   # Set the value of word_count to reflect the length of the text in the chapter content
   def set_word_count
-    if self.new_record? || self.content_changed?
+    if self.new_record? || self.content_changed? || self.word_count.nil?
       counter = WordCounter.new(self.content)
       self.word_count = counter.count
     else

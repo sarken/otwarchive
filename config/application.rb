@@ -16,11 +16,13 @@ module Otwarchive
     # config.autoload_paths += %W(#{config.root}/extras)
     config.autoload_paths += %W(#{Rails.root}/lib)
     config.autoload_paths += %W(#{Rails.root}/app/sweepers)
-    %w(challenge_models 
-        tagset_models 
-        indexing 
-        search 
-        feedback_reporters
+    %w(
+      challenge_models
+      tagset_models
+      indexing
+      search
+      feedback_reporters
+      potential_matcher
     ).each do |dir|
       config.autoload_paths << "#{Rails.root}/app/models/#{dir}"
     end
@@ -33,7 +35,7 @@ module Otwarchive
     # I18n validation deprecation warning fix
     #
 
-    I18n.config.enforce_available_locales = true
+    I18n.config.enforce_available_locales = false
     I18n.config.available_locales = [:en, :ar, :ca, 'zh-CN', :cs, :nl, :fi, :fr, :de, :he, :hu, :id, 
       :it, :ja, :ko, :lt, :pl, 'pt-BR', :ru, :es, :sv, :tr]
 

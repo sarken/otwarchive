@@ -19,6 +19,9 @@ Feature: User Authentication
     When I fill in "reset_password_for" with "sam"
       And I press "Reset Password"
     Then 1 email should be delivered
+      And the email should contain "the following generated password has been created for you"
+      And the email should contain "sam"
+      And the email should not contain "translation missing"
 
     # old password should still work
     When I am on the homepage
@@ -36,8 +39,8 @@ Feature: User Authentication
     And I should see "Change My Password"
 
     # and I should be able to change the password
-    When I fill in "New Password" with "newpass"
-    And I fill in "Confirm New Password" with "newpass"
+    When I fill in "New password" with "newpass"
+    And I fill in "Confirm new password" with "newpass"
     And I press "Change Password"
     Then I should see "Your password has been changed"
 
@@ -66,7 +69,7 @@ Feature: User Authentication
     Then I should see "Hi, sam"
 
   Scenario: invalid user
-    Given I have loaded the "users" fixture
+    Given I have loaded the fixtures
     When I am on the home page
     And I follow "Forgot password?"
     When I fill in "reset_password_for" with "testuser"
@@ -82,8 +85,8 @@ Feature: User Authentication
     And I should see "Change My Password"
 
     # and I should be able to change the password
-    When I fill in "New Password" with "newpas"
-    And I fill in "Confirm New Password" with "newpas"
+    When I fill in "New password" with "newpas"
+    And I fill in "Confirm new password" with "newpas"
     And I press "Change Password"
     Then I should see "Your password has been changed"
 
@@ -117,7 +120,7 @@ Feature: User Authentication
       And I fill in "User name" with "sam"
       And I fill in "Password" with "tester"
       And I press "Log In"
-    Then I should see "The password or user name you entered doesn't match our records. Please try again or follow the 'Forgot password?' link below."
+    Then I should see "The password or user name you entered doesn't match our records. Please try again or reset your password. If you still can't log in, please visit Problems When Logging In for help."
 
   Scenario: Logged out
     Given I have no users
@@ -146,4 +149,3 @@ Feature: User Authentication
       | sam   | dean  | see "Log Out"            |
       | sam   | dean  | not see "Preferences" within "#dashboard" |
       | sam   | dean  | not see "Log In"         |
-
