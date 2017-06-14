@@ -77,6 +77,7 @@
       <%= hidden_field_tag("fandom_id", @fandom.id) if @fandom %>
       <%= hidden_field_tag("pseud_id", @pseud.name) if @pseud %>
       <%= hidden_field_tag("user_id", @user.login) if @user %>
+      <%= hidden_field_tag("language_id", @language.short) if @language %>
     </div>
   <% end %>
   <% # On narrow screens, link jumps to top of index when JavaScript is disabled and closes filters when JavaScript is enabled %>

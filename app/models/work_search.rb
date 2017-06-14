@@ -182,6 +182,8 @@ class WorkSearch < Search
         options[:pseud_ids] = self.works_parent.pseuds.pluck(:id)
       elsif self.works_parent.is_a?(Collection)
         options[:collection_ids] = [self.works_parent.id]
+      elsif self.works_parent.is_a?(Language)
+        options[:language_id] = self.works_parent.id
       end
     end
   end

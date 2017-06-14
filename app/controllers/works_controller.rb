@@ -106,9 +106,11 @@ class WorksController < ApplicationController
       options[:filter_ids] = filter_ids
     end
 
-    if params[:language_id] && params[:language_id].present?
-      @language = Language.find_by(short: params[:language_id])
-      options[:language_id] = @language.short
+    if params[:language_id] || @language.present?
+      if params[:language_id]
+        @language = Language.find_by(short: params[:language_id])
+      end
+      options[:language_id] = params[:language_id]
     end
 
     options[:page] = params[:page]
