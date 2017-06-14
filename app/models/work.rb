@@ -1253,6 +1253,8 @@ class Work < ActiveRecord::Base
               works = Work.owned_by(owner)
             when 'Collection'
               works = Work.in_collection(owner)
+            when 'Language'
+              works = Work.by_language([owner.id])
             else
               if owner.is_a?(Tag)
                 works = owner.filtered_works

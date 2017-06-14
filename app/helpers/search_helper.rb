@@ -25,6 +25,8 @@ module SearchHelper
                       " by #{parent.byline}"
                     when 'User'
                       " by #{parent.login}"
+                    when "Language"
+                      " in #{parent.name}"
                     end
       if parent.is_a?(Tag)
         parent_text = " in #{link_to_tag_with_text(parent, parent.name)}"

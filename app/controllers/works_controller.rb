@@ -106,6 +106,11 @@ class WorksController < ApplicationController
       options[:filter_ids] = filter_ids
     end
 
+    if params[:language_id] && params[:language_id].present?
+      @language = Language.find_by(short: params[:language_id])
+      options[:language_id] = @language.short
+    end
+
     options[:page] = params[:page]
     options[:show_restricted] = current_user.present? || logged_in_as_admin?
     @page_subtitle = index_page_title
@@ -816,7 +821,10 @@ class WorksController < ApplicationController
         end
       end
     end
-    @owner = @pseud || @user || @collection || @tag
+    if params[:language_id]
+      @language = Language.find_by(short: params[:language_id])
+    end
+    @owner = @pseud || @user || @collection || @tag || @language
   end
 
   def load_pseuds
@@ -977,6 +985,8 @@ class WorksController < ApplicationController
           @owner.login
         when 'Collection'
           @owner.title
+        when 'Language'
+          @owner.name
         else
           @owner.try(:name)
         end
