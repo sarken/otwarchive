@@ -414,4 +414,17 @@ blurbs on the manage collection items pages, mostly reseting styles inherited fr
   display: inline;
 }
 
+/* mod: SUBSCRIPTION */
+
+.subscription > .item > .header {
+  min-height: 0;
+  padding-bottom: 0.375em;
+  border-bottom: 1px solid #ccc;
+}
+
+.subscription > .item > .header .heading {
+  margin-bottom: 0;
+  margin-left: 0;
+}
+
 /*END== */
