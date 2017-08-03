@@ -33,29 +33,58 @@
 
 <!--main content-->
 <%= will_paginate @subscriptions %>
-
-<h3 class="landmark heading"><%= ts('List of Subscriptions') %></h3>
-<dl class="subscription index group">
+<h3 class="landmark heading"><%= ts("List of Subscriptions") %></h3>
+<p><b>Note:</b> "Details" currently <em>toggles</em> information that is already present
+(but not visible) when the page loads. For performance, the information should
+not be loaded until "Details" is pressed. (The user won't notice a difference.)</p>
+<ul class="subscription index group">
   <% @subscriptions.each do |subscription| %>
-    <dt>
-      <%= link_to(subscription.name, subscription.subscribable) %>
-      <% if params[:type].blank? && subscription.subscribable_type == "Work" %>
-        <%= ts('(Work)') %>
-      <% end %>
-      <% if params[:type].blank? && subscription.subscribable_type == "Series" %>
-        <%= ts('(Series)') %>
-      <% end %>
-      <% unless subscription.subscribable_type == "User" %>
-        <%= ts('by %{creators}', :creators => byline(subscription.subscribable)).html_safe %>
-      <% end %>
-    </dt>
-    <dd>
-      <%= form_for [current_user, subscription], :html => {:method => :delete} do |f| %>
-        <%= f.submit ts('Unsubscribe from %{name}', :name => subscription.name).html_safe %>
-      <% end %>
-    </dd>
-  <% end %>
-</dl>
+    <% type = subscription.subscribable_type %>
+    <% subscribable = subscription.subscribable %>
+    <% name = subscription.name %>
+    <li class="<% type.downcase %> item blurb group" id="subscription_<%= subscription.id %>">
+      <div class="header module">
+        <h4 class="heading">
+          <%= link_to(name, subscribable) %>
+          <%= ts("(%{type})", type: type) if params[:type].blank? %>
+          <% unless type == "User" %>
+            <%= ts("by %{creators}", creators: byline(subscribable)).html_safe %>
+          <% end %>
+        </h4>
+      </div>
+      <% # remove "toggled" class at end to make this visible %>
+      <% subscribable_classes = "#{type.downcase}" %>
+      <blockquote id="subscription_<%= subscription.id %>_subscribable" class="<%= type.downcase %> <%= 'item picture' if type == 'User' %> blurb group toggled">
+        <% # these modules should only be loaded on request %>
+        <% if type == "User" %>
+          <% # the exisiting author blurb is intended for pseuds %>
+          <% author = Pseud.find(subscribable.default_pseud.id) %>
+          <%= render "people/author_module", author: author %>
+        <% end %>
+        <%= render "works/work_module", work: subscribable if type == "Work" %>
+        <%= render "series/series_module", series: subscribable if type == "Series" %>
+      </blockquote>
+      <ul class="actions">
+        <li>
+          <% target = "subscription_#{subscription.id}_subscribable" %>
+          <a href="#" class="<%= target %>_open expanded" aria-role="button">
+            <%= ts("Details") %>
+          </a>
+          <a href="#" class="<%= target %>_close collapsed hidden" aria-role="button">
+            <%= ts("Close Details") %>
+          </a>
+        </li>
+        <li>
+          <% # TODO use ajax-remove pattern here %>
+          <% # render "form", subscription: subscription %>
+          <%= form_for [current_user, subscription], :html => {:method => :delete} do |f| %>
+            <%= f.submit ts("Unsubscribe") %>
+          <% end %>
+        </li>
+      </ul>
+    <% end %>
+  </li>
+</ul>
 
 <%= will_paginate @subscriptions %>
 <!--/content-->
