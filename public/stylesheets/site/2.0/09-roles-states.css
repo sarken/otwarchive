@@ -3,8 +3,7 @@ http://otwcode.github.com/docs/front_end_coding/patterns/modifiers
 */
 
 .own, .draft, .draft .wrapper, .unread, .child, .unwrangled, .unreviewed {
-  background: #ededed;
-    opacity: 0.95;
+  background: #eee;
 }
 
 .draft {
