@@ -431,6 +431,10 @@ LiveValidation.prototype = {
     removeMessageAndFieldClass: function(){
       this.removeMessage();
       this.removeFieldClass();
+      // AO3 testing doing things with the form's submit button after resolving errors
+      // AO3-2187 jump the form
+      // AO3-3585 button doesn't re-enable
+      $j('input[data-disable-with]').addClass('hidden');
     }
 
 } // end of LiveValidation class
