@@ -55,6 +55,20 @@ LiveValidation.massValidate = function(validations){
 		var valid = validations[i].validate();
 		if(returnValue) returnValue = valid;
 	}
+	// AO3
+	if (returnValue == false) {
+	  // won't necessarily work on simple forms
+	  // var field_parent = $j('.LV_invalid_field:first').parent();
+	  // var field_label = $j('.LV_invalid_field:first').attr('id');
+	  // console.log(field_label);
+	  $j.scrollTo('.LV_invalid_field:first');
+	  // the problem here is we lose the error message
+	  $j('.LV_invalid_field:first').focus();
+	  // so let's try focusing on the field's label
+	  // [for="field_label"]
+	  // $j('label').filter('[for="' + field_label + '"]').focus();
+	  // no, labels put the focus on the field, so we end up back where we were
+	}
 	return returnValue;
 }
 
@@ -210,7 +224,8 @@ LiveValidation.prototype = {
      */
     doOnFocus: function(e){
       this.focused = true;
-      this.removeMessageAndFieldClass();
+      // AO3 This was bad -- we want the error there until the field has been validated
+      // this.removeMessageAndFieldClass();
     },
     
     /**
@@ -370,7 +385,7 @@ LiveValidation.prototype = {
     /**
      *	inserts the element containing the message in place of the element that already exists (if it does)
      *
-     * @var elementToIsert {HTMLElementObject} - an element node to insert
+     * @var elementToInsert {HTMLElementObject} - an element node to insert
      */
     insertMessage: function(elementToInsert){
       	this.removeMessage();
@@ -378,6 +393,10 @@ LiveValidation.prototype = {
     	  || this.element.value != '' ){
             var className = this.validationFailed ? this.invalidClass : this.validClass;
     	  	elementToInsert.className += ' ' + this.messageClass + ' ' + className;
+    	  	// AO3 ARIA message id
+    	  	var message_sibling_id = this.element.id;
+    	  	elementToInsert.setAttribute('id', message_sibling_id + '_LV_error');
+    	  	elementToInsert.setAttribute('aria-role', 'alert');
             if(this.insertAfterWhatNode.nextSibling){
     		  		this.insertAfterWhatNode.parentNode.insertBefore(elementToInsert, this.insertAfterWhatNode.nextSibling);
     		}else{
@@ -397,7 +416,15 @@ LiveValidation.prototype = {
                 if(this.element.className.indexOf(this.validFieldClass) == -1) this.element.className += ' ' + this.validFieldClass;
             }
         }else{
-            if(this.element.className.indexOf(this.invalidFieldClass) == -1) this.element.className += ' ' + this.invalidFieldClass;
+            if(this.element.className.indexOf(this.invalidFieldClass) == -1){
+              this.element.className += ' ' + this.invalidFieldClass;
+              // AO3 add ARIA invalid
+              // only necessary if we can't get an error message to work?
+              this.element.setAttribute('aria-invalid', true);
+              var message_id = this.element.nextSibling.id;
+              // AO3
+              this.element.setAttribute('aria-describedby', message_id);
+            }
         }
     },
     
@@ -418,11 +445,14 @@ LiveValidation.prototype = {
     },
     
     /**
-     *	removes the class that has been applied to the field to indicte if valid or not
+     *	removes the class that has been applied to the field to indicate if valid or not
      */
     removeFieldClass: function(){
       if(this.element.className.indexOf(this.invalidFieldClass) != -1) this.element.className = this.element.className.split(this.invalidFieldClass).join('');
-      if(this.element.className.indexOf(this.validFieldClass) != -1) this.element.className = this.element.className.split(this.validFieldClass).join(' ');
+      if(this.element.className.indexOf(this.validFieldClass) != -1){
+        this.element.className = this.element.className.split(this.validFieldClass).join(' ');
+        this.element.removeAttribute('aria-invalid');
+      }
     },
         
     /**
@@ -434,7 +464,7 @@ LiveValidation.prototype = {
       // AO3 testing doing things with the form's submit button after resolving errors
       // AO3-2187 jump the form
       // AO3-3585 button doesn't re-enable
-      $j('input[data-disable-with]').addClass('hidden');
+      $j.rails.enableFormElement($j('input[data-disable-with]'));
     }
 
 } // end of LiveValidation class
@@ -490,7 +520,7 @@ LiveValidationForm.prototype = {
     var self = this;
     this.element.onsubmit = function(e){
       if (typeof(tinyMCE)!="undefined") tinyMCE.triggerSave(this.fields); // AO3
-      var ret = (LiveValidation.massValidate(self.fields)) ? self.oldOnSubmit.call(this, e || window.event) !== false : false;
+      var ret = (LiveValidation.massValidate(self.fields)) ? self.oldOnSubmit.call(this, e || window.event) !== false : false;	  
    	  // AO3: don't freeze the form if the user has clicked on the 'cancel' button -elz, 3/2/09, Enigel 3/7/11
       var buttonClicked = document.activeElement || this.explicitOriginalTarget;  
       if (buttonClicked.name == 'cancel_button') ret = true;
