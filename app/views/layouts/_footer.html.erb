@@ -49,5 +49,12 @@
       </ul>
     </li>
   </ul>
+  <p class="project">
+    <%= ts("A project of the %{otw_link}, made possible by %{donate_link}.",
+      otw_link: link_to("Organization for Transformative Works", 
+        "http://www.transformativeworks.org"),
+      donate_link: link_to("your donations", 
+        "https://otw.cividesk.com/civicrm/index.php?q=civicrm/contribute/transact&reset=1&id=17")).html_safe %>
+  </p>
 </div>
 <!-- END footer -->

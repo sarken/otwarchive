@@ -76,4 +76,12 @@ http://otwcode.github.com/docs/front_end_coding/patterns/supertypes
   display: block;
 }
 
+#footer .project {
+  clear: both;
+  background: rgba(0, 0, 0, 0.3);
+  text-align: center;
+  margin: 0;
+  padding: 0.25em;
+}
+
 /*END== */
