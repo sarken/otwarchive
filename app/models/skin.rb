@@ -125,7 +125,6 @@ class Skin < ApplicationRecord
 
   scope :public_skins, -> { where(public: true) }
   scope :approved_skins, -> { where(official: true, public: true) }
-  scope :unapproved_skins, -> { where(public: true, official: false, rejected: false) }
   scope :rejected_skins, -> { where(public: true, official: false, rejected: true) }
   scope :site_skins, -> { where(type: nil) }
   scope :wizard_site_skins, -> { where("type IS NULL AND (
