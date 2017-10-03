@@ -694,10 +694,11 @@ class Work < ApplicationRecord
 
   # If the work is posted, the first chapter should be posted too
   def post_first_chapter
-    if self.saved_change_to_posted? || (self.chapters.first && self.chapters.first.posted != self.posted)
-      self.chapters.first.published_at = Date.today unless self.backdate
-      self.chapters.first.posted = self.posted
-      self.chapters.first.save
+    chapter_one = self.first_chapter
+    if self.saved_change_to_posted? || (chapter_one && chapter_one.posted != self.posted)
+      chapter_one.published_at = Date.today unless self.backdate
+      chapter_one.posted = self.posted
+      chapter_one.save
     end
   end
 
@@ -791,10 +792,13 @@ class Work < ApplicationRecord
   end
 
   after_save :update_complete_status
+  # Note: this can mark a work complete but it can also mark a complete work
+  # as incomplete if its status has changed
   def update_complete_status
     # self.chapters.posted.count ( not self.number_of_posted_chapter , here be dragons )
-    if self.chapters.posted.count == expected_number_of_chapters
-      Work.where("id = #{self.id}").update_all("complete = true")
+    self.complete = self.chapters.posted.count == expected_number_of_chapters
+    if self.will_save_change_to_attribute?(:complete)
+      Work.where("id = #{self.id}").update_all("complete = #{self.complete}")
     end
   end
 
@@ -834,7 +838,7 @@ class Work < ApplicationRecord
 
   # spread downloads out by first two letters of authorname
   def download_dir
-    "#{Rails.public_path}/#{self.download_folder}"
+    "/tmp/#{self.id}"
   end
 
   # split out so we can use this in works_helper
