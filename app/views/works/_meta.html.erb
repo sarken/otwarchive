@@ -78,7 +78,7 @@
           <dt class="words"><%= ts("Words:") %></dt>
           <dd class="words"><%= @chapter.word_count %></dd>
           <% unless @chapter.comments.count.zero? %>
-            <dt class="comments"><%= ts("Comments") %></dt>
+            <dt class="comments"><%= ts("Comments:") %></dt>
             <dd class="comments"><%= @chapter.comments.count %></dd>
           <% end %>
         </dl>
