@@ -9,9 +9,8 @@
       <% tags = tag_group[type] %>
         <% unless tags.blank? %>
           <dt class="<%= tag_type_css_class(type) %> tags">
-
             <% if type == "ArchiveWarning" %>
-              <%= link_to( tags.size == 1 ? type.constantize::NAME : type.constantize::NAME.pluralize, tos_faq_path(:anchor => "tags") ) %>:
+              <%= link_to( tags.size == 1 ? type.constantize::NAME : type.constantize::NAME.pluralize, tos_faq_path(anchor: "tags") ) %>:
             <% elsif type.constantize::NAME == ArchiveConfig.FREEFORM_CATEGORY_NAME %>
               <%= type.constantize::NAME %>:
             <% else %>
@@ -24,7 +23,7 @@
               <% if (type == "ArchiveWarning" && hide_warnings?(work)) || (type == "Freeform" && hide_freeform?(work)) %>
                 <%= show_hidden_tag_link_list_item(work, type, { suppress_toggle_class: true }) %>
              <% else %>
-               <%= tag_link_list(tags, link_to_works=true) %>
+               <%= tag_link_list(tags, link_to_works = true) %>
              <% end %>
             </ul>
           </dd>
@@ -84,35 +83,37 @@
       </dd>
     <% end %>
 
-      <% if logged_in_as_admin? %>
-        <dt class="ip">
-          <%= ts('IP Address:') %>
-        </dt>
-        <dd class="ip">
-          <% if @work.ip_address.nil? %>
-             <%= ts('No address recorded') %>
-          <% else %>
-             <%= @work.ip_address %>
-          <% end %>
-        </dd>
-        <dt class="akismet">
-          <%= ts('Akismet Reported As Spam:') %>
-        </dt>
-        <dd class="akismet">
-          <% if !@work.spam_checked? %>
-             <%= ts('No result recorded') %>
-          <% else %>
-             <%= @work.spam? %>
-          <% end %>
-        </dd>
-        <% if @work.gifts.are_rejected.exists? %>
-          <dt class="gift">
-            <%= ts('Refused As Gift:') %>
-          </dt>
-          <dd class="gift">
-            <%= @work.gifts.are_rejected.map { |g| g.recipient }.join(", ") %>
-          </dd>
+    <% if logged_in_as_admin? %>
+      <dt class="ip">
+        <%= ts("IP Address:") %>
+      </dt>
+      <dd class="ip">
+        <% if @work.ip_address.nil? %>
+            <%= ts("No address recorded") %>
+        <% else %>
+            <%= @work.ip_address %>
         <% end %>
+      </dd>
+
+      <dt class="akismet">
+        <%= ts("Akismet Reported As Spam:") %>
+      </dt>
+      <dd class="akismet">
+        <% if !@work.spam_checked? %>
+            <%= ts("No result recorded") %>
+        <% else %>
+            <%= @work.spam? %>
+        <% end %>
+      </dd>
+
+      <% if @work.gifts.are_rejected.exists? %>
+        <dt class="gift">
+          <%= ts("Refused As Gift:") %>
+        </dt>
+        <dd class="gift">
+          <%= @work.gifts.are_rejected.map { |g| g.recipient }.join(", ") %>
+        </dd>
       <% end %>
+    <% end %>
   </dl>
 </div>
