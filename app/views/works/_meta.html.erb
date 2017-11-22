@@ -65,9 +65,11 @@
     </dd>
 
     <% # Display chapter stats on chapter view of multichapter works %>
+    <% # If we're in the chapters controller %>
+    <% # If we're in the works controller and not viewing the full work %>
     <% if @work.number_of_posted_chapters > 1 &&
-          (params[:controller] == "chapters" && params[:action] == "show" ||
-           params[:view_full_work] != "true") %>
+          (params[:controller] == "chapters" ||
+           params[:controller] == "work" && params[:view_full_work].nil?) %>
       <dt class="chapter stats"><%= ts("Chapter Stats:") %></dt>
       <dd class="chapter stats">
         <dl class="stats">
