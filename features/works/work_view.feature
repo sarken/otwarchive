@@ -26,6 +26,12 @@ Feature: View a work with various options
     And the chaptered work "Whatever"
   When I view the work "Whatever"
   Then I should see "Chapter 2"
+    And I should not see "Chapter Stats"
+
+  Scenario: Viewing a work in chapter by the default chapter mode
+  Given the chaptered work "Whatever"
+  When I view the work "Whatever"
+  Then I should see "Chapter Stats"
 
   Scenario: viewing a work and chapter that have been deleted
   Given I am logged in as a random user

@@ -716,7 +716,7 @@ class Work < ApplicationRecord
     # only posted chapters unless specified
     chapters = chapters.where(posted: true) unless include_drafts
     # when doing navigation pass false as contents are not needed
-    chapters = chapters.select('published_at, id, work_id, title, position, posted') unless include_content
+    chapters = chapters.select('published_at, id, work_id, title, position, posted, word_count') unless include_content
     chapters
   end
 

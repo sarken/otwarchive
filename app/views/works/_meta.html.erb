@@ -58,12 +58,32 @@
       </dd>
     <% end %>
 
-    <dt class="stats"><%= ts("Stats:") %></dt>
-    <dd class="stats">
+    <dt class="work stats"><%= ts("Work Stats:") %></dt>
+    <dd class="work stats">
 <% end %><!-- end of cache -->
 
       <%= work_meta_list(@work, @chapter) %>
+    </dd>
+
+    <% # Display chapter stats on chapter view of multichapter works %>
+    <% if @work.number_of_posted_chapters > 1 &&
+          (params[:controller] == "chapters" && params[:action] == "show" ||
+           params[:view_full_work] != "true") %>
+      <dt class="chapter stats"><%= ts("Chapter Stats:") %></dt>
+      <dd class="chapter stats">
+        <dl class="stats">
+          <dt class="published"><%= ts("Published:") %></dt>
+          <dd class="published"><%= localize(@chapter.published_at) %></dd>
+          <dt class="words"><%= ts("Words:") %></dt>
+          <dd class="words"><%= @chapter.word_count %></dd>
+          <% unless @chapter.comments.count.zero? %>
+            <dt class="comments"><%= ts("Comments") %></dt>
+            <dd class="comments"><%= @chapter.comments.count %></dd>
+          <% end %>
+        </dl>
       </dd>
+    <% end %>
+
       <% if logged_in_as_admin? %>
         <dt class="ip">
           <%= ts('IP Address:') %>
