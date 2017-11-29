@@ -254,8 +254,8 @@ class UserMailer < BulletproofMailer::Base
   ### WORKS NOTIFICATIONS ###
 
   # Sends email when a user is added as a co-author
-  def coauthor_notification(user_id, creation_id, creation_class_name, editing_author)
-    @editing_author = editing_author
+  def coauthor_notification(user_id, creation_id, creation_class_name, editing_author_id)
+    @editing_author = User.find_by(id: editing_author_id)
     @user = User.find(user_id)
     @creation = creation_class_name.constantize.find(creation_id)
     I18n.with_locale(Locale.find(@user.preference.preferred_locale).iso) do

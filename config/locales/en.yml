@@ -184,8 +184,10 @@ en:
       subject: "[%{app_name}] Co-creator Notification"
       edit_the_work: "Edit the work"
       edit_the_series: "Edit the series"
-      part1_work: "%{editing_author} has listed you as a co-creator on the following work:"
-      part1_series: "%{editing_author} has listed you as a co-creator on the following series:"
+      part1_work_unknown_editor: "You have been listed as a co-creator on the following work:"
+      part1_series_unknown_editor: "You have been listed as a co-creator on the following series:"
+      part1_work_known_editor: "%{editing_author} has listed you as a co-creator on the following work:"
+      part1_series_known_editor: "%{editing_author} has listed you as a co-creator on the following series:"
       html:
         creation: "%{creation_link} by %{pseud_links}"
         part2_work: "%{edit} to remove yourself as creator if you've been added in error or don't want to be listed as a creator."

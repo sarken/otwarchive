@@ -33,10 +33,10 @@ module Creatable
     creation = self.is_a?(Chapter) ? self.work : self
     if self && !self.authors.blank? && User.current_user.is_a?(User)
       editing_author = User.current_user
-      new_authors = (self.authors - (self.pseuds + User.current_user.pseuds)).uniq
+      new_authors = (self.authors - (self.pseuds + editing_author.pseuds)).uniq
       unless new_authors.blank?
         for pseud in new_authors
-          UserMailer.coauthor_notification(pseud.user.id, creation.id, creation.class.name, editing_author).deliver
+          UserMailer.coauthor_notification(pseud.user.id, creation.id, creation.class.name, editing_author.id).deliver
         end
       end
     end

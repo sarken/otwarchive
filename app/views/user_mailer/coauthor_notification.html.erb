@@ -2,7 +2,11 @@
   <% creation_type = @creation.class.name.underscore.humanize.downcase %>
 
   <p>
-    <%= t(".part1_#{creation_type}", editing_author: style_pseud_link(@editing_author.default_pseud)).html_safe %>
+    <% if @editing_author.nil? %>
+      <%= t ".part1_#{creation_type}_unknown_editor" %>
+    <% else %>
+      <%= t(".part1_#{creation_type}_known_editor", editing_author: style_pseud_link(@editing_author.default_pseud)).html_safe %>
+    <% end %>
   </p>
 
   <p>
