@@ -1,7 +1,9 @@
 <% content_for :message do %>
   <% creation_type = @creation.class.name.underscore.humanize.downcase %>
 
-  <p><%= t ".part1_#{creation_type}" %></p>
+  <p>
+    <%= t(".part1_#{creation_type}", editing_author: style_pseud_link(@editing_author.default_pseud)).html_safe %>
+  </p>
 
   <p>
     <%= t(".html.creation",

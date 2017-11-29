@@ -1,7 +1,7 @@
 <% content_for :message do %>
 <% creation_type = @creation.class.name.underscore.humanize.downcase %>
 
-<%= t ".part1_#{creation_type}" %>
+<%= t ".part1_#{creation_type}", editing_author: @editing_author.default_pseud.byline %>
 
 <%= t ".text.creation", title: @creation.title, 
   url: @creation.class == Series ? series_url(@creation) : work_url(@creation),
