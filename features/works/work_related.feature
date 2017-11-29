@@ -380,7 +380,8 @@ Scenario: When a user is notified that a co-authored work has been inspired by a
     And I preview the work
     And I post the work
   Then 1 email should be delivered to "misterdeejay"
-    And the email should contain "inspired has listed you as a co-creator on the following work"
+    And the email html body should link to inspired's "inspired" pseud page
+    And the email should contain "has listed you as a co-creator on the following work"
   Then 1 email should be delivered to "inspiration"
     And the email should link to inspired's user url
     And the email should not contain "&lt;a href=&quot;http://archiveofourown.org/users/inspired/pseuds/inspired&quot;"

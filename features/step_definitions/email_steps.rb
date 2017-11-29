@@ -77,6 +77,7 @@ Then(/^#{capture_email} should link to (.+)$/) do |email_ref, page|
     email(email_ref).body.should =~ /#{path_to(page)}/
   end
 end
+
 Then (/^#{capture_email} html body should link to (.+)$/) do |email_ref, page|
   email(email_ref).html_part.body.should =~ /#{path_to(page)}/
 end

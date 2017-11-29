@@ -308,7 +308,8 @@ Feature: Edit chapters
       And I post the chapter
     Then I should see "amy, karma"
       And 1 email should be delivered to "amy"
-      And the email should contain "karma has listed you as a co-creator on the following work"
+      And the email html body should link to karma's "karma" pseud page
+      And the email should contain "has listed you as a co-creator on the following work"
       And the email should not contain "translation missing"
 
 
