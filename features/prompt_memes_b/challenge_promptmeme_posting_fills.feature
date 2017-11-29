@@ -374,7 +374,7 @@ Feature: Prompt Meme Challenge
     And I add the co-author "myname3" 
   When I press "Post Without Preview"
   Then 1 email should be delivered to "myname3"
-    And the email should contain "You have been listed as a co-creator on the following work"
+    And the email should contain "myname1 has listed you as a co-creator on the following work"
     And the email should not contain "translation missing"
   When I am logged in as "mod1"
     And I reveal the authors of the "Battle 12" challenge

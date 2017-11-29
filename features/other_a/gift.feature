@@ -185,7 +185,7 @@ Feature: Create Gifts
       And I give the work to "giftee1"
       And I post the work without preview
     Then 1 email should be delivered to "gifter2"
-      And the email should contain "You have been listed as a co-creator on the following work"
+      And the email should contain "gifter has listed you as a co-creator on the following work"
       And the email should not contain "translation missing"
     Then 1 email should be delivered to "giftee1"
       And the email should link to gifter's user url
