@@ -36,7 +36,7 @@ module Creatable
       new_authors = (self.authors - (self.pseuds + User.current_user.pseuds)).uniq
       unless new_authors.blank?
         for pseud in new_authors
-          UserMailer.coauthor_notification(pseud.user.id, creation.id, creation.class.name, editing_author.id).deliver
+          UserMailer.coauthor_notification(pseud.user.id, creation.id, creation.class.name, editing_author).deliver
         end
       end
     end
