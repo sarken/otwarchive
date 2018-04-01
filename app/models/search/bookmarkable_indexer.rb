@@ -1,7 +1,7 @@
 class BookmarkableIndexer < Indexer
 
   def self.index_name
-    "ao3_#{Rails.env}_bookmarks"
+    "ao3_#{Rails.env}_bookmarks_sarken"
   end
 
   def self.document_type

@@ -162,7 +162,7 @@ class Bookmark < ApplicationRecord
   # Remove conditional and Tire reference
   def self.index_name
     if use_new_search?
-      "ao3_#{Rails.env}_bookmarks"
+      "ao3_#{Rails.env}_bookmarks_sarken"
     else
       tire.index.name
     end

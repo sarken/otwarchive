@@ -130,7 +130,7 @@ class Pseud < ApplicationRecord
   # Remove conditional and Tire reference
   def self.index_name
     if use_new_search?
-      "ao3_#{Rails.env}_pseuds"
+      "ao3_#{Rails.env}_pseuds_sarken"
     else
       tire.index.name
     end

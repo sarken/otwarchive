@@ -104,7 +104,7 @@ class Indexer
   end
 
   def self.index_name
-    "ao3_#{Rails.env}_#{klass.underscore.pluralize}"
+    "ao3_#{Rails.env}_#{klass.underscore.pluralize}_sarken"
   end
 
   def self.document_type
