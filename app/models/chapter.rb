@@ -95,6 +95,7 @@ class Chapter < ApplicationRecord
 
   def update_series_index
     return unless work.series.present?
+    work.series.each { |s| s.touch }
     IndexQueue.enqueue_ids(Series, work.series.pluck(:id), :main) if $rollout.active?(:start_new_indexing)
   end  
 
