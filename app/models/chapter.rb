@@ -90,15 +90,6 @@ class Chapter < ApplicationRecord
     end
   end
 
-  after_save :update_series_index,
-    if: Proc.new { |chapter| chapter.saved_change_to_posted? }  
-
-  def update_series_index
-    return unless work.series.present?
-    work.series.each { |s| s.touch }
-    IndexQueue.enqueue_ids(Series, work.series.pluck(:id), :main) if $rollout.active?(:start_new_indexing)
-  end  
-
   def invalidate_chapter_count
     if work
       invalidate_work_chapter_count(work)
