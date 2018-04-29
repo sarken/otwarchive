@@ -271,7 +271,7 @@ class Work < ApplicationRecord
       series.touch
       if $rollout.active?(:start_new_indexing)
         series.enqueue_to_index
-        series.bookmarks.each(&:enqueue_to_index)
+        # series.bookmarks.each(&:enqueue_to_index)
       end
 
       unless $rollout.active?(:stop_old_indexing)
