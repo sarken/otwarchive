@@ -191,7 +191,7 @@ class Work < ApplicationRecord
   after_save :moderate_spam
   after_save :notify_of_hiding
 
-  after_save :notify_recipients, :expire_caches, :update_pseud_index
+  after_save :notify_recipients, :expire_caches, :update_pseud_index, :update_series_index
   after_destroy :expire_caches, :update_pseud_index
   before_destroy :before_destroy
 
@@ -263,6 +263,12 @@ class Work < ApplicationRecord
     pertinent_attributes = %w(id posted restricted in_anon_collection
                               in_unrevealed_collection hidden_by_admin)
     destroyed? || (saved_changes.keys & pertinent_attributes).present?
+  end
+
+  def update_series_index
+    return unless $rollout.active?(:start_new_indexing)
+    return unless series.present?
+    IndexQueue.enqueue_ids(Series, series.pluck(:id), :main)
   end
 
   # ES UPGRADE TRANSITION #
