@@ -30,7 +30,7 @@ class Series < ApplicationRecord
   after_create :notify_after_creation
   before_update :notify_before_update
 
-  after_commit :reindex_series
+  after_commit :update_series_index
 
   # return title.html_safe to overcome escaping done by sanitiser
   def title
@@ -252,6 +252,17 @@ class Series < ApplicationRecord
       bookmarkable_type: 'Series',
       bookmarkable_join: "bookmarkable"
     )
+  end
+
+  def update_series_index
+    if $rollout.active?(:start_new_indexing)
+      series.enqueue_to_index
+      series.bookmarks.each(&:enqueue_to_index)
+    end
+
+    unless $rollout.active?(:stop_old_indexing)
+      IndexQueue.enqueue_ids(Bookmark, series.bookmarks.pluck(:id), :background)
+    end
   end
 
   def word_count
