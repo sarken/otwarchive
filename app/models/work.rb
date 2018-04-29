@@ -266,10 +266,18 @@ class Work < ApplicationRecord
   end
 
   def update_series_index
-    return unless $rollout.active?(:start_new_indexing)
     return unless series.present?
-    series.each { |s| s.touch }
-    IndexQueue.enqueue_ids(Series, series.pluck(:id), :main)
+    series.each do |series|
+      series.touch
+      if $rollout.active?(:start_new_indexing)
+        series.enqueue_to_index
+        series.bookmarks.each(&:enqueue_to_index)
+      end
+
+      unless $rollout.active?(:stop_old_indexing)
+        IndexQueue.enqueue_ids(Bookmark, series.bookmarks.pluck(:id), :background)
+      end
+    end
   end
 
   # ES UPGRADE TRANSITION #
