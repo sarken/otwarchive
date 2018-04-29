@@ -37,3 +37,15 @@ Feature: Bookmark Indexing
       And I press "Sort and Filter"
     Then the 1st bookmark result should contain "Telling Stories"
       And the 2nd bookmark result should contain "Unrelated Story"
+
+  @new-search
+  Scenario: Adding a chapter to a work in a series should update the series
+    Given I am logged in as "creator"
+      And I have bookmarks of older series to search
+    When a chapter is added to "WIP in a Series"
+      And I go to the search bookmarks page
+      And I select "Series" from "Type"
+      And I select "Date Updated" from "Sort by"
+      And I press "Search bookmarks"
+    Then the 1st bookmark result should contain "Older WIP Series"
+      And the 2nd bookmark result should contain "Newer Complete Series"  
