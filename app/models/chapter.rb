@@ -95,9 +95,7 @@ class Chapter < ApplicationRecord
 
   def update_series_index
     return unless work.series.present?
-    work.series.each do |series|
-      IndexQueue.enqueue_ids(Series, series.id, :main) if $rollout.active?(:start_new_indexing)
-    end
+    IndexQueue.enqueue_ids(Series, work.series.pluck(:id), :main) if $rollout.active?(:start_new_indexing)
   end  
 
   def invalidate_chapter_count
