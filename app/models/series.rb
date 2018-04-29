@@ -256,12 +256,12 @@ class Series < ApplicationRecord
 
   def update_series_index
     if $rollout.active?(:start_new_indexing)
-      series.enqueue_to_index
-      series.bookmarks.each(&:enqueue_to_index)
+      enqueue_to_index
+      bookmarks.each(&:enqueue_to_index)
     end
 
     unless $rollout.active?(:stop_old_indexing)
-      IndexQueue.enqueue_ids(Bookmark, series.bookmarks.pluck(:id), :background)
+      IndexQueue.enqueue_ids(Bookmark, bookmarks.pluck(:id), :background)
     end
   end
 
