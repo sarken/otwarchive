@@ -92,12 +92,13 @@ class Chapter < ApplicationRecord
 
   after_commit :update_series_index
   def update_series_index
-    return unless work.series.present?
-    return unless should_reindex_series?
+    return unless work.series.present? && should_reindex_series?
     work.series.each do |series|
-      series.touch
+      # ES UPGRADE TRANSITION #
+      # Remove logic pertaining to which indexing we're using
       if $rollout.active?(:start_new_indexing)
         series.enqueue_to_index
+        # Date updated is stored on the bookmark, not the bookmarkable
         series.bookmarks.each(&:enqueue_to_index)
       end
 

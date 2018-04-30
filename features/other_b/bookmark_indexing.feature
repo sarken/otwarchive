@@ -38,7 +38,6 @@ Feature: Bookmark Indexing
     Then the 1st bookmark result should contain "Telling Stories"
       And the 2nd bookmark result should contain "Unrelated Story"
 
-  @new-search
   Scenario: Adding a chapter to a work in a series should update the series, as
   should deleting a chapter from a work in a series
     Given I am logged in as "creator"
