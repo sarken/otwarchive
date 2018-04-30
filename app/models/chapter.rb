@@ -90,11 +90,10 @@ class Chapter < ApplicationRecord
     end
   end
 
-  after_save :update_series_index,
-    if: Proc.new { |chapter| chapter.saved_change_to_posted? }
-
+  after_commit :update_series_index
   def update_series_index
     return unless work.series.present?
+    return unless should_reindex_series?
     work.series.each do |series|
       series.touch
       if $rollout.active?(:start_new_indexing)
@@ -106,6 +105,11 @@ class Chapter < ApplicationRecord
         IndexQueue.enqueue_ids(Bookmark, series.bookmarks.pluck(:id), :background)
       end
     end
+  end
+
+  def should_reindex_series?
+    pertinent_attributes = %w[id posted]
+    destroyed? || (saved_changes.keys & pertinent_attributes).present?
   end
 
   def invalidate_chapter_count
