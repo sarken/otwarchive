@@ -12,16 +12,32 @@ module Searchable
     def successful_reindex(ids)
       # override to do something in response
     end
+
+    # Given search results from Elasticsearch, retrieve the corresponding hits
+    # from the database, ordered the same way. (If the database items
+    # corresponding to the search results don't exist, don't error, just notify
+    # IndexSweeper so that the Elasticsearch indices can be cleaned up.)
+    # Override for special behavior.
+    def load_from_elasticsearch(hits)
+      ids = hits.map { |item| item['_id'] }
+
+      # Find results with where rather than find in order to avoid
+      # ActiveRecord::RecordNotFound
+      items = self.where(id: ids).group_by(&:id)
+      IndexSweeper.async_cleanup(self, ids, items.keys)
+      ids.flat_map { |id| items[id.to_i] }.compact
+    end
   end
 
   def enqueue_to_index
-    if Rails.env.test?
-      reindex_document and return
-    end
     IndexQueue.enqueue(self, :main)
   end
 
-  def reindex_document
+  def indexers
+    Indexer.for_object(self)
+  end
+
+  def reindex_document(options = {})
     # ES UPGRADE TRANSITION #
     # Remove `update_index rescue nil`
     update_index rescue nil
@@ -29,25 +45,16 @@ module Searchable
     # ES UPGRADE TRANSITION #
     # Remove outer conditional
     if self.class.use_new_search?
-      index_name = self.is_a?(Tag) ? 'tag' : self.class.to_s.downcase
-      doc_type = self.is_a?(Tag) ? 'tag' : self.class.document_type
-
-      index = {
-        index: "ao3_#{Rails.env}_#{index_name}s",
-        type: doc_type,
-        id: self.id,
-        body: self.document_json
-      }
-
-      if self.is_a?(Bookmark)
-        index.merge!(
-          routing: "#{self.bookmarkable_type}-#{self.bookmarkable_id}"
-        )
+      responses = []
+      self.indexers.each do |indexer|
+        if options[:async]
+          queue = options[:queue] || :main
+          responses << AsyncIndexer.index(indexer, [id], queue)
+        else
+          responses << indexer.new([id]).index_document(self)
+        end
       end
-
-      # ES UPGRADE TRANSITION #
-      # Replace $new_elasticsearch with $elasticsearch
-      $new_elasticsearch.index index
+      responses
     end
   end
 end
