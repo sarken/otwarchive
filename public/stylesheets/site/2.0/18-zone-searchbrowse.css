@@ -78,6 +78,10 @@ form.filters {
   width: 100%;
 }
 
+.filters label {
+  margin-right: 0;
+}
+
 .filters input + label {
   padding-left: 0;
 }

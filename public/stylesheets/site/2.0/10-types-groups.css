@@ -30,6 +30,10 @@ a.tag:hover, .listbox .heading a.tag:visited:hover {
   display: block;
 }
 
+.fitlers .tags li {
+  padding-right: 0;
+}
+
 /*GROUP CLOUD */
 
 ul.cloud {
