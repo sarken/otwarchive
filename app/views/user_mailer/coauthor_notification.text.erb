@@ -1,15 +1,18 @@
 <% content_for :message do %>
 <% creation_type = @creation.class.name.underscore.humanize.downcase %>
+<% creation_url = @creation.class == Series ? series_url(@creation) : work_url(@creation) %>
+<% edit_creation_url = @creation.class == Series ? edit_series_url(@creation) : edit_work_url(@creation) %>
 
 <% if @editing_author.nil? %>
 <%= t ".part1_#{creation_type}_uknown_editor" %>
 <% else %>
-<%= t ".part1_#{creation_type}_known_editor", editing_author: @editing_author.default_pseud.byline %>
+<%= t ".part1_#{creation_type}_known_editor",
+  editing_author: @editing_author.default_pseud.byline %>
 <% end %>
 
-<%= t ".text.part2", title: @creation.title, 
-  url: @creation.class == Series ? series_url(@creation) : work_url(@creation),
+<%= t ".text.part2", title: @creation.title, url: creation_url,
   pseuds: @creation.pseuds.map{ |p| p.byline }.to_sentence %>
 
-<%= t ".text.part3_#{creation_type}", url: @creation.class == Series ? edit_series_url(@creation) : edit_work_url(@creation) %>
+<%= t ".text.part3_#{creation_type}",
+  url: edit_creation_url %>
 <% end %>

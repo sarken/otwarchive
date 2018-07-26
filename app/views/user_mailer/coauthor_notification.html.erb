@@ -1,19 +1,25 @@
 <% content_for :message do %>
   <% creation_type = @creation.class.name.underscore.humanize.downcase %>
+  <% creation_url = @creation.class == Series ? series_url(@creation) : work_url(@creation) %>
+  <% edit_creation_url = @creation.class == Series ? edit_series_url(@creation) : edit_work_url(@creation) %>
 
   <p>
     <% if @editing_author.nil? %>
-      <%= t ".part1_#{creation_type}_unknown_editor" %>
+      <%= t(".part1_#{creation_type}_unknown_editor") %>
     <% else %>
-      <%= t(".part1_#{creation_type}_known_editor", editing_author: style_pseud_link(@editing_author.default_pseud)).html_safe %>
+      <%= t(".part1_#{creation_type}_known_editor",
+        editing_author: style_pseud_link(@editing_author.default_pseud)).html_safe %>
     <% end %>
   </p>
 
   <p>
     <%= t(".html.part2",
-    creation_link: "<i><b>#{style_link(@creation.title, (@creation.class == Series ? series_url(@creation) : work_url(@creation)))}</b></i>".html_safe, 
-    pseud_links: @creation.pseuds.map{ |p| style_pseud_link(p) }.to_sentence.html_safe).html_safe %>
+      creation_link: "<i><b>#{style_link(@creation.title, creation_url)}</b></i>".html_safe,
+      pseud_links: @creation.pseuds.map{ |p| style_pseud_link(p) }.to_sentence.html_safe).html_safe %>
   </p>
 
-  <p><%= t(".html.part3_#{creation_type}", edit: style_link(t(".edit_#{creation_type}"), (@creation.class == Series ? edit_series_url(@creation) : edit_work_url(@creation)))).html_safe %></p>
+  <p>
+    <%= t(".html.part3_#{creation_type}",
+      edit: style_link(t(".edit_#{creation_type}"), edit_creation_url)).html_safe %>
+  </p>
 <% end %>
