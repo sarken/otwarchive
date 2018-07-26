@@ -59,6 +59,7 @@ class BookmarksController < ApplicationController
       end
       @bookmarks = @search.search_results
       flash_max_search_results_notice(@bookmarks)
+      set_own_bookmarks
       render 'search_results'
     end
   end
@@ -127,21 +128,26 @@ class BookmarksController < ApplicationController
           end
 
           if @search.options[:excluded_tag_ids].present? || @search.options[:excluded_bookmark_tag_ids].present?
-            ids = [
-              @search.options[:excluded_tag_ids],
-              @search.options[:excluded_bookmark_tag_ids]
-            ].flatten.compact
+            # Excluded tags do not appear in search results, so we need to generate empty facets
+            # to keep them as checkboxes on the filters.
+            excluded_tag_ids = @search.options[:excluded_tag_ids] || []
+            excluded_bookmark_tag_ids = @search.options[:excluded_bookmark_tag_ids] || []
 
-            tags = Tag.where(id: ids)
-            excluded_bookmark_tag_ids = params.dig(:exclude_bookmark_search, :tag_ids) || []
+            # It's possible to determine the tag types by looking at
+            # the original parameters params[:exclude_bookmark_search],
+            # but we need the tag names too, so a database query is unavoidable.
+            tags = Tag.where(id: excluded_tag_ids + excluded_bookmark_tag_ids)
             tags.each do |tag|
+              if excluded_tag_ids.include?(tag.id.to_s)
+                key = tag.class.to_s.downcase
+                @facets[key] ||= []
+                @facets[key] << QueryFacet.new(tag.id, tag.name, 0)
+              end
               if excluded_bookmark_tag_ids.include?(tag.id.to_s)
                 key = 'tag'
-              else
-                key = tag.class.to_s.downcase
+                @facets[key] ||= []
+                @facets[key] << QueryFacet.new(tag.id, tag.name, 0)
               end
-              @facets[key] ||= []
-              @facets[key] << QueryFacet.new(tag.id, tag.name, 0)
             end
           end
         end
@@ -162,6 +168,7 @@ class BookmarksController < ApplicationController
         @bookmarks = Bookmark.latest.includes(:bookmarkable, :pseud, :tags, :collections).to_a
       end
     end
+    set_own_bookmarks
   end
 
   # GET    /:locale/bookmark/:id
@@ -299,6 +306,7 @@ class BookmarksController < ApplicationController
     respond_to do |format|
       format.js {
         @bookmarks = @bookmarkable.bookmarks.visible.order("created_at DESC").offset(1).limit(4)
+        set_own_bookmarks
       }
       format.html do
         id_symbol = (@bookmarkable.class.to_s.underscore + '_id').to_sym
@@ -356,6 +364,17 @@ class BookmarksController < ApplicationController
       "#{owner_name} - Bookmarks".html_safe
     else
       "Latest Bookmarks"
+    end
+  end
+
+  def set_own_bookmarks
+    return unless @bookmarks
+    @own_bookmarks = []
+    if current_user.is_a?(User)
+      pseud_ids = current_user.pseuds.pluck(:id)
+      @own_bookmarks = @bookmarks.select do |b|
+        pseud_ids.include?(b.pseud_id)
+      end
     end
   end
 

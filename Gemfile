@@ -30,7 +30,7 @@ gem 'transaction_retry'
 gem 'activerecord-mysql-reconnect', '~> 0.4.1'
 
 # Version of redis-rb gem
-# We are currently running Redis 2.6.4 (12/6/2012)
+# We are currently running Redis 3.2.1 (7/2018)
 gem 'redis', ">=3.0"
 gem 'redis-namespace'
 
@@ -50,7 +50,7 @@ gem 'akismetor'
 gem 'httparty'
 gem 'htmlentities'
 gem 'whenever', '~>0.6.2', :require => false
-gem 'nokogiri', '>= 1.8.2'
+gem 'nokogiri', '>= 1.8.3'
 gem 'mechanize'
 gem 'sanitize', '>= 4.6.5'
 # Until there is a working solution to
