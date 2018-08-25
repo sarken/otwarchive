@@ -220,6 +220,14 @@ Given(/^a media exists with name: "([^"]*)", canonical: true$/) do |media|
   media.update(canonical: true)
 end
 
+Given /^I have just created the canonical media tag "([^"]*)"$/ do |name|
+  step %{I am logged in as an admin}
+  visit(new_tag_path)
+  fill_in("Name", with: name)
+  check("Canonical")
+  click_button("Create Tag")
+end
+
 ### WHEN
 
 When /^the periodic tag count task is run$/i do

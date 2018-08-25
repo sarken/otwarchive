@@ -232,6 +232,10 @@ module NavigationHelpers
       tag_wrangler_path(User.current_user)
     when /^the unassigned fandoms page $/i
       unassigned_fandoms_path
+    when /^the "(.*)" fandoms page$/i
+      medium_fandoms_path(Media.find_by(name:$1))
+    when /^the new tag page$/i
+      new_tag_path
     when /^the "(.*)" tag page$/i
       tag_path(Tag.find_by_name($1))
     when /^the wrangling tools page$/
