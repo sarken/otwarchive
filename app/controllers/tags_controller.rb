@@ -188,9 +188,9 @@ class TagsController < ApplicationController
   def create
     type = tag_params[:type] if params[:tag]
     if type
-      raise "Redshirt: Attempted to constantize invalid class initialize create #{type.classify}" unless Tag::TYPES.include?(type.classify)
+      raise "Redshirt: Attempted to constantize invalid class initialize create #{type.classify}" unless (Tag::TYPES).include?(type.classify) || type == "Media"
       model = begin
-                type.classify.constantize
+                type == "Media" ? type.constantize : type.classify.constantize
               rescue
                 nil
               end
