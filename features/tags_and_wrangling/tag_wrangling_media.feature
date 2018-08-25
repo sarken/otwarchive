@@ -1,10 +1,18 @@
 @tags @tag_wrangling
 Feature: Media tags
 
-  Scenario: Wranglers do not have the option to create media tags
+  Scenario: Wranglers do not have the option to create media tags or change
+  other tags to media tags
     Given I am logged in as a tag wrangler
     When I go to the new tag page
     Then I should not see "Media" within "#new_tag"
+    When I fill in "Name" with "Not A Media Tag"
+      And I choose "Fandom"
+      And I press "Create Tag"
+    Then I should see "Tag was successfully created."
+      And "Fandom" should be selected within "tag_type"
+      # Make sure we can't see admin-only option
+      And "Media" should not be an option within "tag_type"
 
   Scenario: Admins can create media tags and then make them canonical
     Given I am logged in as an admin
@@ -13,9 +21,9 @@ Feature: Media tags
       And I choose "Media"
       And I press "Create Tag"
     Then I should see "Tag was successfully created."
-      # Fails because "Media" is not an option -- "Fandom" is selected
-      # and the tag gets converted to a fandom when saving
-      And "Media" should be selected within "Category"
+      And "Media" should be selected within "tag_type"
+      # Make sure we can see regular wrangling option
+      And "Fandom" should be an option within "tag_type"
     When I check "Canonical"
     And I press "Save changes"
     Then I should see "Tag was updated."
