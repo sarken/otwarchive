@@ -149,11 +149,7 @@ public
 
   before_action :fetch_admin_settings
   def fetch_admin_settings
-    if Rails.env.development?
-      @admin_settings = AdminSetting.first
-    else
-      @admin_settings = Rails.cache.fetch("admin_settings"){AdminSetting.first}
-    end
+    @admin_settings = AdminSetting.current
   end
 
   before_action :load_admin_banner
@@ -169,6 +165,12 @@ public
       end
       @admin_banner = nil if @admin_banner == ""
     end
+  end
+
+  before_action :load_tos_popup
+  def load_tos_popup
+    # Integers only, YYYY-MM-DD format of date Board approved TOS
+    @current_tos_version = 20180523
   end
 
   # store previous page in session to make redirecting back possible
@@ -468,6 +470,11 @@ public
 
   def valid_sort_direction(param)
     !param.blank? && ['asc', 'desc'].include?(param.to_s.downcase)
+  end
+
+  def flash_max_search_results_notice(result)
+    notice = result.max_search_results_notice
+    flash.now[:notice] = notice if notice.present?
   end
 
   # Don't get unnecessary data for json requests
