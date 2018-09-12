@@ -599,8 +599,8 @@ namespace :After do
   task(destroy_noncanonical_wrangling_assignments: :environment) do
     assignments = WranglingAssignment.joins(:fandom).where(tags: { canonical: false })
     assignments.each do |assignment|
-      fandom = Fandom.find(assignment.fandom_id).name
-      wrangler = User.find(assignment.user_id).login
+      fandom = assignment.fandom.name
+      wrangler = assignment.user.login
       puts "Deleting assignment: #{fandom} (#{wrangler})"
       assignment.destroy
     end

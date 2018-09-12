@@ -51,7 +51,7 @@ class TagWranglersController < ApplicationController
   end
 
   def create
-    success_message = "Wranglers were successfully assigned!"
+    success_message = ts("Wranglers were successfully assigned!")
     unless params[:tag_fandom_string].blank?
       names = params[:tag_fandom_string].gsub(/$/, ',').split(',').map(&:strip)
       fandoms = Fandom.where('name IN (?)', names)
