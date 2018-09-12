@@ -81,7 +81,6 @@ class TagWranglersController < ApplicationController
           end
         end
       end
-      flash[:notice] = success_message
     end
     redirect_to tag_wranglers_path(media_id: params[:media_id], fandom_string: params[:fandom_string], wrangler_id: params[:wrangler_id])
   end
