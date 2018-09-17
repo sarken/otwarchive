@@ -51,8 +51,9 @@ class TagWranglersController < ApplicationController
   end
 
   def create
-    success_message = ts("Wranglers were successfully assigned!")
     unless params[:tag_fandom_string].blank?
+      success_fandoms = []
+      failed_fandoms = []
       names = params[:tag_fandom_string].gsub(/$/, ',').split(',').map(&:strip)
       fandoms = Fandom.where('name IN (?)', names)
       unless fandoms.blank?
@@ -60,11 +61,20 @@ class TagWranglersController < ApplicationController
           unless !current_user.respond_to?(:fandoms) || current_user.fandoms.include?(fandom)
             assignment = current_user.wrangling_assignments.build(fandom_id: fandom.id)
             if assignment.errors.empty? && assignment.save
-              flash[:notice] = success_message
+              success_fandoms << fandom
             else
-              flash[:error] = assignment.errors.full_messages
+              failed_fandoms << fandom
             end
           end
+        end
+        # You can have successes and failures simultaneously, so we need separate if statements
+        if success_fandoms.present?
+          flash[:notice] = ts("Wranglers were successfully assigned to %{fandoms}!",
+                              fandoms: success_fandoms.map { |f| f.name }.to_sentence)
+        end
+        if failed_fandoms.present?
+          flash[:error] = ts("Wranglers could not be assigned to %{fandoms}.",
+                             fandoms: failed_fandoms.map { |f| f.name }.to_sentence)
         end
       end
     end

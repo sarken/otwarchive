@@ -9,6 +9,7 @@ class WranglingAssignment < ApplicationRecord
   def canonicity
     unless fandom.canonical?
       errors.add(:base, ts("Sorry, only canonical fandoms can be assigned to wranglers."))
+      # errors.add(:fandom, ts("%{fandom} is not canonical. Only canonical fandoms can be assigned to wranglers.", fandom: fandom.name))
     end
   end
   
