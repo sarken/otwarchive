@@ -51,6 +51,7 @@ class TagWranglersController < ApplicationController
   end
 
   def create
+    # When entering fandom names in "Assign fandoms to yourself"
     unless params[:tag_fandom_string].blank?
       success_fandoms = []
       failed_fandoms = []
@@ -78,6 +79,7 @@ class TagWranglersController < ApplicationController
         end
       end
     end
+    # When choosing a wrangler from the select menu for a listed fandom
     unless params[:assignments].blank?
       params[:assignments].each_pair do |fandom_id, user_logins|
         fandom = Fandom.find(fandom_id)
@@ -90,6 +92,7 @@ class TagWranglersController < ApplicationController
             end
           end
         end
+        flash[:notice] = ts("Wranglers were successfully assigned!")
       end
     end
     redirect_to tag_wranglers_path(media_id: params[:media_id], fandom_string: params[:fandom_string], wrangler_id: params[:wrangler_id])
