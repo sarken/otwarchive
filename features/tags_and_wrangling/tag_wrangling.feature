@@ -250,7 +250,7 @@ Feature: Tag wrangling
     Then I should see "Assign fandoms to yourself"
       And I should see "'Allo 'Allo" in the "tag_fandom_string" input
     When I press "Assign"
-    Then I should see "Wranglers were successfully assigned"
+    Then I should see "Wranglers were successfully assigned to 'Allo 'Allo"
     When I edit the tag "'Allo 'Allo"
     Then I should not see "Sign Up"
       And I should see the tag wrangler listed as an editor of the tag
@@ -265,7 +265,7 @@ Feature: Tag wrangling
       And I choose "Cabin Pressure" from the "Enter as many fandoms as you like." autocomplete
       And I choose "From Eroica with Love" from the "Enter as many fandoms as you like." autocomplete
       And I press "Assign"
-    Then I should see "Wranglers were successfully assigned"
+    Then I should see "Wranglers were successfully assigned to Cabin Pressure and From Eroica with Love"
     When I edit the tag "From Eroica with Love"
     Then I should not see "Sign Up"
       And I should see the tag wrangler listed as an editor of the tag
@@ -296,12 +296,12 @@ Feature: Tag wrangling
     Then I follow "Reindex Tag"
       And I should see "Tag sent to be reindexed"
 
-  Scenario: A tag wrangler cannot assign a non-canonical fandom to themselves
+  Scenario: A tag wrangler cannot assign a noncanonical fandom to themselves
 
     Given a noncanonical fandom "Noncanonical Fandom"
       And I am logged in as a tag wrangler
       And I am on the wranglers page
     When I fill in "Enter as many fandoms as you like." with "Noncanonical Fandom"
       And I press "Assign"
-    Then I should see "Sorry, only canonical fandoms can be assigned to wranglers."
+    Then I should see "Wranglers could not be assigned to Noncanonical Fandom. Only canonical fandoms can be assigned."
       And "Noncanonical Fandom" should not be assigned to the wrangler "wrangler"

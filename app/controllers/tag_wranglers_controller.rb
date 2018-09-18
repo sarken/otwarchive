@@ -74,7 +74,7 @@ class TagWranglersController < ApplicationController
                               fandoms: success_fandoms.map { |f| f.name }.to_sentence)
         end
         if failed_fandoms.present?
-          flash[:error] = ts("Wranglers could not be assigned to %{fandoms}.",
+          flash[:error] = ts("Wranglers could not be assigned to %{fandoms}. Only canonical fandoms can be assigned.",
                              fandoms: failed_fandoms.map { |f| f.name }.to_sentence)
         end
       end
