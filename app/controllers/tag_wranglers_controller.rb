@@ -68,15 +68,15 @@ class TagWranglersController < ApplicationController
             assigned_fandoms << fandom.name if assignment.errors.empty? && assignment.save
           end
         end
-        # You can have successes and failures simultaneously, so we need separate if statements
-        if assigned_fandoms.present?
-          flash[:notice] = ts("Wranglers were successfully assigned to %{fandoms}!",
-                              fandoms: assigned_fandoms.to_sentence)
-        end
-        if noncanonical_fandoms.present?
-          flash[:error] = ts("Wranglers could not be assigned to %{fandoms}. Only canonical fandoms can be assigned.",
-                             fandoms: noncanonical_fandoms.to_sentence)
-        end
+      end
+      # You can have successes and failures simultaneously, so we need separate if statements
+      if assigned_fandoms.present?
+        flash[:notice] = ts("Wranglers were successfully assigned to %{fandoms}!",
+                            fandoms: assigned_fandoms.to_sentence)
+      end
+      if noncanonical_fandoms.present?
+        flash[:error] = ts("Wranglers could not be assigned to %{fandoms}. Only canonical fandoms can be assigned.",
+                            fandoms: noncanonical_fandoms.to_sentence)
       end
     end
     # When choosing a wrangler from the select menu for a listed fandom
