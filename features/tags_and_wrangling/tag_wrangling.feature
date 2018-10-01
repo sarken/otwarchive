@@ -265,7 +265,9 @@ Feature: Tag wrangling
       And I choose "Cabin Pressure" from the "Enter as many fandoms as you like." autocomplete
       And I choose "From Eroica with Love" from the "Enter as many fandoms as you like." autocomplete
       And I press "Assign"
-    Then I should see "Wranglers were successfully assigned to Cabin Pressure and From Eroica with Love!"
+    Then I should see "Wranglers were successfully assigned to"
+      And I should see "Cabin Pressure" within ".notice"
+      And I should see "From Eroica with Love!" within ".notice"
     When I edit the tag "From Eroica with Love"
     Then I should not see "Sign Up"
       And I should see the tag wrangler listed as an editor of the tag
