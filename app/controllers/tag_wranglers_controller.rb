@@ -53,29 +53,29 @@ class TagWranglersController < ApplicationController
   def create
     # When entering fandom names in "Assign fandoms to yourself"
     unless params[:tag_fandom_string].blank?
-      success_fandoms = []
-      failed_fandoms = []
       names = params[:tag_fandom_string].gsub(/$/, ',').split(',').map(&:strip)
-      fandoms = Fandom.where('name IN (?)', names)
+      fandoms = Fandom.where('name IN (?) AND canonical = ?', names, true)
+      # Compare downcased names in case capitalization of the fandom string
+      # doesn't match that of the canonical fandom, but use the user-inputted
+      # capitalization for the error message
+      downcased_fandom_names = fandoms.map { |f| f.name.downcase }
+      noncanonical_fandoms = names.reject { |name| downcased_fandom_names.include?(name.downcase) }
+      assigned_fandoms = []
       unless fandoms.blank?
         for fandom in fandoms
           unless !current_user.respond_to?(:fandoms) || current_user.fandoms.include?(fandom)
             assignment = current_user.wrangling_assignments.build(fandom_id: fandom.id)
-            if assignment.errors.empty? && assignment.save
-              success_fandoms << fandom
-            else
-              failed_fandoms << fandom
-            end
+            assigned_fandoms << fandom.name if assignment.errors.empty? && assignment.save
           end
         end
         # You can have successes and failures simultaneously, so we need separate if statements
-        if success_fandoms.present?
+        if assigned_fandoms.present?
           flash[:notice] = ts("Wranglers were successfully assigned to %{fandoms}!",
-                              fandoms: success_fandoms.map { |f| f.name }.to_sentence)
+                              fandoms: assigned_fandoms.to_sentence)
         end
-        if failed_fandoms.present?
+        if noncanonical_fandoms.present?
           flash[:error] = ts("Wranglers could not be assigned to %{fandoms}. Only canonical fandoms can be assigned.",
-                             fandoms: failed_fandoms.map { |f| f.name }.to_sentence)
+                             fandoms: noncanonical_fandoms.to_sentence)
         end
       end
     end
@@ -90,9 +90,9 @@ class TagWranglersController < ApplicationController
               assignment = user.wrangling_assignments.build(fandom_id: fandom.id)
               assignment.save!
             end
+            flash[:notice] = ts("Wranglers were successfully assigned!")
           end
         end
-        flash[:notice] = ts("Wranglers were successfully assigned!")
       end
     end
     redirect_to tag_wranglers_path(media_id: params[:media_id], fandom_string: params[:fandom_string], wrangler_id: params[:wrangler_id])
