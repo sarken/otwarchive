@@ -52,7 +52,7 @@ class KudosController < ApplicationController
           if @kudo && @kudo.creator_of_work?
             error_message = "You can't leave kudos on your own work."
           end
-          if !current_user.present? && !commentable.nil? && commentable.restricted?
+          if !current_user.present? && commentable&.restricted?
             error_message = "You can't leave guest kudos on a restricted work."
           end
           flash[:comment_error] = ts(error_message)
