@@ -134,7 +134,7 @@ module HtmlCleaner
     return text
   end
 
-  def sanitize_value(field, value, klass = "")
+  def sanitize_value(field, value)
     if ArchiveConfig.NONZERO_INTEGER_PARAMETERS.has_key?(field.to_s)
       return (value.to_i > 0) ? value.to_i : ArchiveConfig.NONZERO_INTEGER_PARAMETERS[field.to_s]
     end
@@ -155,7 +155,6 @@ module HtmlCleaner
       if ArchiveConfig.FIELDS_ALLOWING_VIDEO_EMBEDS.include?(field.to_s)
         transformers << Sanitize::Transformers::ALLOW_VIDEO_EMBEDS
       end
-      # if ArchiveConfig.MODELS_ALLOWING_CSS.include?(klass.to_s) && ArchiveConfig.FIELDS_ALLOWING_CSS.include?(field.to_s)
       if ArchiveConfig.FIELDS_ALLOWING_CSS.include?(field.to_s)
         transformers << Sanitize::Transformers::ALLOW_USER_CLASSES
       end
