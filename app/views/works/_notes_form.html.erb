@@ -1,4 +1,6 @@
 <dt class="notes"><%= type == "chapter" ? ts("Chapter Notes") : ts("Notes") %></dt>
+<% notes_fieldname = type == "chapter" ? :chapter_notes : :work_notes %>
+<% endnotes_fieldname = type == "chapter" ? :chapter_endnotes : :work_endnotes %>
 <dd class="notes">
   <ul>
     <li class="start">
@@ -13,12 +15,12 @@
         <%= ts("Warning: Unchecking this box will delete the existing beginning note.") %>
       </span>
       <fieldset id="front-notes-options" class="start">
-        <legend><%= f.label :notes, ts("Notes") %></legend>
+        <legend><%= f.label notes_fieldname, ts("Notes") %></legend>
         <% if @posting_claim && @posting_claim.prompt_description.present? %>
-          <%= f.text_area :notes, :class => "observe_textlength", :value => "<strong>Prompt:</strong> #{@posting_claim.prompt_description}" %>
+          <%= f.text_area notes_fieldname, :class => "observe_textlength", :value => "<strong>Prompt:</strong> #{@posting_claim.prompt_description}" %>
           <%= generate_countdown_html("#{type}_notes", ArchiveConfig.NOTES_MAX) %>
         <% else %>
-          <%= f.text_area :notes, :class => "observe_textlength" %>
+          <%= f.text_area notes_fieldname, :class => "observe_textlength" %>
           <%= generate_countdown_html("#{type}_notes", ArchiveConfig.NOTES_MAX) %>
         <% end %>
       </fieldset>
@@ -31,8 +33,8 @@
         <%= ts("Warning: Unchecking this box will delete the existing end note.") %>
       </span>
       <fieldset id="end-notes-options" class="end">
-        <legend><%= f.label :endnotes, ts("End Notes") %></legend>
-        <%= f.text_area :endnotes, :class => "observe_textlength" %>
+        <legend><%= f.label endnotes_fieldname, ts("End Notes") %></legend>
+        <%= f.text_area endnotes_fieldname, :class => "observe_textlength" %>
         <%= generate_countdown_html("#{type}_endnotes", ArchiveConfig.NOTES_MAX) %>
       </fieldset>
     </li>
