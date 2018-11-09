@@ -1070,7 +1070,7 @@ class WorksController < ApplicationController
       parent_attributes: [:url, :title, :author, :language_id, :translation],
       chapter_attributes: [
         :title, :"published_at(3i)", :"published_at(2i)", :"published_at(1i)",
-        :published_at, :content
+        :published_at, :chapter_content
       ]
     )
   end

@@ -48,7 +48,7 @@ class Sanitize
     ALLOW_USER_CLASSES = lambda do |env|
       node      = env[:node]
       classval  = node['class']
-      
+
       # if we don't have a class attribute, away we go
       return if classval.blank?
 
@@ -58,6 +58,13 @@ class Sanitize
       newclasses = []
       classes.each { |cls| newclasses << [cls] if cls =~ /^[a-zA-Z][\w\-]+$/ }
       node['class'] = newclasses.join(" ")
+
+      Sanitize.clean_node!(node, {
+        attributes: {
+          all: ['class']
+        }
+      })
+      return {node_whitelist: [node]}
     end
 
     # taken directly from rgrove's docs
@@ -121,7 +128,7 @@ class Sanitize
       end
       
       # if we don't know the source, sorry
-      return if source.nil?           
+      return if source.nil?
 
       allow_flashvars = ["ning", "vidders.net", "google", "criticalcommons", "archiveofourown", "podfic", "spotify", "8tracks", "soundcloud"]
       supports_https = [
@@ -169,7 +176,7 @@ class Sanitize
           attributes: {
             'embed'  => (['allowfullscreen', 'height', 'src', 'type', 'width'] + (allow_flashvars.include?(source) ? ['wmode', 'flashvars'] : [])),
             'iframe'  => ['frameborder', 'height', 'src', 'title', 'class', 'type', 'width'],
-          }          
+          }
         })
         
         if node_name == 'embed'
