@@ -60,6 +60,7 @@ class Sanitize
       node['class'] = newclasses.join(" ")
 
       Sanitize.clean_node!(node, {
+        elements: Sanitize::Config::ARCHIVE[:elements],
         attributes: {
           all: ['class']
         }
