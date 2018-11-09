@@ -566,12 +566,12 @@ end
 
 When /^I add the beginning notes "([^"]*)"$/ do |notes|
   check("at the beginning")
-  fill_in("work_notes", with: "#{notes}")
+  fill_in("work_notes", with: notes)
 end
 
 When /^I add the end notes "([^"]*)"$/ do |notes|
   check("at the end")
-  fill_in("work_endnotes", with: "#{notes}")
+  fill_in("work_endnotes", with: notes)
 end
 
 When /^I add the beginning notes "([^"]*)" to the work "([^"]*)"$/ do |notes, work|
