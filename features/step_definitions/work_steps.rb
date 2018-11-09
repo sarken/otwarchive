@@ -13,7 +13,7 @@ When /^I fill in the basic work information for "([^"]*)"$/ do |title|
   step %{I fill in basic work tags}
   check(DEFAULT_WARNING)
   fill_in("Work Title", with: title)
-  fill_in("content", with: DEFAULT_CONTENT)
+  fill_in("chapter_content", with: DEFAULT_CONTENT)
 end
 # Here we set up a draft and can then post it as a draft, preview and post, post without preview,
 # or fill in additional information on the work form.
@@ -118,7 +118,7 @@ Given /^the chaptered work(?: with ([\d]+) chapters)?(?: with ([\d]+) comments?)
   n_chapters ||= 2
   (n_chapters.to_i - 1).times do |i|
     step %{I follow "Add Chapter"}
-    fill_in("content", with: "Yet another chapter.")
+    fill_in("chapter_content", with: "Yet another chapter.")
     click_button("Post Without Preview")
   end
   step %{I am logged out}
@@ -257,7 +257,7 @@ end
 When /^I post the chaptered work "([^"]*)"$/ do |title|
   step %{I post the work "#{title}"}
   step %{I follow "Add Chapter"}
-  fill_in("content", with: "Another Chapter.")
+  fill_in("chapter_content", with: "Another Chapter.")
   click_button("Preview")
   step %{I press "Post"}
   step %{all indexing jobs have been run}
@@ -310,7 +310,7 @@ When /^I post a chapter for the work "([^"]*)"$/ do |work_title|
   work = Work.find_by(title: work_title)
   visit work_url(work)
   step %{I follow "Add Chapter"}
-  step %{I fill in "content" with "la la la la la la la la la la la"}
+  step %{I fill in "chapter_content" with "la la la la la la la la la la la"}
   step %{I post the chapter}
 end
 
@@ -320,7 +320,7 @@ When /^a chapter is set up for "([^"]*)"$/ do |work_title|
   step %{I am logged in as "#{user.login}"}
   visit work_url(work)
   step %{I follow "Add Chapter"}
-  step %{I fill in "content" with "la la la la la la la la la la la"}
+  step %{I fill in "chapter_content" with "la la la la la la la la la la la"}
 end
 
 # meant to be used in conjunction with above step
