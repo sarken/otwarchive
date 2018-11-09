@@ -90,7 +90,7 @@ module HtmlCleaner
       if object.send("#{fieldname}_sanitizer_version") < ArchiveConfig.SANITIZER_VERSION
         # sanitize and save it
         Rails.logger.debug "Sanitizing and saving #{fieldname} on #{object.class.name} (id #{object.id})"
-        object.update_attribute(fieldname, sanitize_value(fieldname, object.send("#{fieldname}")))
+        object.update_attribute(fieldname, sanitize_value(fieldname, object.send("#{fieldname}"), object.send("#{object.class.name}")))
         object.update_attribute("#{fieldname}_sanitizer_version", ArchiveConfig.SANITIZER_VERSION)
       end
       # return the field without sanitizing
@@ -99,7 +99,7 @@ module HtmlCleaner
     else
       # no sanitizer version information, so re-sanitize
       Rails.logger.debug "Sanitizing without saving #{fieldname} on #{object.class.name} (id #{object.id})"
-      sanitize_value(fieldname, object.send("#{fieldname}"))
+      sanitize_value(fieldname, object.send("#{fieldname}", object.send("#{object.class.name}")))
     end
   end
 
@@ -134,7 +134,7 @@ module HtmlCleaner
     return text
   end
 
-  def sanitize_value(field, value)
+  def sanitize_value(field, value, klass = "")
     if ArchiveConfig.NONZERO_INTEGER_PARAMETERS.has_key?(field.to_s)
       return (value.to_i > 0) ? value.to_i : ArchiveConfig.NONZERO_INTEGER_PARAMETERS[field.to_s]
     end
@@ -155,7 +155,8 @@ module HtmlCleaner
       if ArchiveConfig.FIELDS_ALLOWING_VIDEO_EMBEDS.include?(field.to_s)
         transformers << Sanitize::Transformers::ALLOW_VIDEO_EMBEDS
       end
-      if ArchiveConfig.FIELDS_ALLOWING_CSS.include?(field.to_s)
+      if ArchiveConfig.MODELS_ALLOWING_CSS.include?(klass.to_s) && ArchiveConfig.FIELDS_ALLOWING_CSS.include?(field.to_s)
+      # if ArchiveConfig.FIELDS_ALLOWING_CSS.include?(field.to_s)
         transformers << Sanitize::Transformers::ALLOW_USER_CLASSES
       end
       # the screencast field shouldn't be wrapped in <p> tags
@@ -184,7 +185,7 @@ module HtmlCleaner
   def walk_hash(hash)
     hash.keys.each do |key|
       if hash[key].is_a? String
-        hash[key] = sanitize_value(key, hash[key])
+        hash[key] = sanitize_value(key, hash[key], "Bookmark")
       elsif hash[key].is_a?(ActionController::Parameters)
         hash[key] = hash[key].to_hash
       elsif hash[key].is_a?(Hash)
@@ -199,7 +200,7 @@ module HtmlCleaner
   def walk_array(array)
     array.each_with_index do |el,i|
       if el.is_a? String
-        array[i] = sanitize_value("", el)
+        array[i] = sanitize_value("", el, "Bookmark")
       elsif el.is_a? Hash
         array[i] = walk_hash(el)
       elsif el.is_a? Array
