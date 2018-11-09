@@ -189,7 +189,7 @@ describe HtmlCleaner do
     end
     
     context "Strip out tags not allowed in text fields other than content" do
-      [:endnotes, :notes, :summary].each do |field|
+      [:work_endnotes, :notes, :summary].each do |field|
         it "should strip iframes" do
           value = '<iframe width="560" height="315" src="//youtube.com/embed/123" frameborder="0"></iframe>'
           result = sanitize_value(field, value)
@@ -198,7 +198,7 @@ describe HtmlCleaner do
       end
     end
 
-    [:content, :endnotes, :notes, :summary].each do |field|
+    [:chapter_content, :work_endnotes, :chapter_notes, :summary].each do |field|
       context "Sanitize #{field} field" do
   
         it "should keep html" do
