@@ -46,7 +46,7 @@ Feature: Parsing HTML
   Scenario: Can use classes in works
   Given I am logged in as a random user
     And I set up the draft "Classy Work"
-  When I fill in "content" with "<p class='strip me'>You better work</p>"
+  When I fill in "content" with "<p class='keep me'>You better work</p>"
     And I press "Post Without Preview"
     And I follow "Edit"
-  Then the "content" field should contain "strip me"
+  Then the "content" field should contain "keep me"
