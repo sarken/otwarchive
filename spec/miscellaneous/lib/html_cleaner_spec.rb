@@ -189,7 +189,7 @@ describe HtmlCleaner do
     end
     
     context "Strip out tags not allowed in text fields other than content" do
-      [:work_endnotes, :notes, :summary].each do |field|
+      [:notes, :summary, :work_endnotes].each do |field|
         it "should strip iframes" do
           value = '<iframe width="560" height="315" src="//youtube.com/embed/123" frameborder="0"></iframe>'
           result = sanitize_value(field, value)
@@ -198,7 +198,63 @@ describe HtmlCleaner do
       end
     end
 
-    [:chapter_content, :work_endnotes, :chapter_notes, :summary].each do |field|
+    context "class attribute is allowed" do
+      ArchiveConfig.FIELDS_ALLOWING_CSS.each do |field|
+        context "#{field} has one class" do
+          it "allows classes with letters, numbers, and hyphens" do
+            result = sanitize_value(field, '<p class="f-5">foobar</p>')
+            doc = Nokogiri::HTML.fragment(result)
+            expect(doc.xpath("./p[@class='f-5']").children.to_s.strip).to eq("foobar")
+          end
+
+          it "strips classes starting with numbers" do
+            result = sanitize_value(field, '<p class="8ball">foobar</p>')
+            expect(result).not_to match(/8ball/)
+          end
+
+          it "strips classes starting with hyphens" do
+            result = sanitize_value(field, '<p class="-dash">foobar</p>')
+            expect(result).not_to match(/-dash/)
+          end
+
+          it "strips classes with special characters" do
+            result = sanitize_value(field, '<p class="foo@bar">foobar</p>')
+            expect(result).not_to match(/foo@bar/)
+          end
+        end
+
+        context "#{field} has multiple classes" do
+          it "keeps all classes" do
+            result = sanitize_value(field, '<p class="foo bar">foobar</p>')
+            doc = Nokogiri::HTML.fragment(result)
+            expect(doc.xpath("./p[contains(@class, 'foo bar')]").children.to_s.strip).to eq("foobar")
+          end
+
+          it "strips classes starting with numbers" do
+            result = sanitize_value(field, '<p class="magic 8ball">foobar</p>')
+            expect(result).not_to match(/8ball/)
+          end
+
+          it "strips classes starting with hypens" do
+            result = sanitize_value(field, '<p class="rainbow -dash">foobar</p>')
+            expect(result).not_to match(/-dash/)
+          end
+        end
+      end
+    end
+
+    context "class attribute is not allowed" do
+      [:content, :summary, :notes].each do |field|
+        context "#{field}" do
+          it "strips otherwise valid class attributes" do
+            result = sanitize_value(field, '<p class="f-5">foobar</p>')
+            expect(result).not_to match(/f-5/)
+          end
+        end
+      end
+    end
+
+    [:content, :notes, :summary, :work_endnotes].each do |field|
       context "Sanitize #{field} field" do
   
         it "should keep html" do
@@ -212,49 +268,6 @@ describe HtmlCleaner do
         it "should keep valid unicode chars as is" do
           result = sanitize_value(field, "„‚nörmäl’—téxt‘“")
           expect(result).to match(/„‚nörmäl’—téxt‘“/)
-        end
-  
-        it "should allow classes with letters, numbers and hyphens" do
-          result = sanitize_value(field, '<p class="f-5">foobar</p>')
-          doc = Nokogiri::HTML.fragment(result)
-          expect(doc.xpath("./p[@class='f-5']").children.to_s.strip).to eq("foobar")
-        end
-  
-        it "should not allow CSS classes starting with numbers" do
-          if field == :summary
-            skip("AO3-5238 Summary field does not sanitise CSS classes")
-          else
-            result = sanitize_value(field, '<p class="8ball">foobar</p>')
-            expect(result).not_to match(/8ball/)
-            result = sanitize_value(field, '<p class="magic 8ball">foobar</p>')
-            expect(result).not_to match(/8ball/)
-          end
-        end
-  
-        it "should not allow classes starting with hyphens" do
-          if field == :summary
-            skip("AO3-5238 Summary field does not sanitise CSS classes")
-          else
-            result = sanitize_value(field, '<p class="-dash">foobar</p>')
-            expect(result).not_to match(/-dash/)
-            result = sanitize_value(field, '<p class="rainbow -dash">foobar</p>')
-            expect(result).not_to match(/-dash/)
-          end
-        end
-  
-        it "should not allow classes with special characters" do
-          if field == :summary
-            skip("AO3-5238 Summary field does not sanitise CSS classes")
-          else
-            result = sanitize_value(field, '<p class="foo@bar">foobar</p>')
-            expect(result).not_to match(/foo@bar/)
-          end
-        end
-  
-        it "should allow two classes" do
-          result = sanitize_value(field, '<p class="foo bar">foobar</p>')
-          doc = Nokogiri::HTML.fragment(result)
-          expect(doc.xpath("./p[contains(@class, 'foo bar')]").children.to_s.strip).to eq("foobar")
         end
   
         it "should allow RTL content in p" do
