@@ -144,50 +144,53 @@ describe HtmlCleaner do
 
   describe "sanitize_value" do
     
-    context "Sanitize tags allowed only in the content field" do
-      %w{youtube.com youtube-nocookie.com vimeo.com player.vimeo.com static.ning.com ning.com dailymotion.com
-         metacafe.com vidders.net criticalcommons.org google.com archiveofourown.org podfic.com archive.org
-         open.spotify.com spotify.com 8tracks.com w.soundcloud.com soundcloud.com viddertube.com}.each do |source|
+    ArchiveConfig.FIELDS_ALLOWING_VIDEO_EMBEDS.each do |field|
+      context "#{field} is configured to allow video embeds" do
+      
+        %w{youtube.com youtube-nocookie.com vimeo.com player.vimeo.com static.ning.com ning.com dailymotion.com
+           metacafe.com vidders.net criticalcommons.org google.com archiveofourown.org podfic.com archive.org
+           open.spotify.com spotify.com 8tracks.com w.soundcloud.com soundcloud.com viddertube.com}.each do |source|
 
-        it "should allow embeds from #{source}" do
-          html = '<iframe width="560" height="315" src="//' + source + '/embed/123" frameborder="0"></iframe>'
-          result = sanitize_value(:content, html)
+          it "keeps embeds from #{source}" do
+            html = '<iframe width="560" height="315" src="//' + source + '/embed/123" frameborder="0"></iframe>'
+            result = sanitize_value(field, html)
+            expect(result).to include(html)
+          end
+        end
+
+        %w{youtube.com youtube-nocookie.com vimeo.com player.vimeo.com
+           archiveofourown.org archive.org dailymotion.com 8tracks.com podfic.com
+           open.spotify.com spotify.com w.soundcloud.com soundcloud.com viddertube.com}.each do |source|
+
+          it "converts src to https for #{source}" do
+            html = '<iframe width="560" height="315" src="http://' + source + '/embed/123" frameborder="0"></iframe>'
+            result = sanitize_value(field, html)
+            expect(result).to match('https:')
+          end
+        end
+
+        it "keeps google player embeds" do
+          html = '<embed type="application/x-shockwave-flash" flashvars="audioUrl=http://dl.dropbox.com/u/123/foo.mp3" src="http://www.google.com/reader/ui/123-audio-player.swf" width="400" height="27" allowscriptaccess="never" allownetworking="internal"></embed>'
+          result = sanitize_value(field, html)
           expect(result).to include(html)
         end
-      end
 
-      %w{youtube.com youtube-nocookie.com vimeo.com player.vimeo.com
-         archiveofourown.org archive.org dailymotion.com 8tracks.com podfic.com
-         open.spotify.com spotify.com w.soundcloud.com soundcloud.com viddertube.com}.each do |source|
-
-        it "should convert to https for #{source}" do
-          html = '<iframe width="560" height="315" src="http://' + source + '/embed/123" frameborder="0"></iframe>'
-          result = sanitize_value(:content, html)
-          expect(result).to match('https:')
+        it "strips embeds with unknown source" do
+          html = '<embed src="http://www.evil.org"></embed>'
+          result = sanitize_value(field, html)
+          expect(result).to be_empty
         end
-      end
 
-      it "should allow google player embeds" do
-        html = '<embed type="application/x-shockwave-flash" flashvars="audioUrl=http://dl.dropbox.com/u/123/foo.mp3" src="http://www.google.com/reader/ui/123-audio-player.swf" width="400" height="27" allowscriptaccess="never" allownetworking="internal"></embed>'
-        result = sanitize_value(:content, html)
-        expect(result).to include(html)
-      end
-
-      it "should not allow embeds with unknown source" do
-        html = '<embed src="http://www.evil.org"></embed>'
-        result = sanitize_value(:content, html)
-        expect(result).to be_empty
-      end
-
-      %w(metacafe.com vidders.net criticalcommons.org static.ning.com ning.com).each do |source|
-        it "should not convert to https for #{source}" do
-          html = '<iframe width="560" height="315" src="http://' + source + '/embed/123" frameborder="0"></iframe>'
-          result = sanitize_value(:content, html)
-          expect(result).not_to match('https:')
+        %w(metacafe.com vidders.net criticalcommons.org static.ning.com ning.com).each do |source|
+          it "doesn't convert src to https for #{source}" do
+            html = '<iframe width="560" height="315" src="http://' + source + '/embed/123" frameborder="0"></iframe>'
+            result = sanitize_value(field, html)
+            expect(result).not_to match('https:')
+          end
         end
       end
     end
-    
+
     context "Strip out tags not allowed in text fields other than content" do
       [:notes, :summary, :work_endnotes].each do |field|
         it "should strip iframes" do
@@ -198,58 +201,62 @@ describe HtmlCleaner do
       end
     end
 
-    context "class attribute is allowed" do
-      ArchiveConfig.FIELDS_ALLOWING_CSS.each do |field|
-        context "#{field} has one class" do
-          it "allows classes with letters, numbers, and hyphens" do
+    ArchiveConfig.FIELDS_ALLOWING_CSS.each do |field|
+      context "#{field} field allows class attribute for CSS" do
+        context "class has one value" do
+          it "keeps values containing only letters, numbers, and hyphens" do
             result = sanitize_value(field, '<p class="f-5">foobar</p>')
             doc = Nokogiri::HTML.fragment(result)
             expect(doc.xpath("./p[@class='f-5']").children.to_s.strip).to eq("foobar")
           end
 
-          it "strips classes starting with numbers" do
+          it "strips values starting with a number" do
             result = sanitize_value(field, '<p class="8ball">foobar</p>')
             expect(result).not_to match(/8ball/)
+            expect(result).not_to match(/class/)
           end
 
-          it "strips classes starting with hyphens" do
+          it "strips values starting with a hyphen" do
             result = sanitize_value(field, '<p class="-dash">foobar</p>')
             expect(result).not_to match(/-dash/)
+            expect(result).not_to match(/class/)
           end
 
-          it "strips classes with special characters" do
+          it "strips values with special characters" do
             result = sanitize_value(field, '<p class="foo@bar">foobar</p>')
             expect(result).not_to match(/foo@bar/)
+            expect(result).not_to match(/class/)
           end
         end
 
-        context "#{field} has multiple classes" do
-          it "keeps all classes" do
+        context "class attribute has multiple values" do
+          it "keeps all valid values" do
             result = sanitize_value(field, '<p class="foo bar">foobar</p>')
             doc = Nokogiri::HTML.fragment(result)
             expect(doc.xpath("./p[contains(@class, 'foo bar')]").children.to_s.strip).to eq("foobar")
           end
 
-          it "strips classes starting with numbers" do
+          it "strips values starting with numbers" do
             result = sanitize_value(field, '<p class="magic 8ball">foobar</p>')
             expect(result).not_to match(/8ball/)
+            expect(result).to match(/magic/)
           end
 
-          it "strips classes starting with hypens" do
+          it "strips values starting with hypens" do
             result = sanitize_value(field, '<p class="rainbow -dash">foobar</p>')
             expect(result).not_to match(/-dash/)
+            expect(result).to match(/rainbow/)
           end
         end
       end
     end
 
-    context "class attribute is not allowed" do
-      [:content, :summary, :notes].each do |field|
-        context "#{field}" do
-          it "strips otherwise valid class attributes" do
-            result = sanitize_value(field, '<p class="f-5">foobar</p>')
-            expect(result).not_to match(/f-5/)
-          end
+    [:content, :summary, :notes].each do |field|
+      context "#{field} field does not allow class attribute" do
+        it "strips attribute even if value is valid" do
+          result = sanitize_value(field, '<p class="f-5">foobar</p>')
+          expect(result).not_to match(/f-5/)
+          expect(result).not_to match(/class/)
         end
       end
     end
