@@ -213,19 +213,16 @@ describe HtmlCleaner do
           it "strips values starting with a number" do
             result = sanitize_value(field, '<p class="8ball">foobar</p>')
             expect(result).not_to match(/8ball/)
-            expect(result).not_to match(/class/)
           end
 
           it "strips values starting with a hyphen" do
             result = sanitize_value(field, '<p class="-dash">foobar</p>')
             expect(result).not_to match(/-dash/)
-            expect(result).not_to match(/class/)
           end
 
           it "strips values with special characters" do
             result = sanitize_value(field, '<p class="foo@bar">foobar</p>')
             expect(result).not_to match(/foo@bar/)
-            expect(result).not_to match(/class/)
           end
         end
 
