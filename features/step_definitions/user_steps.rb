@@ -184,7 +184,7 @@ When /^I follow the link for "([^"]*)" first invite$/ do |login|
 end
 
 When /^the password reset token for "([^*"]*)" is expired$/ do |login|
-  password_generated_date = 2.weeks.ago
+  password_generated_date = 49.hours.ago
   expect_any_instance_of(User).to receive(:updated_at).at_least(:once).and_return(password_generated_date)
 end
 

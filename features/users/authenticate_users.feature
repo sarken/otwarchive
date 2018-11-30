@@ -104,7 +104,8 @@ Feature: User Authentication
     When I fill in "User name" with "sam"
       And I fill in "sam"'s temporary password
       And I press "Log In"
-    Then I should see "The password you entered has expired."
+    Then show me the page
+      And I should see "The password you entered has expired."
       And I should not see "Hi, sam!"
       And I should see "Log In"
 
