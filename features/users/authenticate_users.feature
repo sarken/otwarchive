@@ -100,7 +100,7 @@ Feature: User Authentication
       And I press "Reset Password"
     Then 1 email should be delivered
     When I am logged out
-      And the password reset token for "sam" is expired
+      And it is currently 49 hours from now
     When I fill in "User name" with "sam"
       And I fill in "sam"'s temporary password
       And I press "Log In"
@@ -108,6 +108,7 @@ Feature: User Authentication
       And I should see "The password you entered has expired."
       And I should not see "Hi, sam!"
       And I should see "Log In"
+      And I jump in our Delorean and return to the present
 
   Scenario: User is locked out
     Given I have no users
