@@ -183,8 +183,8 @@ We only use error messages for LiveValidation. Style spoofs the system error mes
 
 .LV_invalid {
   background: #efd1d1;
-  border: 1px solid #900;
-  color: #900;
+  border: 1px solid var(--color-header);
+  color: var(--color-header);
   margin: 0.643em auto;
   padding: 0.25em 0.375em;
     box-shadow: 1px 1px 2px;
@@ -196,7 +196,7 @@ We only use error messages for LiveValidation. Style spoofs the system error mes
 }
 
 .LV_invalid:before {
-  border-color: #900 transparent;
+  border-color: var(--color-header) transparent;
   border-style: solid;
   border-width: 0 0.643em 0.643em;
   content: "";
@@ -237,8 +237,8 @@ form li ul.autocomplete li.input {
 }
 
 .autocomplete .dropdown ul li:hover, li.selected {
-  background: url("/images/skins/textures/tiles/red-ao3.png") top left #900;
-  color: #fff;
+  background: var(--image-header) top left var(--color-header);
+  color: var(--color-header-text);
 }
 
 .required .autocomplete, .autocomplete .notice {

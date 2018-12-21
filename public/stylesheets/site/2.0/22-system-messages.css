@@ -10,7 +10,7 @@ System messages use the following colours:
 }
 
 .required, .error, .alert {
-  color: #900;
+  color: var(--color-header);
 }
 
 .footnote {
@@ -46,7 +46,7 @@ div.error {
 
 .error, .comment_error, .alert {
   background: #efd1d1;
-  border-color: #900;
+  border-color: var(--color-header);
     box-shadow: 1px 1px 2px;
 }
 

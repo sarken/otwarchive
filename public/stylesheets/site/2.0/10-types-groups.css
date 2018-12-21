@@ -13,7 +13,7 @@ a.tag {
 }
 
 a.tag:hover, .listbox .heading a.tag:visited:hover {
-  background: #900;
+  background: var(--color-header);
   color: #fff;
 }
 
@@ -78,7 +78,7 @@ a.cloud7 {
 }
 
 a.cloud8 {
-  color: #900;
+  color: var(--color-header);
   font-size: 2.25em;
   font-weight: 800;
 }
@@ -155,7 +155,7 @@ a.rss span {
 a.work {
   font: 100 1.143em/1.125 Georgia, serif;
   margin: 0.5em 0;
-  color: #900;
+  color: var(--color-header);
 }
 
 .warning, .warnings, span.byline, a.user {
@@ -167,7 +167,7 @@ li.relationships a {
 }
 
 .actions .reindex a {
-  border-bottom: 3px solid #900;
+  border-bottom: 3px solid var(--color-header);
 }
 
 .series.footnote {

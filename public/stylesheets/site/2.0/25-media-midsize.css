@@ -12,8 +12,8 @@
 }
 
 #dashboard, #dashboard.own {
-  border-bottom: 10px solid #900;
-  border-top: 10px solid #900;
+  border-bottom: 10px solid var(--color-header);
+  border-top: 10px solid var(--color-header);
   padding: 0.5em 0;
     border-radius: 0.25em;
 }

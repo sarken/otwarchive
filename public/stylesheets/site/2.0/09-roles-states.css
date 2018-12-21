@@ -17,7 +17,7 @@ http://otwcode.github.com/docs/front_end_coding/patterns/modifiers
 
 span.unread, .replied, span.claimed, .actions span.defaulted {
   background: #ccc;
-  color: #900;
+  color: var(--color-header);
   width: auto;
   font: 100 100%/1.286 'Lucida Grande', 'Lucida Sans Unicode', 'GNU Unifont', Verdana, Helvetica, sans-serif;
   height: 1.286em;
@@ -47,7 +47,7 @@ span.unread, .replied, span.claimed, .actions span.defaulted {
 }
 
 .draggable, .droppable, span.requested, .nominations .rejected {
-  color: #900;
+  color: var(--color-header);
 }
 
 span.offered, .replied, .nominations .approved {

@@ -29,7 +29,7 @@ http://otwcode.github.com/docs/front_end_coding/patterns/supertypes
 
 #dashboard a:hover {
   background: #ddd;
-  color: #900;
+  color: var(--color-header);
 }
 
 #dashboard ul {
@@ -51,8 +51,8 @@ http://otwcode.github.com/docs/front_end_coding/patterns/supertypes
 
 #dashboard.own {
   background: transparent;
-  border-top: 15px solid #900;
-  border-bottom: 15px solid #900;
+  border-top: 15px solid var(--color-header);
+  border-bottom: 15px solid var(--color-header);
     opacity: 1.0;
     border-radius: 0.25em;
 }

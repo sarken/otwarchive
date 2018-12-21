@@ -20,7 +20,7 @@ This shows the archive when logged in as admin, and overrides with admin styles,
 }
 
 #admin-options a {
-  color: #900;
+  color: var(--color-header);
 }
 
 div.admin + h3.landmark {

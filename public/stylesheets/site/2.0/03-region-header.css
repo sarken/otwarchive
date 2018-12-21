@@ -38,11 +38,11 @@ notice that CSS3 declarations sit are indented twice (four spaces) and always co
 }
 
 #header a, #header a:visited, #header .current, #header .primary .open a, #header .primary .dropdown:hover a, #header .primary .dropdown a:focus {
-  color: #111;
+  color: var(--color-header-menu-text);
 }
 
 #header .actions a:hover, #header .actions a:focus, #header .dropdown:hover a, #header .open a {
-  background: #ddd;
+  background: var(--color-header-menu);
 }
 
 #header .current {
@@ -58,7 +58,7 @@ notice that CSS3 declarations sit are indented twice (four spaces) and always co
 
 /* 1.714em x 14px = 24px */
 #header .heading a {
-  color: #900;
+  color: var(--color-header);
   font-size: 1.714em;
   line-height: 1.75em;
 }
@@ -77,7 +77,7 @@ notice that CSS3 declarations sit are indented twice (four spaces) and always co
 /*ACTION: dropdown*/
 
 #header .menu, #small_login, #header .dropdown:hover .current + .menu {
-  background: #ddd;
+  background: var(--color-header-menu);
   display: none;
   padding: 0.25em 0;
   position: absolute;
@@ -117,7 +117,7 @@ notice that CSS3 declarations sit are indented twice (four spaces) and always co
 }
 
 #header .menu .current {
-  color: #111;
+  color: var(--color-menu-text);
   font-weight: 800;
 }
 
@@ -139,7 +139,7 @@ notice that CSS3 declarations sit are indented twice (four spaces) and always co
 }
 
 #header .user a:hover, #header .user a:focus, #header .user .current {
-  color: #900;
+  color: var(--color-header);
     border-radius: 0.25em;
 }
 
@@ -187,7 +187,7 @@ notice that CSS3 declarations sit are indented twice (four spaces) and always co
 /*FORM: login */
 
 #small_login {
-  border: 2px solid #fff;
+  border: 2px solid var(--color-header-text);
   padding: 0.375em;
   right: 0;
   z-index: 10;
@@ -231,7 +231,7 @@ notice that CSS3 declarations sit are indented twice (four spaces) and always co
 /* primary navigation */
 
 #header .primary {
-  background: #900 url(/images/skins/textures/tiles/red-ao3.png);
+  background: var(--color-header) var(--image-header);
   padding: 0 0;
   width: 100%;
     box-shadow: inset 0 -6px 10px rgba(0, 0, 0, 0.35),
@@ -248,11 +248,11 @@ notice that CSS3 declarations sit are indented twice (four spaces) and always co
 }
 
 #header .primary a {
-  color: #fff;
+  color: var(--color-header-text);
 }
 
 #header .primary .menu a, #header .primary .menu .current {
-  color: #111;
+  color: var(--color-header-menu-text);
   padding: 0.75em 0.5em 0.5em;
 }
 
@@ -287,7 +287,7 @@ notice that CSS3 declarations sit are indented twice (four spaces) and always co
 #header h2 {
   border-top: 1px solid;
   clear: both;
-  color: #fff;
+  color: var(--color-header-text);
   display: block;
   font-size: 1.714em;
   line-height: 1.5;
