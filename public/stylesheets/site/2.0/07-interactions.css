@@ -183,8 +183,8 @@ We only use error messages for LiveValidation. Style spoofs the system error mes
 
 .LV_invalid {
   background: #efd1d1;
-  border: 1px solid var(--color-header);
-  color: var(--color-header);
+  border: 1px solid #900;
+  color: #900;
   margin: 0.643em auto;
   padding: 0.25em 0.375em;
     box-shadow: 1px 1px 2px;
@@ -196,7 +196,7 @@ We only use error messages for LiveValidation. Style spoofs the system error mes
 }
 
 .LV_invalid:before {
-  border-color: var(--color-header) transparent;
+  border-color: #900 transparent;
   border-style: solid;
   border-width: 0 0.643em 0.643em;
   content: "";

@@ -106,7 +106,7 @@ ol.pagination, div.pagination, ol.year {
 
 .delete a, span.delete {
   border: 0;
-  color: var(--color-header);
+  color: #900;
   font-weight: 900;
   margin-right: 0.375em;
   padding: 0 0.1em 0.15em;
