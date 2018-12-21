@@ -66,7 +66,7 @@ body .narrow-shown {
 
 #header .user .open a:focus {
   color: #900;
-  color: var(--color-header);
+  color: var(--color-logo);
 }
 
 #header h2.collections {

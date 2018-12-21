@@ -4,6 +4,8 @@ http://otwcode.github.com/docs/front_end_coding/css-shorthand*/
 :root {
   --color-background: #fff;
   --color-text: #2a2a2a;
+  --color-logo: #900;
+  --color-logo-contrast: #fff;
 
   --color-header: #900;
   --color-header-text: #fff;
@@ -42,7 +44,7 @@ body, .toggled form, .dynamic form, .secondary, .dropdown {
 
 a, a:link {
   color: #900;
-  color: var(--color-header);
+  color: var(--color-logo);
   text-decoration: none;
 }
 

@@ -56,7 +56,7 @@ li.blurb:after, .blurb .blurb:after {
 
 .blurb h4 a:link, .blurb h4 img {
   color: #900;
-  color: var(--color-header);
+  color: var(--color-logo);
   vertical-align: bottom;
 }
 

@@ -62,7 +62,7 @@ notice that CSS3 declarations sit are indented twice (four spaces) and always co
 /* 1.714em x 14px = 24px */
 #header .heading a {
   color: #900;
-  color: var(--color-header);
+  color: var(--color-logo);
   font-size: 1.714em;
   line-height: 1.75em;
 }
@@ -145,7 +145,7 @@ notice that CSS3 declarations sit are indented twice (four spaces) and always co
 
 #header .user a:hover, #header .user a:focus, #header .user .current {
   color: #900;
-  color: var(--color-header);
+  color: var(--color-logo);
     border-radius: 0.25em;
 }
 
