@@ -11,7 +11,7 @@ http://otwcode.github.com/docs/front_end_coding/css-shorthand*/
   --color-header-text: #fff;
   --color-header-menu: #ddd;
   --color-header-menu-text: #111;
-  --gradient-header-menu: linear-gradient(to bottom, rgba(221, 221, 221, 0.98) 0%, rgba(204, 204, 204, 0.98) 100%;
+  --gradient-header-menu: linear-gradient(to bottom, rgba(221, 221, 221, 0.98) 0%, rgba(204, 204, 204, 0.98) 100%);
   --image-header: url("/images/skins/textures/tiles/red-ao3.png");
 
   --color-action: #eee;
@@ -24,8 +24,38 @@ http://otwcode.github.com/docs/front_end_coding/css-shorthand*/
   --color-action-border: #bbb;
   --color-action-border-bottom: #aaa;
   --gradient-action: linear-gradient(#fff 2%, #ddd 95%, #bbb 100%);
+  --shadow-action: none;
   --shadow-action-current: inset 1px 1px 3px #333;
   --shadow-action-hover: inset 2px 2px 2px #bbb;
+}
+
+/* Reversi! */
+:root {
+  --color-background: #333;
+  --color-text: #eee;
+  --color-logo: #5998D6;
+  --color-logo-contrast: #111;
+
+  --color-header: #555;
+  --color-header-text: #fff;
+  --color-header-menu: #2a2a2a;
+  --color-header-menu-text: #fff;
+  --gradient-header-menu: none;
+  --image-header: url("/images/skins/textures/tiles/black-noise.jpg");
+
+  --color-action: #555;
+  --color-action-text: #eee;
+  --color-action-visited-text: #999;
+  --color-action-hover-text: #999;
+  --color-action-hover-border: #000;
+  --color-action-current: #000;
+  --color-action-current-border: #555;
+  --color-action-border: #222;
+  --color-action-border-bottom: #222;
+  --gradient-action: none;
+  --shadow-action: inset 0 -8px 4px #232323, inset 0 8px 7px #555;
+  --shadow-action-current: -1px -1px 3px #000;
+  --shadow-action-hover: inset 2px 2px 2px #000;
 }
 
 body, .toggled form, .dynamic form, .secondary, .dropdown {

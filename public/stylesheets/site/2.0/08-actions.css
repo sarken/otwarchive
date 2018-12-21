@@ -47,7 +47,7 @@ ul.actions {
     background-image: -ms-linear-gradient(#fff 2%, #ddd 95%, #bbb 100%);
     background-image: var(--gradient-action);
     border-radius: 0.25em;
-    box-shadow: none;
+    box-shadow: var(--shadow-action);
 }
 
 button {
