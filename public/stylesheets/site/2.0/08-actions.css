@@ -99,7 +99,7 @@ ol.pagination, div.pagination, ol.year {
   border-left: 1px solid #999;
   border-top: 1px solid var(--color-action-hover-border);
   border-left: 1px solid var(--color-action-hover-border);
-    box-shadow: inset 2px 2px 2px var(--color-action-border-bottom);
+    box-shadow: var(--shadow-action-hover);
 }
 
 .actions a:active, .current, a.current, a:link.current, .current a:visited {

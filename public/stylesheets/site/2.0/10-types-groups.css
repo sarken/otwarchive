@@ -16,7 +16,7 @@ a.tag:hover, .listbox .heading a.tag:visited:hover {
   background: #900;
   background: var(--color-header);
   color: #fff;
-  background: var(--color-background);
+  color: var(--color-header-text);
 }
 
 .tags li {

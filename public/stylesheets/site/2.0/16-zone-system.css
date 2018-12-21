@@ -327,7 +327,7 @@ For practicality, /archive_faqs are also .docs and .support and have the .userst
   background: #900;
   background: var(--color-header);
   color: #fff;
-  background: var(--color-background);
+  color: var(--color-header-text);
   display: block;
   margin: 0;
   padding: 0.125em 0;
