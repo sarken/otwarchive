@@ -9,6 +9,7 @@ http://otwcode.github.com/docs/front_end_coding/css-shorthand*/
   --color-header-text: #fff;
   --color-header-menu: #ddd;
   --color-header-menu-text: #111;
+  --gradient-header-menu: linear-gradient(to bottom, rgba(221, 221, 221, 0.98) 0%, rgba(204, 204, 204, 0.98) 100%;
   --image-header: url("/images/skins/textures/tiles/red-ao3.png");
 
   --color-action: #eee;
