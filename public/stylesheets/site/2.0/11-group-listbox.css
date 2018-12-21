@@ -9,7 +9,7 @@ http://otwcode.github.com/docs/front_end_coding/patterns/listbox
   padding: 0;
   margin: 0.643em auto;
   overflow: hidden;
-    box-shadow: 0 0 0 1px #fff;
+    box-shadow: 0 0 0 1px var(--color-background);
 }
 
 .listbox .heading {
@@ -31,7 +31,7 @@ http://otwcode.github.com/docs/front_end_coding/patterns/listbox
   padding: 0.643em;
   float: none;
   clear: right;
-  background: #fff;
+  background: var(--color-background);
     box-shadow: inset 1px 1px 3px #bbb;
 }
 

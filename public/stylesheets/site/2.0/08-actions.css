@@ -136,7 +136,7 @@ ul#skiplinks, .landmark, .landmark a, .index .heading.landmark {
 }
 
 .secondary {
-  background: #fff;
+  background: var(--color-background);
   position: absolute;
   z-index: 99;
   border: 2px solid #bbb;
