@@ -26,8 +26,10 @@ http://otwcode.github.com/docs/front_end_coding/css-shorthand*/
 }
 
 body, .toggled form, .dynamic form, .secondary, .dropdown {
+  background: #fff;
   background: var(--color-background);
-  color: var(--color-text);
+  color: #2a2a2a;
+  color: var(--color-text);;
   font: 100%/1.125 'Lucida Grande', 'Lucida Sans Unicode', 'GNU Unifont', Verdana, Helvetica, sans-serif;
   margin: 0;
   padding: 0;
@@ -38,6 +40,7 @@ body, .toggled form, .dynamic form, .secondary, .dropdown {
 }
 
 a, a:link {
+  color: #900;
   color: var(--color-header);
   text-decoration: none;
 }

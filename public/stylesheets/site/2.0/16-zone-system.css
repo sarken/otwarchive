@@ -25,6 +25,7 @@ SUBSECTIONS:
 
 .splash .module h3 {
   border-bottom: 1px solid #c8c8c8;
+  color: #900;
   color: var(--color-header);
   font-size: 1.714em;
 }
@@ -66,6 +67,7 @@ SUBSECTIONS:
 }
 
 .splash .browse li a:before {
+  color: #900;
   color: var(--color-header);
   content: "\00BB";
   padding: 0 0.25em 0 0;
@@ -94,6 +96,7 @@ SUBSECTIONS:
 }
 
 .splash .favorite li:nth-of-type(odd) a:hover, .splash .favorite li:nth-of-type(odd) a:focus {
+  background: #900;
   background: var(--color-header);
 }
 
@@ -309,6 +312,7 @@ For practicality, /archive_faqs are also .docs and .support and have the .userst
 /* 7. ZONE: SYSTEM: TOS POPUP */
 
 #tos_prompt {
+  background: #fff;
   background: var(--color-background);
   margin: 0;
   min-height: 100vh;
@@ -320,8 +324,10 @@ For practicality, /archive_faqs are also .docs and .support and have the .userst
 }
 
 #tos_prompt .heading {
+  background: #900;
   background: var(--color-header);
-  color: var(--color-background);
+  color: #fff;
+  background: var(--color-background);
   display: block;
   margin: 0;
   padding: 0.125em 0;
@@ -360,6 +366,7 @@ For practicality, /archive_faqs are also .docs and .support and have the .userst
 }
 
 #tos_prompt [disabled] {
+  background: #ccc;
   background: var(--color-action-current);
     box-shadow: none;
 }

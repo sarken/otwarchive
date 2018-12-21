@@ -16,6 +16,7 @@ http://otwcode.github.com/docs/front_end_coding/patterns/modifiers
 /*(these states spoof the ".navigation .current" style)*/
 
 span.unread, .replied, span.claimed, .actions span.defaulted {
+  background: #ccc;
   background: var(--color-action-current);
   color: #900;
   width: auto;
@@ -29,7 +30,9 @@ span.unread, .replied, span.claimed, .actions span.defaulted {
   position: relative;
   cursor: pointer;
   text-decoration: none;
+  border: 1px solid #bbb;
   border: 1px solid var(--color-action-border);
+  border-bottom: 1px solid #fff;
   border-bottom: 1px solid var(--color-action-current-border);
     border-radius: 0.25em;
 }

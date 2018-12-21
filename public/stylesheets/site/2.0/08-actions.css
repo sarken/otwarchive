@@ -21,7 +21,9 @@ ul.actions {
 }
 
 .actions a, .actions a:link, .action, .action:link, .actions input, input[type="submit"], button, .current, .actions label {
-  background: var(--color-action) var(--gradient-action);
+  background: #eee; 
+  background: var(--color-action);
+  color: #444;
   color: var(--color-action-text);
   width: auto;
   font-size: 100%;
@@ -35,8 +37,15 @@ ul.actions {
   position: relative;
   cursor: pointer;
   text-decoration: none;
+  border: 1px solid #bbb;
   border: 1px solid var(--color-action-border);
+  border-bottom: 1px solid #aaa;
   border-bottom: 1px solid var(--color-action-border-bottom);
+    background-image: -moz-linear-gradient(#fff 2%, #ddd 95%, #bbb 100%);
+    background-image: -webkit-linear-gradient(#fff 2%, #ddd 95%, #bbb 100%);
+    background-image: -o-linear-gradient(#fff 2%, #ddd 95%, #bbb 100%);
+    background-image: -ms-linear-gradient(#fff 2%, #ddd 95%, #bbb 100%);
+    background-image: var(--gradient-action);
     border-radius: 0.25em;
     box-shadow: none;
 }
@@ -79,24 +88,32 @@ ol.pagination, div.pagination, ol.year {
 }
 
 .actions a:visited, .action:visited, .action a:link, .action a:visited {
+  color: #111;
   color: var(--color-action-visited-text);
 }
 
 .actions a:hover, .actions input:hover, .actions a:focus, .actions input:focus, label.action:hover, .action:hover, .action:focus {
+  color: #900;
   color: var(--color-action-hover-text);
+  border-top: 1px solid #999;
+  border-left: 1px solid #999;
   border-top: 1px solid var(--color-action-hover-border);
   border-left: 1px solid var(--color-action-hover-border);
     box-shadow: inset 2px 2px 2px var(--color-action-border-bottom);
 }
 
 .actions a:active, .current, a.current, a:link.current, .current a:visited {
+  color: #111;
   color: var(--color-action-visited-text);
+  background: #ccc;
   background: var(--color-action-current);
+  border-color: #fff;
   border-color: var(--color-action-current-border);
     box-shadow: var(--shadow-action-current);
 }
 
 .actions label.disabled {
+  background: #ccc;
   background: var(--color-action-current);
 }
 
@@ -131,6 +148,7 @@ ul#skiplinks, .landmark, .landmark a, .index .heading.landmark {
 }
 
 .secondary {
+  background: #fff;
   background: var(--color-background);
   position: absolute;
   z-index: 99;

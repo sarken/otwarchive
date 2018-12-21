@@ -22,7 +22,8 @@ http://otwcode.github.com/docs/front_end_coding/patterns/listbox
 
 .listbox > .heading, .listbox .heading a:visited {
   margin: 0;
-  color: var(--color-text);
+  color: #2a2a2a;
+  color: var(--color-text);;
   padding: 0.25em;
 }
 
@@ -31,6 +32,7 @@ http://otwcode.github.com/docs/front_end_coding/patterns/listbox
   padding: 0.643em;
   float: none;
   clear: right;
+  background: #fff;
   background: var(--color-background);
     box-shadow: inset 1px 1px 3px #bbb;
 }

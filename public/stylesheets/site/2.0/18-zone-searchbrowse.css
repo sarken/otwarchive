@@ -32,6 +32,7 @@ form.search input[type="text"] {
 
 .search [role="tooltip"] {
   background: #ddd;
+  border: 1px solid #fff;
   border: 1px solid var(--color-background);
   padding: 0.15em;
   position: absolute;
@@ -112,7 +113,8 @@ form.filters {
 .filters .expander {
   background: url("/images/arrow-right.gif") left center no-repeat;
   border: none;
-  color: var(--color-text);
+  color: #2a2a2a;
+  color: var(--color-text);;
   height: 100%;
   min-height: 1.786em; /* default button height plus 0.25 vertical padding */
   outline: none;
@@ -200,6 +202,7 @@ https://browserstrangeness.github.io/css_hacks.html */
 }
 
 .filters input:checked + .indicator:before {
+  border-color: #2a2a2a;
   border-color: var(--color-text);
 }
 

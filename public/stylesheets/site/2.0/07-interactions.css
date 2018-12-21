@@ -42,6 +42,7 @@ fieldset dl, fieldset.actions, fieldset dl fieldset dl {
 }
 
 fieldset fieldset, fieldset dl dl, form blockquote.userstuff {
+  background: #fff;
   background: var(--color-background);
   clear: right;
 }
@@ -142,7 +143,8 @@ form dd + dd {
 }
 
 form dd.required {
-  color: var(--color-text);
+  color: #2a2a2a;
+  color: var(--color-text);;
 }
 
 form .footnote code {
@@ -208,6 +210,7 @@ We only use error messages for LiveValidation. Style spoofs the system error mes
 /* WIDGET: AUTO COMPLETE */
 
 .autocomplete div.dropdown ul {
+  background: #fff;
   background: var(--color-background);
   border: 1px solid #eee;
   padding: 0.125em;
@@ -237,12 +240,15 @@ form li ul.autocomplete li.input {
 }
 
 .autocomplete .dropdown ul li:hover, li.selected {
+  background: url("/images/skins/textures/tiles/red-ao3.png") top left #900;
   background: var(--image-header) top left var(--color-header);
+  color: #fff;
   color: var(--color-header-text);
 }
 
 .required .autocomplete, .autocomplete .notice {
-  color: var(--color-text);
+  color: #2a2a2a;
+  color: var(--color-text);;
 }
 
 .autocomplete .notice {
@@ -293,6 +299,7 @@ form li ul.autocomplete li.input {
 /* WIDGET: DATEPICKER, TIMEPICKER (todo, requires ARIA managed focus) */
 
 #ui-datepicker-div {
+  background: #fff;
   background: var(--color-background);
   display: none;
   overflow: hidden;
@@ -332,6 +339,7 @@ form li ul.autocomplete li.input {
 }
 
 .ui-datepicker td:hover {
+  background: #fff;
   background: var(--color-background);
 }
 
@@ -435,6 +443,7 @@ a.modal.help {
 }
 
 #modal {
+  background: #fff;
   background: var(--color-background);
   border: 10px solid #eee;
   margin: 3% 0;
@@ -487,7 +496,8 @@ a.modal.help {
 
 #modal.img a {
   border: 0;
-  color: var(--color-background);
+  color: #fff;
+  background: var(--color-background);
 }
 
 #modal.img.tall {
@@ -527,7 +537,8 @@ a.modal.help {
 
 #modal.img .footer {
   background: rgba(0, 0, 0, 0.6);
-  color: var(--color-background);
+  color: #fff;
+  background: var(--color-background);
   position: fixed;
   text-align: center;
     box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
@@ -546,6 +557,7 @@ a.modal.help {
 /*MODE: DYNAMIC is in early dev and so currently sharing styles with toggled */
 
 div.dynamic {
+  background: #fff;
   background: var(--color-background);
   position: absolute;
   z-index: 500;
@@ -559,6 +571,7 @@ form.verbose legend, .verbose form legend {
   height: auto;
   width: auto;
   font-size: 100%;
+  background: #fff;
   background: var(--color-background);
   border: 2px solid #ddd;
   padding: 0.5em;
@@ -592,6 +605,7 @@ form.simple span.actions {
 .toggled form, .dynamic form {
   padding: 0.5em;
   border: 2px solid #ccc;
+  background: #fff;
   background: var(--color-background);
     box-shadow: 1px 2px 5px;
 }
@@ -614,7 +628,8 @@ form.simple span.actions {
 
 .post .required .warnings, dd.required {
   font-weight: normal;
-  color: var(--color-text);
+  color: #2a2a2a;
+  color: var(--color-text);;
 }
 
 .post .text textarea {

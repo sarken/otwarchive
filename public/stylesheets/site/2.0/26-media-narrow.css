@@ -1,6 +1,7 @@
 /* MEDIA: only screen and (max-width: 42em), handheld ENDMEDIA */
 
 #outer {
+  background: #fff;
   background: var(--color-background);
   font-size: 0.875em;
   position: relative;
@@ -44,22 +45,27 @@ body .narrow-shown {
 
 #header .dropdown a:focus, #header .dropdown .menu a:focus {
   background: transparent;
+  color: #111;
   color: var(--color-header-menu-text);
 }
 
 #header .open a:focus {
+  background: #ddd;
   background: var(--color-header-menu);
 }
 
 #header .primary .dropdown a:focus {
+  color: #fff;
   color: var(--color-header-text);
 }
 
 #header .primary .open a:focus {
+  color: #111;
   color: var(--color-header-menu-text);
 }
 
 #header .user .open a:focus {
+  color: #900;
   color: var(--color-header);
 }
 

@@ -216,6 +216,7 @@ td th {
 }
 
 tbody tr {
+  border-bottom: 1px solid #fff;
   border-bottom: 1px solid var(--color-background);
 }
 
@@ -230,10 +231,12 @@ th {
 
 thead td {
   background: #ddd;
+  border-bottom: 1px solid #fff;
   border-bottom: 1px solid var(--color-background);
 }
 
 th, tr:hover, col.name {
+  background: #fff;
   background: var(--color-background);
   border: 1px solid #bbb;
   padding: 0.15em 0.5em 0.25em;

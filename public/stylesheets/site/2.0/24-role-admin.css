@@ -11,6 +11,7 @@ This shows the archive when logged in as admin, and overrides with admin styles,
 
 #header .admin {
   background: #066;
+  border-top: 1px solid #fff;
   border-top: 1px solid var(--color-background);
     box-shadow: none;
 }
@@ -20,6 +21,7 @@ This shows the archive when logged in as admin, and overrides with admin styles,
 }
 
 #admin-options a {
+  color: #900;
   color: var(--color-header);
 }
 
