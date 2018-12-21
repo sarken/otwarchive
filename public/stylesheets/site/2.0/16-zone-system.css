@@ -360,6 +360,6 @@ For practicality, /archive_faqs are also .docs and .support and have the .userst
 }
 
 #tos_prompt [disabled] {
-  background: #ccc;
+  background: var(--color-action-current);
     box-shadow: none;
 }

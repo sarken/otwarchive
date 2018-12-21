@@ -42,7 +42,7 @@ http://otwcode.github.com/docs/front_end_coding/patterns/supertypes
 }
 
 #dashboard .current {
-  background: #ccc;
+  background: var(--color-action-current);
 }
 
 #dashboard .secondary {

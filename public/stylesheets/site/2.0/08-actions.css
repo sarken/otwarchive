@@ -21,8 +21,8 @@ ul.actions {
 }
 
 .actions a, .actions a:link, .action, .action:link, .actions input, input[type="submit"], button, .current, .actions label {
-  background: #eee;
-  color: #444;
+  background: var(--color-action) var(--gradient-action);
+  color: var(--color-action-text);
   width: auto;
   font-size: 100%;
   line-height: 1.286;
@@ -35,13 +35,8 @@ ul.actions {
   position: relative;
   cursor: pointer;
   text-decoration: none;
-  border: 1px solid #bbb;
-  border-bottom: 1px solid #aaa;
-    background-image: -moz-linear-gradient(#fff 2%,#ddd 95%, #bbb 100%);
-    background-image: -webkit-linear-gradient(#fff 2%,#ddd 95%, #bbb 100%);
-    background-image: -o-linear-gradient(#fff 2%,#ddd 95%, #bbb 100%);
-    background-image: -ms-linear-gradient(#fff 2%,#ddd 95%, #bbb 100%);
-    background-image: linear-gradient(#fff 2%,#ddd 95%, #bbb 100%);
+  border: 1px solid var(--color-action-border);
+  border-bottom: 1px solid var(--color-action-border-bottom);
     border-radius: 0.25em;
     box-shadow: none;
 }
@@ -84,25 +79,25 @@ ol.pagination, div.pagination, ol.year {
 }
 
 .actions a:visited, .action:visited, .action a:link, .action a:visited {
-  color: #111;
+  color: var(--color-action-visited-text);
 }
 
 .actions a:hover, .actions input:hover, .actions a:focus, .actions input:focus, label.action:hover, .action:hover, .action:focus {
-  color: var(--color-header);
-  border-top: 1px solid #999;
-  border-left: 1px solid #999;
-    box-shadow: inset 2px 2px 2px #bbb;
+  color: var(--color-action-hover-text);
+  border-top: 1px solid var(--color-action-hover-border);
+  border-left: 1px solid var(--color-action-hover-border);
+    box-shadow: inset 2px 2px 2px var(--color-action-border-bottom);
 }
 
 .actions a:active, .current, a.current, a:link.current, .current a:visited {
-  color: #111;
-  background: #ccc;
-  border-color: #fff;
-    box-shadow: inset 1px 1px 3px #333;
+  color: var(--color-action-visited-text);
+  background: var(--color-action-current);
+  border-color: var(--color-action-current-border);
+    box-shadow: var(--shadow-action-current);
 }
 
 .actions label.disabled {
-  background: #ccc;
+  background: var(--color-action-current);
 }
 
 .actions li a, .actions li input, .actions li input[type="submit"], .actions li .current, .actions li label {
@@ -139,7 +134,7 @@ ul#skiplinks, .landmark, .landmark a, .index .heading.landmark {
   background: var(--color-background);
   position: absolute;
   z-index: 99;
-  border: 2px solid #bbb;
+  border: 2px solid (--color-action-border);
   margin: auto;
   padding: 0 0.375em;
   overflow: hidden;

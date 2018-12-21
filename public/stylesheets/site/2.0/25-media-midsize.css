@@ -35,9 +35,9 @@
 }
 
 #dashboard .secondary {
-  background: #eee;
+  background: var(--color-action);
   padding: 0.375em 0 0.625em;
-    box-shadow: inset 2px 2px 5px #bbb;
+    box-shadow: inset 2px 2px 5px var(--color-action-border);
 }
 
 #dashboard .secondary a {

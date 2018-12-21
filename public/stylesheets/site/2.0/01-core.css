@@ -6,11 +6,24 @@ http://otwcode.github.com/docs/front_end_coding/css-shorthand*/
   --color-border: #cacfd5;
   --color-text-default: #0b1016;
   --color-base: #f4f5f6;
+
   --color-header: #900;
   --color-header-text: #fff;
   --color-header-menu: #ddd;
   --color-header-menu-text: #111;
   --image-header: url("/images/skins/textures/tiles/red-ao3.png");
+
+  --color-action: #eee;
+  --color-action-text: #444;
+  --color-action-visited-text: #111;
+  --color-action-hover-text: #900;
+  --color-action-hover-border: #999;
+  --color-action-current: #ccc;
+  --color-action-current-border: #fff;
+  --color-action-border: #bbb;
+  --color-action-border-bottom: #aaa;
+  --gradient-action: linear-gradient(#fff 2%, #ddd 95%, #bbb 100%);
+  --shadow-action-current: inset 1px 1px 3px #333;
 }
 
 body, .toggled form, .dynamic form, .secondary, .dropdown {
