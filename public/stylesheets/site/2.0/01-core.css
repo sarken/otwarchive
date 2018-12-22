@@ -5,6 +5,8 @@ http://otwcode.github.com/docs/front_end_coding/css-shorthand*/
   --color-background: #fff;
   --color-text: #2a2a2a;
   --color-link: #111;
+  --color-link-hover: #999;
+  --color-link-visited: #666;
 
   --color-logo: #900;
   --color-logo-contrast: #fff;
@@ -53,6 +55,8 @@ http://otwcode.github.com/docs/front_end_coding/css-shorthand*/
     --color-background: #333;
     --color-text: #eee;
     --color-link: #fff;
+    --color-link-hover: #fff;
+    --color-link-visited: #999;
 
     --color-logo: #5998D6;
     --color-logo-contrast: #111;

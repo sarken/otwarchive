@@ -32,12 +32,14 @@ a, a:link, a:visited:hover {
 
 a:visited {
   color: #666;
+  color: var(--color-link-visited);
   text-decoration: none;
   border-bottom: 1px dashed;
 }
 
 a:hover {
   color: #999;
+  color: var(--color-link-hover);
 }
 
 a:active, a:focus, button:focus {

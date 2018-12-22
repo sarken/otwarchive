@@ -59,6 +59,7 @@ table, thead td {
 
 #admin_users_table th a:visited {
   color: #999;
+  color: var(--color-link-visited);
 }
 
 #admin_users_table th a:hover {
