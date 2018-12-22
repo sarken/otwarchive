@@ -39,6 +39,7 @@ span.unread, .replied, span.claimed, .actions span.defaulted {
 
 .actions span.defaulted {
   color: #111;
+  color: var(--color-link);
 }
 
 .canonical, li.requested {

@@ -4,8 +4,14 @@ http://otwcode.github.com/docs/front_end_coding/css-shorthand*/
 :root {
   --color-background: #fff;
   --color-text: #2a2a2a;
+  --color-link: #111;
+
   --color-logo: #900;
   --color-logo-contrast: #fff;
+
+  --color-accent-1: #eee;
+  --color-accent-2: #ddd;
+  --color-accent-3: #ccc;
 
   --color-header: #900;
   --color-header-text: #fff;
@@ -13,6 +19,9 @@ http://otwcode.github.com/docs/front_end_coding/css-shorthand*/
   --color-header-menu-text: #111;
   --gradient-header-menu: linear-gradient(to bottom, rgba(221, 221, 221, 0.98) 0%, rgba(204, 204, 204, 0.98) 100%);
   --image-header: url("/images/skins/textures/tiles/red-ao3.png");
+
+  --color-interaction: #ddd;
+  --color-interaction-border: #f3efec;
 
   --color-action: #eee;
   --color-action-text: #444;
@@ -27,35 +36,52 @@ http://otwcode.github.com/docs/front_end_coding/css-shorthand*/
   --shadow-action: none;
   --shadow-action-current: inset 1px 1px 3px #333;
   --shadow-action-hover: inset 2px 2px 2px #bbb;
+
+  --color-listbox: #ddd;
+  --color-listbox-index: #fff;
 }
 
 /* Reversi! */
-:root {
-  --color-background: #333;
-  --color-text: #eee;
-  --color-logo: #5998D6;
-  --color-logo-contrast: #111;
+@media only screen and (max-width: 75em) {
+  :root {
+    --color-background: #333;
+    --color-text: #eee;
+    --color-link: #fff;
 
-  --color-header: #555;
-  --color-header-text: #fff;
-  --color-header-menu: #2a2a2a;
-  --color-header-menu-text: #fff;
-  --gradient-header-menu: none;
-  --image-header: url("/images/skins/textures/tiles/black-noise.jpg");
+    --color-logo: #5998D6;
+    --color-logo-contrast: #111;
 
-  --color-action: #555;
-  --color-action-text: #eee;
-  --color-action-visited-text: #999;
-  --color-action-hover-text: #999;
-  --color-action-hover-border: #000;
-  --color-action-current: #000;
-  --color-action-current-border: #555;
-  --color-action-border: #222;
-  --color-action-border-bottom: #222;
-  --gradient-action: none;
-  --shadow-action: inset 0 -8px 4px #232323, inset 0 8px 7px #555;
-  --shadow-action-current: -1px -1px 3px #000;
-  --shadow-action-hover: inset 2px 2px 2px #000;
+    --color-accent-1: #2a2a2a;
+    --color-accent-2: #555;
+    --color-accent-3: #555;
+
+    --color-header: #555;
+    --color-header-text: #fff;
+    --color-header-menu: #2a2a2a;
+    --color-header-menu-text: #fff;
+    --gradient-header-menu: none;
+    --image-header: url("/images/skins/textures/tiles/black-noise.jpg");
+
+    --color-interaction: #333;
+    --color-interaction-border: #222;
+
+    --color-action: #555;
+    --color-action-text: #eee;
+    --color-action-visited-text: #999;
+    --color-action-hover-text: #999;
+    --color-action-hover-border: #000;
+    --color-action-current: #000;
+    --color-action-current-border: #555;
+    --color-action-border: #222;
+    --color-action-border-bottom: #222;
+    --gradient-action: none;
+    --shadow-action: inset 0 -8px 4px #232323, inset 0 8px 7px #555;
+    --shadow-action-current: -1px -1px 3px #000;
+    --shadow-action-hover: inset 2px 2px 2px #000;
+
+    --color-listbox: #2a2a2a;
+    --color-listbox-index: #2a2a2a;
+  }
 }
 
 body, .toggled form, .dynamic form, .secondary, .dropdown {
@@ -93,6 +119,7 @@ a, a:link {
 
 li.blurb, fieldset, form dl {
   border: 1px solid #ddd;
+  border: 1px solid var(--color-accent-2);
   padding: 1em;
   overflow: hidden;
 }

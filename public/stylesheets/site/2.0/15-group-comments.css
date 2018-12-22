@@ -14,6 +14,7 @@ test note: have put clearfixes on listbox, blurb and comments here, to allow for
 div.comment, li.comment {
   position: relative;
   border: 1px solid #ddd;
+  border: 1px solid var(--color-accent-2);
   overflow: visible;
 }
 
@@ -31,6 +32,7 @@ div.comment, li.comment {
   float: left;
   margin: -1.5625em 0.5625em 0.5625em 0;
   border-bottom: 5px solid #ddd;
+  border-bottom: 5px solid var(--color-accent-2);
 }
 
 .comment .icon .anonymous {
@@ -45,6 +47,7 @@ div.comment, li.comment {
 
 .comment h4.byline {
   background: #ddd;
+  background: var(--color-accent-2);
   padding: 0.25em 0.25em 0.25em 108px;
   margin: 0 auto -0.25em;
 }
@@ -55,6 +58,7 @@ div.comment, li.comment {
 
 .thread .even {
   background: #eee;
+  background: var(--color-accent-1);
   margin: 0;
 }
 

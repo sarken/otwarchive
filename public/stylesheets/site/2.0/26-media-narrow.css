@@ -207,6 +207,7 @@ form.filters dl {
 
 .javascript {
   background: #ddd;
+  background: var(--color-interaction);
 }
 
 .javascript form.filters {

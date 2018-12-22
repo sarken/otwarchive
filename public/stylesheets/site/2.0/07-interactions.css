@@ -28,7 +28,9 @@ but it's probably not complete. */
 fieldset, form dl, fieldset dl dl, fieldset fieldset fieldset, fieldset fieldset dl dl, dd.hideme, form blockquote.userstuff {
   display: block;
   background: #ddd;
+  background: var(--color-interaction);
   border: 2px solid #f3efec;
+  border: 2px solid var(--color-interaction-border);
   margin: 0.643em;
   padding: 0.643em;
     box-shadow: inset 1px 0 5px #999;
@@ -213,6 +215,7 @@ We only use error messages for LiveValidation. Style spoofs the system error mes
   background: #fff;
   background: var(--color-background);
   border: 1px solid #eee;
+  border: 1px sold var(--color-accent-1);
   padding: 0.125em;
   line-height: 1.286;
   color: #000;
@@ -263,7 +266,9 @@ form li ul.autocomplete li.input {
 
 .ui-sortable li {
   background: #eee;
+  background: var(--color-accent-1);
   border: 2px solid #ddd;
+  border: 2px solid var(--color-accent-2);
   float: left;
   width: 100%;
   clear: both;
@@ -272,6 +277,7 @@ form li ul.autocomplete li.input {
 
 .ui-sortable li:hover {
   background: #ddd;
+  background: var(--color-interaction);
   border: 2px solid #999;
   cursor: move;
     box-shadow: 1px 1px 3px #bbb;
@@ -328,6 +334,7 @@ form li ul.autocomplete li.input {
 
 .ui-datepicker table {
   background: #eee;
+  background: var(--color-accent-1);
 }
 
 .ui-datepicker td {
@@ -336,6 +343,7 @@ form li ul.autocomplete li.input {
 
 .ui-datepicker tr:hover {
   background: #ddd;
+  background: var(--color-accent-2);
 }
 
 .ui-datepicker td:hover {
@@ -446,6 +454,7 @@ a.modal.help {
   background: #fff;
   background: var(--color-background);
   border: 10px solid #eee;
+  border: 10px solid var(--color-accent-1);
   margin: 3% 0;
   max-width: 800px;
   min-width: 200px;
@@ -459,6 +468,7 @@ a.modal.help {
 
 #modal .content {
   border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--color-accent-3);
   font-size: 0.875em;
   overflow: auto;
   padding: 1.5em;
@@ -574,6 +584,7 @@ form.verbose legend, .verbose form legend {
   background: #fff;
   background: var(--color-background);
   border: 2px solid #ddd;
+  border: 2px solid var(--color-interaction);
   padding: 0.5em;
     box-shadow: 1px 2px 3px #999;
     opacity: 1;
@@ -605,6 +616,7 @@ form.simple span.actions {
 .toggled form, .dynamic form {
   padding: 0.5em;
   border: 2px solid #ccc;
+  border: 2px solid var(--color-accent-3);
   background: #fff;
   background: var(--color-background);
     box-shadow: 1px 2px 5px;

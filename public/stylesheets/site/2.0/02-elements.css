@@ -24,6 +24,7 @@ body {
 
 a, a:link, a:visited:hover {
   color: #111;
+  color: var(--color-link);
   text-decoration: none;
   border-bottom: 1px solid;
   cursor: pointer;
@@ -186,6 +187,7 @@ sup {
 
 table {
   background: #ddd;
+  background: var(--color-accent-2);
   border-collapse: collapse;
   margin: auto;
   width: 100%;
@@ -231,6 +233,7 @@ th {
 
 thead td {
   background: #ddd;
+  background: var(--color-accent-2);
   border-bottom: 1px solid #fff;
   border-bottom: 1px solid var(--color-background);
 }

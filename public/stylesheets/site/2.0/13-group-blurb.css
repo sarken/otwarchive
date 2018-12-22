@@ -245,6 +245,7 @@ eg collections, users, skins, instead of the 4-icon list
 
 .picture .header {
   border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--color-accent-3);
 }
 
 .index .skins .icon {
@@ -291,6 +292,7 @@ blurbs on the manage collection items pages, mostly reseting styles inherited fr
 
 .item dl.visibility {
   background: #eee;
+  background: var(--color-accent-1);
 }
 
 /* mod: BOOKMARK */
@@ -400,6 +402,7 @@ blurbs on the manage collection items pages, mostly reseting styles inherited fr
 
 .reading h4.viewed {
   background: #ddd;
+  background: var(--color-accent-2);
 }
 
 .reading .deleted h4.viewed {

@@ -151,6 +151,7 @@ notice that CSS3 declarations sit are indented twice (four spaces) and always co
 
 #login .open a:hover, #login .open a:focus {
   background: #eee;
+  background: var(--color-accent-1);
 }
 
 #greeting .user > li {

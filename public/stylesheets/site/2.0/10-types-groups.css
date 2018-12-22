@@ -6,6 +6,7 @@ http://otwcode.github.com/docs/front_end_coding/patterns/supertypes
 
 a.tag {
   color: #111;
+  color: var(--color-link);
   line-height: 1.5;
   text-decoration: none;
   padding: 0;
@@ -168,6 +169,7 @@ a.work {
 
 li.relationships a {
   background: #eee;
+  background: var(--color-accent-1);
 }
 
 .actions .reindex a {
@@ -239,6 +241,7 @@ dl.stats dd {
 
 .statistics .index li:nth-of-type(even) {
   background: #eee;
+  background: var(--color-accent-1);
 }
 
 .concise li { 

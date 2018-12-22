@@ -5,7 +5,9 @@ http://otwcode.github.com/docs/front_end_coding/patterns/listbox
 .listbox, fieldset fieldset.listbox {
   clear: right;
   background: #ddd;
+  background: var(--color-listbox);
   border: 2px solid #ccc;
+  border: 2px solid var(--color-accent-3);
   padding: 0;
   margin: 0.643em auto;
   overflow: hidden;
@@ -33,7 +35,7 @@ http://otwcode.github.com/docs/front_end_coding/patterns/listbox
   float: none;
   clear: right;
   background: #fff;
-  background: var(--color-background);
+  background: var(--color-listbox-index);
     box-shadow: inset 1px 1px 3px #bbb;
 }
 

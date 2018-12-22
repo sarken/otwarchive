@@ -253,6 +253,7 @@ dl#symbols-key dd {
 
 #symbols-key dl {
   border: 1px solid #ddd;
+  border: 1px solid var(--color-accent-2);
   margin-bottom: 1.286em;
   padding: 0.15em;
 }

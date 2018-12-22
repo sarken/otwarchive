@@ -18,6 +18,7 @@ This shows the archive when logged in as admin, and overrides with admin styles,
 
 #header .admin a:hover, #header .admin a:focus {
   color: #111;
+  color: var(--color-link);
 }
 
 #admin-options a {
