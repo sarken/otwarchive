@@ -9,9 +9,11 @@ http://otwcode.github.com/docs/front_end_coding/css-shorthand*/
   --color-logo: #900;
   --color-logo-contrast: #fff;
 
-  --color-accent-1: #eee;
-  --color-accent-2: #ddd;
-  --color-accent-3: #ccc;
+  --color-accent-1: #f3efec;
+  --color-accent-2: #ededed;
+  --color-accent-3: #eee;
+  --color-accent-4: #ddd;
+  --color-accent-5: #ccc;
 
   --color-header: #900;
   --color-header-text: #fff;
@@ -51,9 +53,11 @@ http://otwcode.github.com/docs/front_end_coding/css-shorthand*/
     --color-logo: #5998D6;
     --color-logo-contrast: #111;
 
-    --color-accent-1: #2a2a2a;
-    --color-accent-2: #555;
-    --color-accent-3: #555;
+    --color-accent-1: #555;
+    --color-accent-2: #2c2c2c;
+    --color-accent-3: #2a2a2a;
+    --color-accent-4: #555;
+    --color-accent-5: #555;
 
     --color-header: #555;
     --color-header-text: #fff;
@@ -119,7 +123,7 @@ a, a:link {
 
 li.blurb, fieldset, form dl {
   border: 1px solid #ddd;
-  border: 1px solid var(--color-accent-2);
+  border: 1px solid var(--color-accent-4);
   padding: 1em;
   overflow: hidden;
 }

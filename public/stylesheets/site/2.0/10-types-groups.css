@@ -134,6 +134,7 @@ dl.index dd {
   padding: 0.375em 0.15em 0.15em;
   overflow: visible;
   background: #ededed;
+  background: var(--color-accent-2);
 }
 
 dl.index > dd:after {
@@ -169,7 +170,7 @@ a.work {
 
 li.relationships a {
   background: #eee;
-  background: var(--color-accent-1);
+  background: var(--color-accent-3);
 }
 
 .actions .reindex a {
@@ -241,7 +242,7 @@ dl.stats dd {
 
 .statistics .index li:nth-of-type(even) {
   background: #eee;
-  background: var(--color-accent-1);
+  background: var(--color-accent-3);
 }
 
 .concise li { 

@@ -7,7 +7,7 @@ http://otwcode.github.com/docs/front_end_coding/patterns/listbox
   background: #ddd;
   background: var(--color-listbox);
   border: 2px solid #ccc;
-  border: 2px solid var(--color-accent-3);
+  border: 2px solid var(--color-accent-5);
   padding: 0;
   margin: 0.643em auto;
   overflow: hidden;

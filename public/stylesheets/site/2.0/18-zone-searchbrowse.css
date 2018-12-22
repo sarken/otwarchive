@@ -32,7 +32,7 @@ form.search input[type="text"] {
 
 .search [role="tooltip"] {
   background: #ddd;
-  background: var(--color-accent-2);
+  background: var(--color-accent-4);
   border: 1px solid #fff;
   border: 1px solid var(--color-background);
   padding: 0.15em;
@@ -145,6 +145,7 @@ form.filters {
 
 .filters .group dt.bookmarker {
   border-top: 1px solid #f3efec;
+  border-top: 1px solid var(--color-interaction-border);
   margin-top: 0.643em;
   padding-top: 0.643em;
 }

@@ -30,7 +30,7 @@ http://otwcode.github.com/docs/front_end_coding/patterns/supertypes
 
 #dashboard a:hover {
   background: #ddd;
-  background: var(--color-accent-2);
+  background: var(--color-accent-4);
   color: #900;
   color: var(--color-header);
 }
@@ -41,7 +41,7 @@ http://otwcode.github.com/docs/front_end_coding/patterns/supertypes
   padding: 1.286em 0;
   text-align: right;
   border-top: 2px solid #ddd;
-  border-top: 2px solid var(--color-accent-2);
+  border-top: 2px solid var(--color-accent-4);
   position: relative;
 }
 

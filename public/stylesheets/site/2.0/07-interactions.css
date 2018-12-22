@@ -86,6 +86,7 @@ textarea.large {
 
 input:focus, select:focus, textarea:focus {
   background: #f3efec;
+  background: var(--color-accent-1);
 }
 
 input[type="radio"] + label, input[type="checkbox"] + label {
@@ -128,6 +129,7 @@ form dt {
   width: 25%;
   padding: 0.25em 0.5625em 0 0;
   border-bottom: 1px solid #f3efec;
+  border-bottom: 1px solid var(--color-accent-1);
 }
 
 form dd, form dd.any {
@@ -215,7 +217,7 @@ We only use error messages for LiveValidation. Style spoofs the system error mes
   background: #fff;
   background: var(--color-background);
   border: 1px solid #eee;
-  border: 1px sold var(--color-accent-1);
+  border: 1px sold var(--color-accent-3);
   padding: 0.125em;
   line-height: 1.286;
   color: #000;
@@ -266,9 +268,9 @@ form li ul.autocomplete li.input {
 
 .ui-sortable li {
   background: #eee;
-  background: var(--color-accent-1);
+  background: var(--color-accent-3);
   border: 2px solid #ddd;
-  border: 2px solid var(--color-accent-2);
+  border: 2px solid var(--color-accent-4);
   float: left;
   width: 100%;
   clear: both;
@@ -334,7 +336,7 @@ form li ul.autocomplete li.input {
 
 .ui-datepicker table {
   background: #eee;
-  background: var(--color-accent-1);
+  background: var(--color-accent-3);
 }
 
 .ui-datepicker td {
@@ -343,7 +345,7 @@ form li ul.autocomplete li.input {
 
 .ui-datepicker tr:hover {
   background: #ddd;
-  background: var(--color-accent-2);
+  background: var(--color-accent-4);
 }
 
 .ui-datepicker td:hover {
@@ -454,7 +456,7 @@ a.modal.help {
   background: #fff;
   background: var(--color-background);
   border: 10px solid #eee;
-  border: 10px solid var(--color-accent-1);
+  border: 10px solid var(--color-accent-3);
   margin: 3% 0;
   max-width: 800px;
   min-width: 200px;
@@ -468,7 +470,7 @@ a.modal.help {
 
 #modal .content {
   border-bottom: 1px solid #ccc;
-  border-bottom: 1px solid var(--color-accent-3);
+  border-bottom: 1px solid var(--color-accent-5);
   font-size: 0.875em;
   overflow: auto;
   padding: 1.5em;
@@ -616,7 +618,7 @@ form.simple span.actions {
 .toggled form, .dynamic form {
   padding: 0.5em;
   border: 2px solid #ccc;
-  border: 2px solid var(--color-accent-3);
+  border: 2px solid var(--color-accent-5);
   background: #fff;
   background: var(--color-background);
     box-shadow: 1px 2px 5px;

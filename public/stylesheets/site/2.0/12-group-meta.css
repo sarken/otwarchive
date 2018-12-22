@@ -4,7 +4,7 @@ http://otwcode.github.com/docs/front_end_coding/patterns/meta
 
 dl.meta {
   border: 1px solid #ccc;
-  border: 1px solid var(--color-accent-3);
+  border: 1px solid var(--color-accent-5);
   clear: right;
   padding: 1.286em 0.75em;
   position: relative;
