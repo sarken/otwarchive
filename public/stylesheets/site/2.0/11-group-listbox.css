@@ -11,7 +11,7 @@ http://otwcode.github.com/docs/front_end_coding/patterns/listbox
   padding: 0;
   margin: 0.643em auto;
   overflow: hidden;
-    box-shadow: 0 0 0 1px var(--color-background);
+    box-shadow: var(--shadow-listbox);
 }
 
 .listbox .heading {
@@ -36,7 +36,7 @@ http://otwcode.github.com/docs/front_end_coding/patterns/listbox
   clear: right;
   background: #fff;
   background: var(--color-listbox-index);
-    box-shadow: inset 1px 1px 3px #bbb;
+    box-shadow: var(--shadow-listbox-index);
 }
 
 .listbox .index:after {
@@ -53,7 +53,7 @@ http://otwcode.github.com/docs/front_end_coding/patterns/listbox
 }
 
 .listbox li.blurb {
-    box-shadow: none;
+    box-shadow: var(--shadow-listbox-blurb);
 }
 
 /* mods: alphabet, medium */

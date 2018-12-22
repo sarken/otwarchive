@@ -24,6 +24,7 @@ http://otwcode.github.com/docs/front_end_coding/css-shorthand*/
 
   --color-interaction: #ddd;
   --color-interaction-border: #f3efec;
+  --shadow-interaction: inset 1px 0 5px #999;
 
   --color-action: #eee;
   --color-action-text: #444;
@@ -41,6 +42,9 @@ http://otwcode.github.com/docs/front_end_coding/css-shorthand*/
 
   --color-listbox: #ddd;
   --color-listbox-index: #fff;
+  --shadow-listbox: 0 0 0 1px #fff;
+  --shadow-listbox-blurb: none;
+  --shadow-listbox-index: inset 1px 1px 3px #bbb;
 }
 
 /* Reversi! */
@@ -68,6 +72,7 @@ http://otwcode.github.com/docs/front_end_coding/css-shorthand*/
 
     --color-interaction: #333;
     --color-interaction-border: #222;
+    --shadow-interaction: none;
 
     --color-action: #555;
     --color-action-text: #eee;
@@ -85,6 +90,9 @@ http://otwcode.github.com/docs/front_end_coding/css-shorthand*/
 
     --color-listbox: #2a2a2a;
     --color-listbox-index: #2a2a2a;
+    --shadow-listbox: 1px 1px 3px #000;
+    --shadow-listbox-blurb: 1px 1px 3px #000;
+    --shadow-listbox-index: inset 1px 1px 3px #000;
   }
 }
 

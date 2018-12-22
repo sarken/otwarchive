@@ -29,3 +29,13 @@ and preserve the balance/symmetry of the page */
 .edit_external_author ul ul {
   margin-left: 2.75em;
 }
+
+@media only screen and (max-width: 75em) {
+  #inner .module .heading {
+    border-bottom-color: var(--color-accent-5);
+  }
+
+  .listbox .group .group {
+    background: var(--color-background);
+  }
+}

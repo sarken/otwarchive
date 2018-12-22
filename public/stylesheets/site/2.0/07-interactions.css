@@ -33,7 +33,7 @@ fieldset, form dl, fieldset dl dl, fieldset fieldset fieldset, fieldset fieldset
   border: 2px solid var(--color-interaction-border);
   margin: 0.643em;
   padding: 0.643em;
-    box-shadow: inset 1px 0 5px #999;
+    box-shadow: var(--shadow-interaction);
 }
 
 fieldset dl, fieldset.actions, fieldset dl fieldset dl {
