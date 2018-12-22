@@ -30,7 +30,12 @@ and preserve the balance/symmetry of the page */
   margin-left: 2.75em;
 }
 
+/* Reversi overrides
 @media only screen and (max-width: 75em) {
+  .toggled form {
+    background: var(--image-header);
+  }
+
   #inner .module .heading {
     border-bottom-color: var(--color-accent-5);
   }
@@ -38,4 +43,21 @@ and preserve the balance/symmetry of the page */
   .listbox .group .group {
     background: var(--color-background);
   }
+
+  li.blurb, .wrapper, #dashboard .secondary, .secondary, form blockquote.userstuff, .thread .comment, .toggled form {
+      box-shadow: var(--shadow-listbox);
+  }
+
+  #dashboard .current, .actions a:active, #outer .current, a.current, .current a:visited, span.unread, .replied, span.claimed, dl.index dd, .own, .draft, .draft .unread, .child, .unwrangled, .unreviewed, .ui-sortable li:hover {
+      box-shadow: var(--shadow-action-current);
+  }
+
+  .filters .expander {
+      box-shadow: none;
+  }
+
+  .comment h4.byline {
+    background: transparent;
+  }
 }
+*/
