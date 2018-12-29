@@ -130,11 +130,10 @@ When /^I sort by fandom$/ do
   end
 end
 
-When /^I reveal works for "([^\"]*)"$/ do |title|
+When /^I reveal works for "(.*?)"$/ do |title|
   step %{I am logged in as the owner of "#{title}"}
-  visit collection_path(Collection.find_by(title: title))
-  step %{I follow "Collection Settings"}
-  uncheck "This collection is unrevealed"
+  visit edit_collection_path(Collection.find_by(title: title))
+  check("collection_collection_preference_attributes_unrevealed")
   click_button "Update"
   page.should have_content("Collection was successfully updated")
 end
@@ -162,6 +161,18 @@ When /^I accept the invitation for my work in the collection "([^\"]*)"$/ do |co
   collection_item_id = the_collection.collection_items.first.id
   visit user_collection_items_path(User.current_user)
   step %{I select "Approved" from "collection_items_#{collection_item_id}_user_approval_status"}
+end
+
+When /^I set the collection "(.*?)" to unrevealed$/ do |title|
+  visit edit_collection_path(Collection.find_by(title: title))
+  check("collection_collection_preference_attributes_unrevealed")
+  click_button "Update"
+end
+
+When /^I approve the collection item for the work "(.*?)"$/ do |title|
+  item_id = Work.find_by(title: title).collection_items.first.id
+  select("Approved", from: "collection_items_#{item_id}_collection_approval_status")
+  click_button "Submit"
 end
 
 ### THEN

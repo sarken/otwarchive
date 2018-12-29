@@ -41,3 +41,20 @@ Feature: Collectible items in moderated collections
       And I view the awaiting approval collection items page for "Various Penguins"
     Then I should see "Bookmark of deleted item"
       And I should see "This has been deleted, sorry!"
+
+  Scenario: Revealing a moderated collection reveals approved items and items
+  awaiting approval
+    Given I am logged in as the owner of "Various Penguins"
+      And I set the collection "Various Penguins" to unrevealed
+      And I am logged in as a random user
+      And I post the work "Approved Work" to the collection "Various Penguins"
+      And I post the work "Unapproved Work" to the collection "Various Penguins"
+    When I am logged in as the owner of "Various Penguins"
+      And I view the awaiting approval collection items page for "Various Penguins"
+      And I approve the collection item for the work "Approved Work"
+    Then I should see "Collection status updated!"
+    When I reveal works for "Various Penguins"
+      And I view the work "Approved Work"
+    Then I should not see "This work is part of an ongoing challenge and will be revealed soon!"
+    When I view the work "Unapproved Work"
+    Then I should not see "This work is part of an ongoing challenge and will be revealed soon!"
