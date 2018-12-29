@@ -54,6 +54,7 @@ class Collection < ApplicationRecord
   has_many :collection_items, dependent: :destroy
   accepts_nested_attributes_for :collection_items, allow_destroy: true
   has_many :approved_collection_items, -> { where('collection_items.user_approval_status = ? AND collection_items.collection_approval_status = ?', CollectionItem::APPROVED, CollectionItem::APPROVED) }, class_name: "CollectionItem"
+  has_many :collection_items_awaiting_collection_approval, -> { where('collection_items.collection_approval_status = ?', CollectionItem::NEUTRAL) }, class_name: "CollectionItem"
 
   has_many :works, through: :collection_items, source: :item, source_type: 'Work'
   has_many :approved_works, -> { where('collection_items.user_approval_status = ? AND collection_items.collection_approval_status = ? AND works.posted = true', CollectionItem::APPROVED, CollectionItem::APPROVED) }, through: :collection_items, source: :item, source_type: 'Work'
@@ -459,14 +460,20 @@ class Collection < ApplicationRecord
   end
 
   def reveal_collection_items
-    approved_collection_items.each { |collection_item| collection_item.update_attribute(:unrevealed, false) }
+    items_to_reveal = approved_collection_items.or(collection_items_awaiting_collection_approval)
+    items_to_reveal.each { |collection_item| collection_item.update_attribute(:unrevealed, false) }
     send_reveal_notifications
   end
 
   def reveal_collection_item_authors
-    approved_collection_items.each { |collection_item| collection_item.update_attribute(:anonymous, false) }
+    items_to_deanon = approved_collection_items.or(collection_items_awaiting_collection_approval)
+    items_to_deanon.each { |collection_item| collection_item.update_attribute(:anonymous, false) }
   end
 
+  # TODO: This only sends notifications if the item has been approved by the collection
+  # to avoid situations where the notification includes the collection name even though
+  # the item is awaiting approval. I need to make it so the collection name is only in
+  # the email if the collection mod has approved the item.
   def send_reveal_notifications
     approved_collection_items.each {|collection_item| collection_item.notify_of_reveal}
   end
