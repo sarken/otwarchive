@@ -170,10 +170,11 @@ When /^I set the collection "(.*?)" to unrevealed$/ do |title|
   click_button "Update"
 end
 
-When /^I approve the collection item for the work "(.*?)"$/ do |title|
+When /^I (approve|reject) the collection item for the work "(.*?)"$/ do |action, title|
+  status = action == "approve" ? "Approved" : "Rejected"
   item_id = Work.find_by(title: title).collection_items.first.id
   select_id = "collection_items_#{item_id}_collection_approval_status"
-  select("Approved", from: select_id)
+  select(status, from: select_id)
   click_button "Submit"
 end
 
