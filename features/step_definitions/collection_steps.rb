@@ -130,10 +130,11 @@ When /^I sort by fandom$/ do
   end
 end
 
-When /^I reveal works for "(.*?)"$/ do |title|
+When /^I reveal works for "([^\"]*)"$/ do |title|
   step %{I am logged in as the owner of "#{title}"}
-  visit edit_collection_path(Collection.find_by(title: title))
-  check("collection_collection_preference_attributes_unrevealed")
+  visit collection_path(Collection.find_by(title: title))
+  step %{I follow "Collection Settings"}
+  uncheck "This collection is unrevealed"
   click_button "Update"
   page.should have_content("Collection was successfully updated")
 end
@@ -171,7 +172,8 @@ end
 
 When /^I approve the collection item for the work "(.*?)"$/ do |title|
   item_id = Work.find_by(title: title).collection_items.first.id
-  select("Approved", from: "collection_items_#{item_id}_collection_approval_status")
+  select_id = "collection_items_#{item_id}_collection_approval_status"
+  select("Approved", from: select_id)
   click_button "Submit"
 end
 
