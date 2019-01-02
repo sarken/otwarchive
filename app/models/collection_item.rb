@@ -296,17 +296,18 @@ class CollectionItem < ApplicationRecord
   end
 
   def notify_of_reveal
+    collection_id = self.collection.id if self.approved_by_collection?
     unless self.unrevealed? || !self.posted?
       recipient_pseuds = Pseud.parse_bylines(self.recipients, assume_matching_login: true)[:pseuds]
       recipient_pseuds.each do |pseud|
         unless pseud.user.preference.recipient_emails_off
-          UserMailer.recipient_notification(pseud.user.id, self.item.id, self.collection.id).deliver
+          UserMailer.recipient_notification(pseud.user.id, self.item.id, collection_id).deliver
         end
       end
 
       # also notify prompters of responses to their prompt
       if item_type == "Work" && !item.challenge_claims.blank?
-        UserMailer.prompter_notification(self.item.id, self.collection.id).deliver
+        UserMailer.prompter_notification(self.item.id, collection_id).deliver
       end
 
       # also notify the owners of any parent/inspired-by works

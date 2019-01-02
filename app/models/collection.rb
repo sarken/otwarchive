@@ -54,6 +54,7 @@ class Collection < ApplicationRecord
   has_many :collection_items, dependent: :destroy
   accepts_nested_attributes_for :collection_items, allow_destroy: true
   has_many :approved_collection_items, -> { where('collection_items.user_approval_status = ? AND collection_items.collection_approval_status = ?', CollectionItem::APPROVED, CollectionItem::APPROVED) }, class_name: "CollectionItem"
+  has_many :user_approved_collection_items, -> { where('collection_items.user_approval_status = ?', CollectionItem::APPROVED) }, class_name: "CollectionItem"
 
   has_many :works, through: :collection_items, source: :item, source_type: 'Work'
   has_many :approved_works, -> { where('collection_items.user_approval_status = ? AND collection_items.collection_approval_status = ? AND works.posted = true', CollectionItem::APPROVED, CollectionItem::APPROVED) }, through: :collection_items, source: :item, source_type: 'Work'
@@ -467,16 +468,15 @@ class Collection < ApplicationRecord
     collection_items.each { |collection_item| collection_item.update_attribute(:anonymous, false) }
   end
 
-  # TODO: This only sends notifications if the item has been approved by the collection
-  # to avoid situations where the notification includes the collection name even though
-  # the item is awaiting approval. I need to make it so the collection name is only in
-  # the email if the collection mod has approved the item.
+  # Only send notifications if the user has approved the item for the collection
+  # because items that were rejected or not yet approved by the user would not
+  # have been unrevealed. 
   def send_reveal_notifications
-    approved_collection_items.each {|collection_item| collection_item.notify_of_reveal}
+    collection_items.each { |collection_item| collection_item.notify_of_reveal }
   end
 
   def self.sorted_and_filtered(sort, filters, page)
-    pagination_args = {page: page}
+    pagination_args = { page: page }
 
     # build up the query with scopes based on the options the user specifies
     query = Collection.top_level
