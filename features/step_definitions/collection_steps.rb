@@ -56,7 +56,7 @@ Given /^mod1 lives in Alaska$/ do
   step %{I press "Update"}
 end
 
-Given /^(?:I have )?(?:a|an|the) (hidden)?(?: )?(anonymous)?(?: )?(moderated)?(?: )?(closed)?(?: )?collection "([^\"]*)"(?: with name "([^\"]*)")?$/ do |hidden, anon, moderated, closed, title, name|
+Given /^(?:I have )?(?:a|an|the) (hidden|unrevealed)?(?: )?(anonymous)?(?: )?(moderated)?(?: )?(closed)?(?: )?collection "([^\"]*)"(?: with name "([^\"]*)")?$/ do |hidden, anon, moderated, closed, title, name|
   step %{I am logged in as "moderator"}
   step %{I set up the collection "#{title}" with name "#{name}"}
   check("This collection is unrevealed") unless hidden.blank?
@@ -162,6 +162,27 @@ When /^I accept the invitation for my work in the collection "([^\"]*)"$/ do |co
   collection_item_id = the_collection.collection_items.first.id
   visit user_collection_items_path(User.current_user)
   step %{I select "Approved" from "collection_items_#{collection_item_id}_user_approval_status"}
+end
+
+When /^I set the collection "(.*?)" to unrevealed$/ do |title|
+  visit edit_collection_path(Collection.find_by(title: title))
+  check("collection_collection_preference_attributes_unrevealed")
+  click_button "Update"
+end
+
+When /^I approve the collection item for the work "(.*?)"$/ do |title|
+  item_id = Work.find_by(title: title).collection_items.first.id
+  select_id = "collection_items_#{item_id}_collection_approval_status"
+  select("Approved", from: select_id)
+  click_button "Submit"
+end
+
+When /^I reveal the work "(.*?)" in the collection "(.*?)"$/ do |title, collection|
+  work_id = Work.find_by(title: title).id
+  collection_id = Collection.find_by(title: collection).id
+  item_id = CollectionItem.find_by(item_id: work_id, item_type: "Work", collection_id: collection_id).id
+  uncheck("collection_items_#{item_id}_unrevealed")
+  click_button "Submit"
 end
 
 ### THEN

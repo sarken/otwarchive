@@ -1,3 +1,32 @@
+Given /^(?:I have )?(?:a|an|the) (hidden|unrevealed)?(?: )?(anonymous)?(?: )?(moderated)?(?: )?(closed)?(?: )?prompt meme "([^\"]*)"(?: with (\d+) sign-ups?)?$/ do |unrevealed, anon, moderated, closed, title, number|
+  step %{I am logged in as a random user}
+  visit new_collection_path
+  fill_in("collection_name", with: title.gsub(/[^\w]/, '_'))
+  fill_in("collection_title", with: title)
+  check("This collection is unrevealed") unless unrevealed.blank?
+  check("This collection is anonymous") unless anon.blank?
+  check("This collection is moderated") unless moderated.blank?
+  check("This collection is closed") unless closed.blank?
+  select("Prompt Meme", from: "challenge_type")
+  step %{I submit}
+  # Accepts default prompt meme settings, which are:
+  # sign ups open
+  # 1 prompt required, 5 prompts allowed
+  # details allowed
+  # 1 fandom, character, and relationship tag allowed per prompt
+  click_button("Submit")
+  step %{I am logged out}
+  # Create a number of sign-ups. Nothing will be filled in because no fields are
+  # required.
+  if number.present?
+    number.to_i.times do |i|
+      step %{I am logged in as a random user}
+      step %{I start signing up for "#{title}"}
+      click_button("Submit")
+      step %{I am logged out}
+    end
+  end
+end
 
 Given /^I have Battle 12 prompt meme set up$/ do
   step %{I am logged in as "mod1"}
@@ -553,4 +582,9 @@ Then /^no one should have a claim in "([^\"]*)"$/ do |challenge_title|
       Collection.find_by(id: collection_id).should_not be_nil
     end
   end
+end
+
+Then /^the prompter should be notified by email about the work "(.*?)"$/ do |title|
+  email = Work.find_by(title: title).challenge_claims.first.requesting_pseud.user.email
+  step %{1 email should be delivered to "#{email}"}
 end

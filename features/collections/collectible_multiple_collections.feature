@@ -40,3 +40,32 @@ Feature: Collectible items in multiple collections
     When I go to "ModeratedCollection" collection's page
     Then I should not see "RandomWork"
 
+  Scenario: If a gift work is in multiple unrevealed collections, the recipient
+  should only be notified after both collections have been revealed
+    Given the unrevealed collection "Unrevealed Collection" with name "unrevealed_collection"
+      And the unrevealed collection "Hidden Collection" with name "hidden_collection"
+      And the user "recip" exists and is activated
+    When I am logged in as a random user
+      And I set up the draft "Surprise Present" as a gift for "recip"
+      And I fill in "Post to Collections / Challenges" with "unrevealed_collection, hidden_collection"
+      And I press "Post Without Preview"
+    Then 0 emails should be delivered
+    When I am logged in as the owner of "Unrevealed Collection"
+      And I view the approved collection items page for "Unrevealed Collection"
+      And I reveal the work "Surprise Present" in the collection "Unrevealed Collection"
+    Then 0 emails should be delivered
+    When I am logged in as the owner of "Hidden Collection"
+      And I view the approved collection items page for "Hidden Collection"
+      And I reveal the work "Surprise Present" in the collection "Hidden Collection"
+    Then "recip" should be notified by email about their gift "Surprise Present"
+
+  Scenario: If a gift work is posted to multiple collections simultaneously, the
+  recipient should only be notified once
+    Given the collection "Collection A" with name "collection_a"
+      And the collection "Collection B" with name "collection_b"
+      And the user "recip" exists and is activated
+    When I am logged in as a random user
+      And I set up the draft "Surprise Present" as a gift for "recip"
+      And I fill in "Post to Collections / Challenges" with "collection_a, collection_b"
+      And I press "Post Without Preview"
+    Then "recip" should be notified by email about their gift "Surprise Present"
