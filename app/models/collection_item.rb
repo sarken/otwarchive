@@ -298,7 +298,11 @@ class CollectionItem < ApplicationRecord
   def notify_of_reveal
     # Don't include the collection name in the email if the collection has not
     # approved the item.
-    collection_id = self.collection.id # if self.approved_by_collection?
+    collection_id = if self.approved_by_collection?
+                      self.collection.id
+                    else
+                      nil
+                    end
     unless self.unrevealed? || !self.posted?
       recipient_pseuds = Pseud.parse_bylines(self.recipients, assume_matching_login: true)[:pseuds]
       recipient_pseuds.each do |pseud|
