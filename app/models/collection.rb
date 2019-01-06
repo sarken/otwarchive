@@ -468,11 +468,22 @@ class Collection < ApplicationRecord
     collection_items.each { |collection_item| collection_item.update_attribute(:anonymous, false) }
   end
 
-  # Only send notifications if the user has approved the item for the collection
-  # because items that were rejected or not yet approved by the user would not
-  # have been unrevealed. 
+  # A work is not marked unrevealed until the user has approved its inclusion
+  # in a collection, so we don't want to send notifications unless 
+  # user_approval_status is approved.
+  #
+  # TODO: When AO3-2240 is fixed, we should ideally only send notifictations 
+  # for items that had their unrevealed status changed from true to false when 
+  # the collection's unrevealed setting was changed. With the current code,
+  # it's possible to send notifications twice for the same work if the 
+  # moderator reveals the collection, sets it back to unrevealed (which does 
+  # not and should not set exisiting collection items back to unrevaeld), and 
+  # then reveals the collection once again. However, it's necessary to keep 
+  # this behavior due to AO3-2240: if a collection has staggered reveals (e.g. 
+  # 10 works on day 1, 10 works on day 2, etc), notifications will not be sent
+  # for those works until the entire collection is revealed.
   def send_reveal_notifications
-    collection_items.each { |collection_item| collection_item.notify_of_reveal }
+    collection_items.user_approved.each { |collection_item| collection_item.notify_of_reveal }
   end
 
   def self.sorted_and_filtered(sort, filters, page)
