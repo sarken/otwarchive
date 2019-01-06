@@ -75,7 +75,7 @@ Feature: Collectible items in moderated collections
   Then "recip" should be notified by email about their gift "Unapproved Work"
     And the email should not contain "Various Penguins"
   When I am logged in as "recip"
-    And I view the work "Unapproved Works"
+    And I view the work "Unapproved Work"
   Then I should see "Unapproved Work"
     And I should not see "This work is part of an ongoing challenge and will be revealed soon!"
 
