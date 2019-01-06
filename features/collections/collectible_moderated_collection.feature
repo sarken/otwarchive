@@ -42,7 +42,7 @@ Feature: Collectible items in moderated collections
     Then I should see "Bookmark of deleted item"
       And I should see "This has been deleted, sorry!"
 
-  Scenario: Revealing a moderated collection reveal all of its items
+  Scenario: Revealing a moderated collection reveals all of its items
     Given I am logged in as the owner of "Various Penguins"
       And I set the collection "Various Penguins" to unrevealed
       And I am logged in as a random user
@@ -62,3 +62,54 @@ Feature: Collectible items in moderated collections
     Then I should not see "This work is part of an ongoing challenge and will be revealed soon!"
     When I view the work "Rejected Work"
     Then I should not see "This work is part of an ongoing challenge and will be revealed soon!"
+
+  Scenario: Revealing a moderated collection should reveal and send
+  notifications for items awaiting moderator approval, but the email should not
+  mention the collection name
+  Given I am logged in as the owner of "Various Penguins"
+    And I set the collection "Various Penguins" to unrevealed
+    And the user "recip" exists and is activated
+    And I am logged in as a random user
+    And I post the work "Unapproved Work" to the collection "Various Penguins" as a gift for "recip"
+  When I reveal works for "Various Penguins"
+  Then "recip" should be notified by email about their gift "Unapproved Work"
+    And the email should not contain "Various Penguins"
+  When I am logged in as "recip"
+    And I view the work "Unapproved Works"
+  Then I should see "Unapproved Work"
+    And I should not see "This work is part of an ongoing challenge and will be revealed soon!"
+
+  Scenario: Revealing a moderated collection should reveal and send
+  notifications for rejected items, but the email should not mention the
+  collection name
+  Given I am logged in as the owner of "Various Penguins"
+    And I set the collection "Various Penguins" to unrevealed
+    And the user "recip" exists and is activated
+    And I am logged in as a random user
+    And I post the work "Rejected Work" to the collection "Various Penguins" as a gift for "recip"
+  When I am logged in as the owner of "Various Penguins"
+    And I view the awaiting approval collection items page for "Various Penguins"
+    And I reject the collection item for the work "Rejected Work"
+    And I reveal works for "Various Penguins"
+  Then "recip" should be notified by email about their gift "Rejected Work"
+    And the email should not contain "Various Penguins"
+  When I am logged in as "recip"
+    And I view the work "Rejected Work"
+  Then I should see "Rejected Work"
+    And I should not see "This work is part of an ongoing challenge and will be revealed soon!"
+
+ Scenario: Revealing a moderated collection should reveal and send notifications
+ for approved items
+  Given I am logged in as the owner of "Various Penguins"
+    And I set the collection "Various Penguins" to unrevealed
+    And the user "recip" exists and is activated
+    And I am logged in as a random user
+    And I post the work "Approved Work" to the collection "Various Penguins" as a gift for "recip"
+  When I am logged in as the owner of "Various Penguins"
+    And I reveal works for "Various Penguins"
+  Then "recip" should be notified by email about their gift "Approved Work"
+    And the email should contain "Various Penguins"
+  When I am logged in as "recip"
+    And I view the work "Approved Work"
+  Then I should see "Approved Work"
+    And I should not see "This work is part of an ongoing challenge and will be revealed soon!"
