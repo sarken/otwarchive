@@ -86,3 +86,21 @@ Feature: Collection
     And 0 emails should be delivered
   When I view the approved collection items page for "anon hidden collection"
   Then I should not see "A Death in Hong Kong"
+
+  Scenario: A work is invited to a collection and the creator neither rejects nor approves the invitation. The collection is then made unrevealed, which should mark the collection item (but not the work) unrevealed. When the collection is later revealed, no notifications should be sent for the work.
+  Given the user "recip" exists and is activated
+    And I have the collection "Future Unrevealed Collection"
+    And I am logged in as a random user
+  When I post the work "Invited Work" as a gift for "recip"
+  Then 1 email should be delivered
+  When I am logged in as the owner of "Future Unrevealed Collection"
+    And I add the work "Invited Work" to the collection "Future Unrevealed Collection"
+  # The invitation notice, no gift notification
+  Then 1 email should be delivered
+  When I set the collection "Future Unrevealed Collection" to unrevealed
+    And I view the invited collection items page for "Future Unrevealed collection"
+  When I am logged out
+  Then the work "Invited Work" should be visible to me
+  When I am logged in as the owner of "Future Unrevealed Collection"
+    And I reveal works for "Future Unrevealed Collection"
+  Then 0 emails should be delivered
