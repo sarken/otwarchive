@@ -273,7 +273,7 @@ class UserMailer < BulletproofMailer::Base
     @user = User.find(user_id)
     @work = Work.find(work_id)
     # If we've supplied a collection_id, make sure both the collection mods and the work creators are cool with the work's includion in the collection before including collection information in the notification
-    @collection = if collection_id && CollectionItem.where(item_id: work_id, item_type: "Work", collection_id: collection_id, collection_approval_status: CollectionItem::APPROVED, user_approval_status: CollectionItem::APPROVED)
+    @collection = if collection_id && !CollectionItem.where(item_id: work_id, item_type: "Work", collection_id: collection_id, collection_approval_status: CollectionItem::APPROVED, user_approval_status: CollectionItem::APPROVED).empty?
         Collection.find(collection_id)
       else
         nil 
