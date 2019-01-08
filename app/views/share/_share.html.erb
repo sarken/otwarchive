@@ -11,7 +11,7 @@
     
     <% # Twitter share %>
     <li>
-      <a href="http://twitter.com/share" class="twitter-share-button" data-size="large" data-via="ao3org" data-text="<%= shareable.is_a?(Bookmark)? get_tweet_text_for_bookmark(bookmark) : get_tweet_text(@work) %>" data-url="<%= shareable.is_a?(Bookmark)? bookmark_url(bookmark) : work_url(@work) %>">
+      <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large" data-via="ao3org" data-dnt="true" data-text="<%= shareable.is_a?(Bookmark)? get_tweet_text_for_bookmark(bookmark) : get_tweet_text(@work) %>" data-url="<%= shareable.is_a?(Bookmark)? bookmark_url(bookmark) : work_url(@work) %>">
         <%= ts('Tweet') %>
       </a>
     </li>
