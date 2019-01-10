@@ -56,7 +56,7 @@ Given /^mod1 lives in Alaska$/ do
   step %{I press "Update"}
 end
 
-Given /^(?:I have )?(?:a|an|the) (hidden)?(?: )?(anonymous)?(?: )?(moderated)?(?: )?(closed)?(?: )?collection "([^\"]*)"(?: with name "([^\"]*)")?$/ do |hidden, anon, moderated, closed, title, name|
+Given /^(?:I have )?(?:a|an|the) (unrevealed|hidden)?(?: )?(anonymous)?(?: )?(moderated)?(?: )?(closed)?(?: )?collection "([^\"]*)"(?: with name "([^\"]*)")?$/ do |hidden, anon, moderated, closed, title, name|
   step %{I am logged in as "moderator"}
   step %{I set up the collection "#{title}" with name "#{name}"}
   check("This collection is unrevealed") unless hidden.blank?
@@ -157,11 +157,34 @@ When /^I check all the collection settings checkboxes$/ do
   check("collection_collection_preference_attributes_email_notify")
 end
 
-When /^I accept the invitation for my work in the collection "([^\"]*)"$/ do |collection|
+When /^I (accept|reject) the invitation for my work in the collection "(.*?)"$/ do |action, collection|
   the_collection = Collection.find_by(title: collection)
   collection_item_id = the_collection.collection_items.first.id
+  status = action == "accept" ? "Approved" : "Rejected"
   visit user_collection_items_path(User.current_user)
-  step %{I select "Approved" from "collection_items_#{collection_item_id}_user_approval_status"}
+  select_id = "collection_items_#{collection_item_id}_user_approval_status"
+  select(status, from: select_id)
+end
+
+When /^I set the collection "(.*?)" to (unrevealed|moderated|anonymous)$/ do |title, setting|
+  visit edit_collection_path(Collection.find_by(title: title))
+  case setting
+  when "unrevealed"
+    check("collection_collection_preference_attributes_unrevealed")
+  when "moderated"
+    check("collection_collection_preference_attributes_moderated")
+  when "anonymous"
+    check("collection_collection_preference_attributes_anonymous")
+  end
+  click_button "Update"
+end
+
+When /^I (approve|reject) the collection item for the work "(.*?)"$/ do |action, title|
+  status = action == "approve" ? "Approved" : "Rejected"
+  item_id = Work.find_by(title: title).collection_items.first.id
+  select_id = "collection_items_#{item_id}_collection_approval_status"
+  select(status, from: select_id)
+  click_button "Submit"
 end
 
 ### THEN
@@ -216,7 +239,7 @@ Then /^the author of "([^\"]*)" should be publicly visible$/ do |title|
   work = Work.find_by(title: title)
   visit work_path(work)
   page.should have_content("by <a href=\"#{user_url(work.users.first)}\"><strong>#{work.users.first.pseuds.first.byline}")
-  if work.collections.first
+  if work.approved_collections.first
     visit collection_path(work.collections.first)
     page.should have_content("#{title} by #{work.users.first.pseuds.first.byline}")
   end
