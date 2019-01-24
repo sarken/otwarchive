@@ -23,17 +23,20 @@ class FandomsController < ApplicationController
     if params[:query].present? && params[:format] == "json"
       results = []
       if @collection || (medium.present? && Media.find_by_name(medium) == Media.uncategorized)
-        found_fandoms = @fandoms_list.fandoms.where("name LIKE ?", '%' + params[:query][:name] + '%').limit(10)
+        found_fandoms = @fandoms_list.fandoms.where("name LIKE ?", '%' + query_params[:name] + '%').limit(10)
         found_fandoms.each do |fandom|
           path_for_json = @collection ? collection_tag_works_path(@collection, fandom) : tag_path(fandom)
           results << { name: fandom.name, url: path_for_json }
         end
       else
-        found_fandoms = Tag.autocomplete_media_lookup(term: params[:query][:name], tag_type: "fandom",
-                                                      media: params[:query][:medium])
+        found_fandoms = Tag.autocomplete_media_lookup(term: query_params[:name], tag_type: "fandom",
+                                                      media: query_params[:medium])
         found_fandoms.each do |fandom|
           fandom_name = Tag.name_from_autocomplete(fandom)
-          path_for_json = tag_works_path(Tag.find_by_name(fandom_name))
+          tag = Tag.find_by(name: fandom_name)
+          # In case our autocomplete data was stale and the tag no longer exists
+          next if tag.nil?
+          path_for_json = tag_works_path(tag)
           results << { name: fandom_name, url: path_for_json }
         end
       end
@@ -74,5 +77,13 @@ class FandomsController < ApplicationController
                       order(params[:sort] == 'count' ? "count DESC" : "sortable_name ASC").
                       with_count.
                       paginate(page: params[:page], per_page: 250)
+  end
+
+  private
+
+  def query_params
+    params.require(:query).permit(
+      :query, :type, :canonical, :name
+    )
   end
 end
