@@ -441,7 +441,6 @@ namespace :After do
     end
   end
 
-<<<<<<< HEAD
   desc "Change handheld skins to narrow skins with a max-width of 44em"
   task(:handheld_skin_to_narrow => :environment) do
     current_width_media = "only screen and (max-width: 640px)"
