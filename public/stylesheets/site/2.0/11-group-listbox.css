@@ -55,10 +55,12 @@ http://otwcode.github.com/docs/front_end_coding/patterns/listbox
 /* mods: alphabet, medium */
 
 .alphabet .listbox li, .media .listbox {
-  width: 45%;
-  float: left;
   clear: none;
-  margin-right: 1.5em;
+  float: left;
+  margin-left: 1%;
+  margin-right: 1%;
+  width: 48%;
+    box-sizing: border-box;
 }
 
 /*Contexts */

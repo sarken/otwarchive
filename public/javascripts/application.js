@@ -28,6 +28,14 @@ $j(document).ready(function() {
     prepareDeleteLinks();
     thermometer();
     $j('body').addClass('javascript');
+
+    // don't let the user submit a live search form
+    $j('form.live').submit(function() {
+      return false;
+    });
+
+    // hide the submit button on live search forms
+    $j('form.live').find('[type=submit]').hide();
 });
 
 ///////////////////////////////////////////////////////////////////
@@ -663,3 +671,66 @@ function updateCachedTokens() {
     });
   }
 }
+
+///////////////////////////////////////////////////////////////////
+// Live Search
+///////////////////////////////////////////////////////////////////
+
+$j(document).ready(function() {
+  var live_search = $j('form.live');
+      search_field = live_search.find('input[type=text]');
+      results_container = live_search.find('.results');
+      results_heading = results_container.find('.heading');
+      results_index = results_container.find('.index');
+      action_url = live_search.attr('action');
+
+  // create invisible ARIA live region to tell screen readers about results
+  search_field.parent().append('<span class="accessible-summary landmark" aria-live="polite" aria-atomic="true"></span>');
+  $j('.accessible-summary').html(results_heading.html());
+
+  // allow us to set a delay between an event and a function
+  var delay = (function() {
+    var timer = 0;
+    return function(callback, ms) {
+      clearTimeout (timer);
+      timer = setTimeout(callback, ms);
+    };
+  })();
+
+  // 500ms after the search field last receives input, do the searching
+  search_field.on('input', function() {
+    delay(function() {
+
+      // always start with empty results array and index and a count of 0
+      var results = [];
+      results_index.empty();
+      count = 0;
+
+      var search_params = live_search.serialize();
+      var search_url = action_url + "?" + search_params
+
+      console.log(search_url);
+
+      // if a search term of 2 or more characters is present, get the JSON data, format it, increase the count, and show it all to the user 
+      if (search_field.val().length > 1) {
+        $j.getJSON(search_url, { format: 'json' }, function(data) {
+          var i;
+          for (i = 0; i < data.length; i++) {
+            results.push($j('<li><a href="' + data[i].url + '" class="tag">' + data[i].name + '</a></li>'));
+            count++;
+          }
+
+          $j.each(results, function(index, result) {
+            results_index.append(result);
+          });
+          live_search.find('.count').text(count);
+          results_container.slideDown().removeAttr('aria-hidden');
+        });
+        
+      // if no search term of 2 or more characters is present, hide the results section
+      } else {
+        results_container.slideUp().attr('aria-hidden', true);
+      }
+    }, 500);
+  });
+});

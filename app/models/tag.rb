@@ -518,9 +518,10 @@ class Tag < ApplicationRecord
 
   def add_to_autocomplete(score = nil)
     score ||= autocomplete_score
-    if self.is_a?(Character) || self.is_a?(Relationship)
+    if self.is_a?(Character) || self.is_a?(Relationship) || self.is_a?(Fandom)
       parents.each do |parent|
         REDIS_AUTOCOMPLETE.zadd("autocomplete_fandom_#{parent.name.downcase}_#{type.downcase}", score, autocomplete_value) if parent.is_a?(Fandom)
+        REDIS_AUTOCOMPLETE.zadd("autocomplete_media_#{parent.name.downcase}_#{type.downcase}", score, autocomplete_value) if parent.is_a?(Media)
       end
     end
     super
@@ -528,18 +529,20 @@ class Tag < ApplicationRecord
 
   def remove_from_autocomplete
     super
-    if self.is_a?(Character) || self.is_a?(Relationship)
+    if self.is_a?(Character) || self.is_a?(Relationship) || self.is_a?(Fandom)
       parents.each do |parent|
         REDIS_AUTOCOMPLETE.zrem("autocomplete_fandom_#{parent.name.downcase}_#{type.downcase}", autocomplete_value) if parent.is_a?(Fandom)
+        REDIS_AUTOCOMPLETE.zrem("autocomplete_media_#{parent.name.downcase}_#{type.downcase}", autocomplete_value) if parent.is_a?(Media)
       end
     end
   end
 
   def remove_stale_from_autocomplete
     super
-    if self.is_a?(Character) || self.is_a?(Relationship)
+    if self.is_a?(Character) || self.is_a?(Relationship) || self.is_a?(Fandom)
       parents.each do |parent|
         REDIS_AUTOCOMPLETE.zrem("autocomplete_fandom_#{parent.name.downcase}_#{type.downcase}", autocomplete_value_before_last_save) if parent.is_a?(Fandom)
+        REDIS_AUTOCOMPLETE.zrem("autocomplete_media_#{parent.name.downcase}_#{type.downcase}", autocomplete_value_before_last_save) if parent.is_a?(Media)
       end
     end
   end
@@ -551,6 +554,25 @@ class Tag < ApplicationRecord
 
   def autocomplete_score
     taggings_count_cache
+  end
+
+  # look up fandoms that have been wrangled into a given media
+  def self.autocomplete_media_lookup(options = {})
+    options.reverse_merge!({:term => "", :tag_type => "fandom", :media => "", :fallback => true})
+    search_param = options[:term]
+    tag_type = options[:tag_type]
+    media = Tag.get_search_terms(options[:media])
+
+    results = []
+    media.each do |single_media|
+      search_regex = Tag.get_search_regex(search_param)
+      results += REDIS_AUTOCOMPLETE.zrevrange("autocomplete_media_#{single_media}_#{tag_type}", 0, -1).select {|tag| tag.split(AUTOCOMPLETE_DELIMITER)[1].match(search_regex) }
+    end
+    if options[:fallback] && search_param.length > 0 && media.blank?
+      Tag.autocomplete_lookup(:search_param => search_param, :autocomplete_prefix => "autocomplete_tag_fandom")
+    else
+      results
+    end
   end
 
   # look up tags that have been wrangled into a given fandom

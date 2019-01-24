@@ -441,6 +441,7 @@ namespace :After do
     end
   end
 
+<<<<<<< HEAD
   desc "Change handheld skins to narrow skins with a max-width of 44em"
   task(:handheld_skin_to_narrow => :environment) do
     current_width_media = "only screen and (max-width: 640px)"
@@ -616,6 +617,14 @@ namespace :After do
     end
     puts && STDOUT.flush
   end
+
+  desc "Add all canonical Fandom tags to autocomplete"
+  task(:canonical_fandoms_to_autocomplete => :environment) do
+    Fandom.canonical.find_each do |fandom|
+      fandom.add_to_autocomplete
+    end
+  end
+
 end # this is the end that you have to put new tasks above
 
 ##################

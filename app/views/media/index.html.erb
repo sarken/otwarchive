@@ -3,26 +3,66 @@
 <!--/descriptions-->
 
 <!--main content-->
-<ul class="media fandom index group">
-<% for medium in @media %>
-  <li id="medium_<%= medium.id %>" class="medium listbox group">
-    <h3 class="heading"><%= link_to medium.name, medium_fandoms_path(medium) %></h3>
+<% @query = {} unless @query %>
+<%= form_tag url_for(controller: "media", action: "index"), class: "live simple search", id: "fandom-search", role: "search", method: :get do %>
+  <fieldset>
+    <legend><%= ts("Search Fandoms") %></legend>
+    <p>
+      <%= label_tag("search_for_fandoms", ts("Search for fandoms")) %>
+      <%= text_field_tag "query[name]", @query[:name], id: "search_for_fandoms", :"autocomplete" => "off" %>
 
-    <ol class="index group">
-    <% for fandom in @fandom_listing[medium] %>
-      <li>
-        <%= link_to_tag_works_with_text(fandom, fandom.name) %>
-        <% if fandom.respond_to?(:count) %>
-          (<%= fandom.count.to_s %>)
+      <%= hidden_field_tag "query[type]", "Fandom" %>
+      <%= hidden_field_tag "query[canonical]", true %>
+
+      <%= submit_tag ts("Search Fandoms") %>
+    </p>
+    <div class="results listbox group"<% unless @query.present? %> style="display: none;"<% end %>>
+      <h3 class="heading">
+        <span class="count">
+          <% if @query.present? %>
+            <%= @tags.total_entries %>
+          <% end %>
+        </span>
+        <%= ts("Fandoms Found") %>
+      </h3>
+      <ul class="index group">
+        <% if @query.present? %>
+          <% for tag in @tags %>
+            <li>
+              <%= link_to_tag_works_with_text(tag, tag.name) %>
+            </li>
+          <% end %>
         <% end %>
-      </li>
-    <% end %>
-    </ol>
-
-    <% unless @fandom_listing[medium].size < 5 %>
-    <p class="actions" role="navigation"><%= link_to ts("All %{media_type}...", :media_type => medium.name), medium_fandoms_path(medium) %></p>
-    <% end %>
-  </li>
+      </ul>
+    </div>
+  </fieldset>
 <% end %>
+
+<ul class="media fandom index group">
+  <% for medium in @media %>
+    <li id="medium_<%= medium.id %>" class="medium listbox group">
+      <h3 class="heading">
+        <%= link_to medium.name, medium_fandoms_path(medium) %>
+      </h3>
+
+      <ol class="index group">
+        <% for fandom in @fandom_listing[medium] %>
+          <li>
+            <%= link_to_tag_works_with_text(fandom, fandom.name) %>
+            <% if fandom.respond_to?(:count) %>
+              (<%= fandom.count.to_s %>)
+            <% end %>
+          </li>
+        <% end %>
+      </ol>
+
+      <% unless @fandom_listing[medium].size < 5 %>
+        <p class="actions" role="navigation">
+          <%= link_to ts("All %{media_type}...", media_type: medium.name), medium_fandoms_path(medium) %>
+        </p>
+      <% end %>
+    </li>
+  <% end %>
 </ul>
+
 <!--/content-->

@@ -16,6 +16,27 @@ class MediaController < ApplicationController
           Fandom.public_top(5).joins(:common_taggings).where(canonical: true, common_taggings: {filterable_id: medium.id, filterable_type: 'Tag'})
       end
     end
+
+    if params[:query].present? && params[:format] == "json"
+      results = []
+      found_fandoms = Tag.autocomplete_lookup(search_param: params[:query][:name],
+                                       autocomplete_prefix: "autocomplete_tag_fandom")
+      found_fandoms.each do |fandom|
+        fandom_name = Tag.name_from_autocomplete(fandom)
+        path_for_json = tag_works_path(Tag.find_by_name(fandom_name))
+        results << { name: fandom_name, url: path_for_json }
+      end
+    elsif params[:query].present?
+      options = params[:query].dup
+      @query = options
+      @tags = TagSearch.search(options)
+    end
+
+    respond_to do |format|
+      format.json { render :json => results.to_json }
+      format.html
+    end
+
     @page_subtitle = ts("Fandoms")
   end
 
