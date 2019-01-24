@@ -15,6 +15,10 @@ class Media < Tag
     self.find_or_create_by_name(ArchiveConfig.MEDIA_UNCATEGORIZED_NAME)
   end
 
+  def self.no_media
+    self.find_or_create_by_name(ArchiveConfig.MEDIA_NO_TAG_NAME)
+  end
+
   def add_association(tag)
     tag.parents << self unless tag.parents.include?(self)
   end

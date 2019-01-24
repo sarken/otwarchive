@@ -19,9 +19,7 @@ class MediaController < ApplicationController
 
     if params[:query].present? && params[:format] == "json"
       results = []
-      found_fandoms = Tag.autocomplete_lookup(search_param: query_params[:name],
-                                       autocomplete_prefix: "autocomplete_tag_fandom")
-      found_fandoms.each do |fandom|
+      autocomplete_results.each do |fandom|
         fandom_name = Tag.name_from_autocomplete(fandom)
         tag = Tag.find_by(name: fandom_name)
         # In case our autocomplete data was stale and the tag no longer exists
@@ -49,9 +47,20 @@ class MediaController < ApplicationController
 
   private
 
+  def autocomplete_results
+    if query_params[:media].present?
+      Tag.autocomplete_media_lookup(term: query_params[:name],
+                                    tag_type: "fandom",
+                                    media: query_params[:media])
+    else
+      Tag.autocomplete_lookup(search_param: query_params[:name],
+                              autocomplete_prefix: "autocomplete_tag_fandom")
+    end
+  end
+
   def query_params
     params.require(:query).permit(
-      :query, :type, :canonical, :name
+      :query, :type, :canonical, :name, :media
     )
   end
 end

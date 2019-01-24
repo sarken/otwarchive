@@ -14,6 +14,9 @@
       <%= hidden_field_tag "query[type]", "Fandom" %>
       <%= hidden_field_tag "query[canonical]", true %>
 
+      <%= label_tag("query[media]", ts("Medium"), class: "landmark") %>
+      <%= select_tag "query[media]", options_for_select(searchable_media_names, @query[:media]), include_blank: ts("Any Medium") %>
+
       <%= submit_tag ts("Search Fandoms") %>
     </p>
     <div class="results listbox group"<% unless @query.present? %> style="display: none;"<% end %>>
