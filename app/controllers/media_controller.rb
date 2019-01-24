@@ -17,9 +17,9 @@ class MediaController < ApplicationController
       end
     end
 
-    if params[:query].present? && params[:format] == "json"
+    if params[:query].present? && query_params[:format] == "json"
       results = []
-      found_fandoms = Tag.autocomplete_lookup(search_param: params[:query][:name],
+      found_fandoms = Tag.autocomplete_lookup(search_param: query_params[:name],
                                        autocomplete_prefix: "autocomplete_tag_fandom")
       found_fandoms.each do |fandom|
         fandom_name = Tag.name_from_autocomplete(fandom)
@@ -27,9 +27,9 @@ class MediaController < ApplicationController
         results << { name: fandom_name, url: path_for_json }
       end
     elsif params[:query].present?
-      options = params[:query].dup
+      options = query_params.dup
       @query = options
-      @tags = TagSearch.search(options)
+      @tags = TagQuery.new(options).search_results
     end
 
     respond_to do |format|
@@ -42,5 +42,13 @@ class MediaController < ApplicationController
 
   def show
     redirect_to medium_fandoms_path(medium_id: params[:id])
+  end
+
+  private
+
+  def query_params
+    params.require(:query).permit(
+      :query, :type, :canonical, :name
+    )
   end
 end
