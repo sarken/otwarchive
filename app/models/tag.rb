@@ -571,8 +571,9 @@ class Tag < ApplicationRecord
     if options[:fallback] && search_param.length > 0 && media.blank?
       Tag.autocomplete_lookup(:search_param => search_param, :autocomplete_prefix => "autocomplete_tag_fandom")
     else
-      results
+      results[0..15]
     end
+    results[0..15]
   end
 
   # look up tags that have been wrangled into a given fandom

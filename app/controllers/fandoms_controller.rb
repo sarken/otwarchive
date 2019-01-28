@@ -83,7 +83,7 @@ class FandomsController < ApplicationController
 
   def query_params
     params.require(:query).permit(
-      :query, :type, :canonical, :name
+      :query, :type, :canonical, :name, :media
     )
   end
 end

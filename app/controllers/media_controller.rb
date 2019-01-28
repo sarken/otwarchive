@@ -48,14 +48,13 @@ class MediaController < ApplicationController
   private
 
   def autocomplete_results
-    if query_params[:media].present?
-      Tag.autocomplete_media_lookup(term: query_params[:name],
-                                    tag_type: "fandom",
-                                    media: query_params[:media])
-    else
-      Tag.autocomplete_lookup(search_param: query_params[:name],
-                              autocomplete_prefix: "autocomplete_tag_fandom")
-    end
+    autocomplete_prefix = if query_params[:media].present?
+                            "autocomplete_media_#{Tag.get_search_terms(query_params[:media])}_fandom"
+                          else
+                            "autocomplete_tag_fandom"
+                          end
+    Tag.autocomplete_lookup(search_param: query_params[:name],
+                            autocomplete_prefix: autocomplete_prefix)
   end
 
   def query_params
