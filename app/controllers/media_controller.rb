@@ -29,6 +29,8 @@ class MediaController < ApplicationController
       end
     elsif params[:query].present?
       options = query_params.dup
+      media_id = Media.find_by(name: options[:media]).id if options[:media].present?
+      options = options.merge(media_ids: [media_id]) if media_id
       @query = options
       @tags = TagQuery.new(options).search_results
     end
@@ -48,13 +50,13 @@ class MediaController < ApplicationController
   private
 
   def autocomplete_results
-    autocomplete_prefix = if query_params[:media].present?
-                            "autocomplete_media_#{Tag.get_search_terms(query_params[:media])}_fandom"
-                          else
-                            "autocomplete_tag_fandom"
-                          end
-    Tag.autocomplete_lookup(search_param: query_params[:name],
-                            autocomplete_prefix: autocomplete_prefix)
+    if query_params[:media].present?
+      Tag.autocomplete_media_lookup(term: query_params[:name],
+                                    media: query_params[:media])
+    else
+      Tag.autocomplete_lookup(search_param: query_params[:name],
+                              autocomplete_prefix: "autocomplete_tag_fandom")
+    end
   end
 
   def query_params

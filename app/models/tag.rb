@@ -558,7 +558,7 @@ class Tag < ApplicationRecord
 
   # look up fandoms that have been wrangled into a given media
   def self.autocomplete_media_lookup(options = {})
-    options.reverse_merge!({:term => "", :tag_type => "fandom", :media => "", :fallback => true})
+    options.reverse_merge!({term: "", tag_type: "fandom", media: "", fallback: true})
     search_param = options[:term]
     tag_type = options[:tag_type]
     media = Tag.get_search_terms(options[:media])
@@ -566,7 +566,7 @@ class Tag < ApplicationRecord
     results = []
     media.each do |single_media|
       search_regex = Tag.get_search_regex(search_param)
-      results += REDIS_AUTOCOMPLETE.zrevrange("autocomplete_media_#{single_media}_#{tag_type}", 0, -1).select {|tag| tag.split(AUTOCOMPLETE_DELIMITER)[1].match(search_regex) }
+      results += REDIS_AUTOCOMPLETE.zrevrange("autocomplete_media_#{single_media}_#{tag_type}", 0, -1).select {|tag| tag.split(Tag::AUTOCOMPLETE_DELIMITER)[1].match(search_regex) }
     end
     if options[:fallback] && search_param.length > 0 && media.blank?
       Tag.autocomplete_lookup(:search_param => search_param, :autocomplete_prefix => "autocomplete_tag_fandom")

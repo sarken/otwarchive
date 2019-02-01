@@ -22,16 +22,16 @@ class FandomsController < ApplicationController
 
     if params[:query].present? && params[:format] == "json"
       results = []
-      if @collection || (medium.present? && Media.find_by_name(medium) == Media.uncategorized)
+      if @collection || (medium.present? && Media.find_by(name: medium) == Media.uncategorized)
         found_fandoms = @fandoms_list.fandoms.where("name LIKE ?", '%' + query_params[:name] + '%').limit(10)
         found_fandoms.each do |fandom|
           path_for_json = @collection ? collection_tag_works_path(@collection, fandom) : tag_path(fandom)
           results << { name: fandom.name, url: path_for_json }
         end
       else
-        found_fandoms = Tag.autocomplete_media_lookup(term: query_params[:name], tag_type: "fandom",
-                                                      media: query_params[:medium])
-        found_fandoms.each do |fandom|
+        autocomplete_results = Tag.autocomplete_media_lookup(term: query_params[:name],
+                                                             media: query_params[:media])
+        autocomplete_results.each do |fandom|
           fandom_name = Tag.name_from_autocomplete(fandom)
           tag = Tag.find_by(name: fandom_name)
           # In case our autocomplete data was stale and the tag no longer exists

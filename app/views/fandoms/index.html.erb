@@ -39,7 +39,7 @@
         <%= label_tag("query[name]", ts("Search for fandoms")) %>
         <%= text_field_tag "query[name]", nil, :"autocomplete" => "off" %>
         <% if @fandoms_list.medium %>
-          <%= hidden_field_tag "query[medium]", @fandoms_list.medium.name %>
+          <%= hidden_field_tag "query[media]", @fandoms_list.medium.name %>
         <% end %>
       </p>
       <div class="results listbox group" style="display: none;">
