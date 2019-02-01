@@ -679,6 +679,8 @@ function updateCachedTokens() {
 $j(document).ready(function() {
   var live_search = $j('form.live');
       search_field = live_search.find('input[type=text]');
+      search_select = live_search.find('select');
+      search_inputs = live_search.find('input, select');
       results_container = live_search.find('.results');
       results_heading = results_container.find('.heading');
       results_index = results_container.find('.index');
@@ -698,7 +700,7 @@ $j(document).ready(function() {
   })();
 
   // 500ms after the search field last receives input, do the searching
-  search_field.on('input', function() {
+  search_inputs.on('input', function() {
     delay(function() {
 
       // always start with empty results array and index and a count of 0
@@ -709,7 +711,10 @@ $j(document).ready(function() {
       var search_params = live_search.serialize();
       var search_url = action_url + "?" + search_params
 
+      // REMOVE ME
+      // Also remove the search_select variable
       console.log(search_url);
+      console.log(search_select.val());
 
       // if a search term of 2 or more characters is present, get the JSON data, format it, increase the count, and show it all to the user 
       if (search_field.val().length > 1) {
