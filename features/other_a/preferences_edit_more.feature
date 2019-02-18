@@ -1,5 +1,10 @@
 @users
-Feature: Preferences
+Feature: Edit preferences
+  In order to customize my archive experience
+  As a humble user
+  I want to set my preferences
+
+  # Note: See preferences.feature for list of where preferences are tested.
 
   Scenario: View and edit preferences - show/hide mature content warning
 
@@ -28,28 +33,25 @@ Feature: Preferences
   Then I should see "adult content"
     And I should not see "Rating: Mature"
 
-  Scenario: set preference to hide custom css on stories
-  Given basic tags
-    And basic skins
-    And I am logged in as "tasteless"
-  When I set up the draft "Big and Loud"
-    And I select "Basic Formatting" from "work_work_skin_id"
-    And I press "Preview"
-    And I press "Post"
-    And I go to the "Big and Loud" work page
+  Scenario: User sets preference to hide work skins by default, but can still
+  display them on individual works.
+
+  Given basic skins
+    And I am logged in
+    And I set up the draft "Big and Loud"
+    And I select "Basic Formatting" from "Select Work Skin"
+    And I press "Post Without Preview"
+  When I view the work "Big and Loud"
   Then I should see "#workskin .font-murkyyellow" within "style"
     And I should see "Hide Creator's Style"
   When I go to my preferences page
   Then the "Hide work skins (you can still choose to show them)." checkbox should not be checked
   When I check "Hide work skins (you can still choose to show them)."
     And I press "Update"
-  When I go to the "Big and Loud" work page
+    And I view the work "Big and Loud"
   Then I should not see "#workskin .font-murkyyellow"
     And I should not see "Hide Creator's Style"
     And I should see "Show Creator's Style"
-  When I follow "Creator's Style"
+  When I follow "Show Creator's Style"
   Then I should see "#workskin .font-murkyyellow" within "style"
     And I should see "Hide Creator's Style"
-  Given I am logged out
-    And I am logged in as "tasteful"
-    And I go to the "Big and Loud" work page

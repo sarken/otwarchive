@@ -1,103 +1,43 @@
 @users
 Feature: Edit preferences
-  In order to have an archive full of users
+  In order to customize my archive experience
   As a humble user
-  I want to fill out my preferences
+  I want to set my preferences
 
+  # Note: Many preferences are tested elsewhere instead, so here is an overview.
+  # PRIVACY
+  # Show my email address to other people: profile_edit
+  # Show my date of birth to other people: profile_edit
+  # Hide my work from search engines when possible:
+  # Hide the share buttons on my work: work_share
+  # DISPLAY
+  # Show me adult content without checking: preferences_edit_more
+  # Show the whole work by default: work_view, comments_redirect
+  # Hide warnings: here
+  # Hide additional tags: here
+  # Hide work skins: preferences_edit_more
+  # Your site skin:
+  # Your time zone: 
+  # Browser page title format: page_title
+  # STATISTICS
+  # Skipping because hit count preferences are being removed.
+  # COMMENTS
+  # Turn off emails about comments: tag_comments, needs more here
+  # Turn off messages to your inbox about comments: inbox
+  # Turn off copies of your own comments: 
+  # Turn off emails about kudos: needs tests
+  # COLLECTIONS, CHALLENGES, AND GIFTS
+  # Automatically agree to your work being collected by others in the Archive: collection_invite
+  # Turn off emails from collections:
+  # Turn off inbox messages from collections: feature not yet implemented
+  # Turn off emails about gift works: gifts
+  # MISC
+  # Turn on viewing history: reading
+  # Turn the new user help banner back on:
+  # Turn off the banner showing on every page: banner_general
 
-  Scenario: Ensure all Preference options are available
-
-  Given the following activated user exists
-    | login         | password   |
-    | scott         | password   |
-
-  When I am logged in as "scott" with password "password"
-    And I go to scott's user page
-    And I follow "Preferences"
-  Then I should see "Set My Preferences"
-    And I should see "Show my email address to other people."
-    And I should see "Show my date of birth to other people."
-    And I should see "Hide my work from search engines when possible."
-    And I should see "Hide the share buttons on my work."
-    And I should see "Show me adult content without checking."
-    And I should see "Show the whole work by default."
-    And I should see "Hide warnings (you can still choose to show them)."
-    And I should see "Hide additional tags (you can still choose to show them)."
-    And I should see "Hide work skins (you can still choose to show them)."
-    And I should see "Your site skin"
-    And I should see "Your time zone"
-    And I should see "Browser page title format"
-    And I should see "Don't show me any hit counts."
-    And I should see "Don't show me hits on my works."
-    And I should see "Don't show other people hits on my works."
-    And I should see "Turn off emails about comments."
-    And I should see "Turn off messages to your inbox about comments."
-    And I should see "Turn off copies of your own comments."
-    And I should see "Turn off emails about kudos."
-    And I should see "Automatically agree to your work being collected by others in the Archive."
-    And I should see "Turn off emails from collections."
-    And I should see "Turn off inbox messages from collections."
-    And I should see "Turn off emails about gift works."
-    And I should see "Turn on Viewing History."
-    And I should see "Turn the new user help banner back on."
-    And I should see "Turn off the banner showing on every page."
-
-
-  Scenario: View and edit preferences - viewing history, personal details, view entire work
-
-  Given the following activated user exists
-    | login         | password   |
-    | editname      | password   |
-  When I go to editname's user page
-    And I follow "Profile"
-  Then I should not see "My email address"
-    And I should not see "My birthday"
-  When I am logged in as "editname" with password "password"
-  Then I should see "Hi, editname!"
-    And I should see "Log Out"
-  When I post the work "This has two chapters"
-  And I follow "Add Chapter"
-    And I fill in "content" with "Secondy chapter"
-    And I press "Preview"
-    And I press "Post"
-  Then I should see "Secondy chapter"
-    And I follow "Previous Chapter"
-  Then I should not see "Secondy chapter"
-  When I follow "editname"
-  Then I should see "Dashboard" within "div#dashboard"
-    And I should see "History" within "div#dashboard"
-    And I should see "Preferences" within "div#dashboard"
-    And I should see "Profile" within "div#dashboard"
-  When I follow "Preferences" within "div#dashboard"
-  Then I should see "Set My Preferences"
-    And I should see "Orphan My Works"
-  When I follow "Edit My Profile"
-  Then I should see "Password"
-  # TODO: figure out why pseud switcher doesn't show up in cukes
-  # When I follow "editname" within "#pseud_switcher"
-  When I follow "Dashboard"
-    And I follow "Profile"
-  Then I should see "Set My Preferences"
-  When I follow "Set My Preferences"
-  Then I should see "Edit My Profile"
-  When I uncheck "Turn on Viewing History"
-    And I check "Show the whole work by default."
-    And I check "Show my email address to other people."
-    And I check "Show my date of birth to other people."
-    And I press "Update"
-  Then I should see "Your preferences were successfully updated"
-  And I should not see "History" within "div#dashboard"
-  When I go to the works page
-    And I follow "This has two chapters"
-  Then I should see "Secondy chapter"
-  When I log out
-    And I go to editname's user page
-    And I follow "Profile"
-  Then I should see "My email address"
-    And I should see "My birthday"
-  When I go to the works page
-    And I follow "This has two chapters"
-  Then I should not see "Secondy chapter"
+  Scenario: User can choose to see adult content without checking.
+  Scenario: 
 
   Scenario: View and edit preferences - show/hide warnings and tags
 

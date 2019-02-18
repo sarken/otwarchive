@@ -1,25 +1,19 @@
-Given /^I set my preferences to View Full Work mode by default$/ do
-  user = User.current_user
-  user.preference.view_full_works = true
-  user.preference.save
+When /^I set my preferences to View Full Work mode by default$/ do
+  visit(user_preferences_path(User.current_user))
+  check("preference_view_full_works")
+  click_button("Update")
 end
 
 When /^I set my preferences to turn off notification emails for comments$/ do
-  user = User.current_user
-  user.preference.comment_emails_off = true
-  user.preference.save
-end
-
-When /^I set my preferences to turn off notification emails for kudos$/ do
-  user = User.current_user
-  user.preference.kudos_emails_off = true
-  user.preference.save
+  visit(user_preferences_path(User.current_user))
+  check("preference_comment_emails_off")
+  click_button("Update")
 end
 
 When /^I set my preferences to turn off notification emails for gifts$/ do
-  user = User.current_user
-  user.preference.recipient_emails_off = true
-  user.preference.save
+  visit(user_preferences_path(User.current_user))
+  check("preference_recipient_emails_off")
+  click_button("Update")
 end
 
 When /^I set my preferences to hide warnings$/ do
@@ -47,21 +41,21 @@ When /^I set my preferences to hide hit counts on my works$/ do
 end
 
 When /^I set my preferences to hide the share buttons on my work$/ do
-  user = User.current_user
-  user.preference.disable_share_links = true
-  user.preference.save
+  visit(user_preferences_path(User.current_user))
+  check("preference_disable_share_links")
+  click_button("Update")
 end
 
 When /^I set my preferences to turn off messages to my inbox about comments$/ do
-  user = User.current_user
-  user.preference.comment_inbox_off = true
-  user.preference.save
+  visit(user_preferences_path(User.current_user))
+  check("preference_comment_inbox_off")
+  click_button("Update")
 end
 
 When /^I set my preferences to turn on messages to my inbox about comments$/ do
-  user = User.current_user
-  user.preference.comment_inbox_off = false
-  user.preference.save
+  visit(user_preferences_path(User.current_user))
+  uncheck("preference_comment_inbox_off")
+  click_button("Update")
 end
 
 When /^I set my preferences to turn off copies of my own comments$/ do
@@ -77,15 +71,15 @@ When /^I set my preferences to turn on copies of my own comments$/ do
 end
 
 When /^I set my preferences to turn off the banner showing on every page$/ do
-  user = User.current_user
-  user.preference.banner_seen = true
-  user.preference.save
+  visit(user_preferences_path(User.current_user))
+  uncheck("preference_banner_seen")
+  click_button("Update")
 end
 
 When /^I set my preferences to turn off viewing history$/ do
-  user = User.current_user
-  user.preference.history_enabled = false
-  user.preference.save
+  visit(user_preferences_path(User.current_user))
+  uncheck("preference_history_enabled")
+  click_button("Update")
 end
 
 When /^I set my time zone to "([^"]*)"$/ do |time_zone|
@@ -109,13 +103,13 @@ When /^I set my preferences to hide freeform by browser$/ do
 end
 
 When /^I set my preferences to automatically agree to my work being collected$/ do
-  user = User.current_user
-  user.preference.automatically_approve_collections = true
-  user.preference.save
+  visit(user_preferences_path(User.current_user))
+  uncheck("preference_automatically_approve_collections")
+  click_button("Update")
 end
 
 When /^I set my preferences to require my approval for my work to be collected$/ do
-  user = User.current_user
-  user.preference.automatically_approve_collections = false
-  user.preference.save
+  visit(user_preferences_path(User.current_user))
+  uncheck("preference_automatically_approve_collections")
+  click_button("Update")
 end
