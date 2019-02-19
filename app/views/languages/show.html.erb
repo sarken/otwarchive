@@ -11,11 +11,12 @@
 
 <p><%= link_to t('.work_count', :default => "%{count} works", :count => @language.work_count), language_works_path(@language) %> in <%= @language.fandom_count %> fandoms</p>
 
-<% unless @works.blank? %>
-  <h3 class="heading">Most recent works:</h3>
+<% if @works.blank? %>
+  <% # The recent scope means this page can confusingly appear blank. %>
+  <p><%= ts("No works posted in %{language} in the last 4 weeks.", language: @language.name) %>
+<% else %>
+  <h3 class="heading"><%= ts("Most recent works:") %></h3>
   <ul class="work index group">
-    <% for work in @works %>
-  	  <%= render :partial => 'works/work_blurb', :locals => {:work => work} %>
-    <% end %>
+    <%= render "works/work_blurb", collection: @works, as: :work %>
   </ul>
 <% end %>
