@@ -72,9 +72,6 @@ class WorksController < ApplicationController
       options[:language_id] = params[:language_id]
     end
 
-    options[:page] = params[:page]
-    options[:show_restricted] = current_user.present? || logged_in_as_admin?
-
     if params[:include_work_search].present?
       params[:include_work_search].keys.each do |key|
         options[key] ||= []

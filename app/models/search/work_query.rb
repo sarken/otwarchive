@@ -52,8 +52,6 @@ class WorkQuery < Query
               :user_ids
             when Collection
               :collection_ids
-            when Language
-              :language_id
             end
     return unless field.present?
     options[field] ||= []
