@@ -3,6 +3,12 @@ Feature: Search works by work info
   As a user
   I want to search works by work info
 
+  Scenario: Inputting bad queries
+    When I am on the homepage
+    When I fill in "site_search" with "bad~query!!!"
+      And I press "Search"
+    Then I should see "Your search failed because of a syntax error"
+
   Scenario: Search by language
     Given I have the Battle set loaded
     When I am on the search works page
@@ -56,6 +62,44 @@ Feature: Search works by work info
       And I should see "fifth"
       And I should see "I am <strong>er Than Yesterday & Other Lies"
 
+  Scenario: Search by status
+    Given I have loaded the fixtures
+    When I am on the search works page
+      And I choose "Complete works only"
+      And I press "Search" within "#new_work_search"
+    Then I should see "You searched for: Complete"
+      And I should see "4 Found"
+      And I should see "First work"
+      And I should see "second work"
+      And I should see "third work"
+      And I should see "fourth"
+    When I am on the search works page
+      And I choose "Works in progress only"
+      And I press "Search" within "#new_work_search"
+    Then I should see "You searched for: Incomplete"
+      And I should see "2 Found"
+      And I should see "fifth"
+      And I should see "I am <strong>er Than Yesterday & Other Lies"
+
+  Scenario: Search by crossovers
+    Given I have loaded the fixtures
+    When I am on the search works page
+      And I choose "Exclude crossovers"
+      And I press "Search" within "#new_work_search"
+    Then I should see "You searched for: No Crossovers"
+      And I should see "6 Found"
+      And I should see "First work"
+      And I should see "second work"
+      And I should see "third work"
+      And I should see "fourth"
+      And I should see "fifth"
+      And I should see "I am <strong>er Than Yesterday & Other Lies"
+    When I am on the search works page
+      And I choose "Only crossovers"
+      And I press "Search" within "#new_work_search"
+    Then I should see "You searched for: Only Crossovers"
+      And I should see "No results found"
+
   Scenario: Search by single chapter
     Given I have the Battle set loaded
     When I am on the search works page
@@ -84,7 +128,7 @@ Feature: Search works by work info
     When I follow "Edit Your Search"
     Then the field labeled "Title" should contain "work"
       And "Title" should be selected within "Sort by"
-    When I select "Ascending" from "Sort direction" 
+    When I select "Ascending" from "Sort direction"
       And I press "Search" within "#new_work_search"
     Then I should see "You searched for: Title: work sort by: title ascending"
       And I should see "3 Found"
@@ -94,5 +138,4 @@ Feature: Search works by work info
     When I follow "Edit Your Search"
     Then the field labeled "Title" should contain "work"
       And "Title" should be selected within "Sort by"
-    When "AO3-5020" is fixed
-      # And "Ascending" should be selected within "Sort direction"
+      And "Ascending" should be selected within "Sort direction"
