@@ -3,7 +3,7 @@
     <h3 class="landmark heading"><%= ts('User Navigation', key: 'header') %></h3>
     <ul class="user navigation actions" role="navigation">
       <li class="dropdown">
-        <%= link_to ts("Hi, %{current_user}!", :current_user => current_user.login, key: 'header'), user_path(current_user) %>
+        <%= link_to ts("Hi, %{user}!", user: content_tag(:span, current_user.login, class: "username"), key: "header").html_safe, user_path(current_user) %>
         <ul class="menu" role="menu">
           <li><%= span_if_current ts('My Dashboard', key: 'header'), user_path(current_user) %></li>
           <% if @current_user_subscriptions_count > 0 %>
