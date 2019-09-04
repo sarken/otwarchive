@@ -68,3 +68,64 @@
   <%= will_paginate @works %>
 <% end %>
 
+<%= content_for :footer_js do %>
+  <%= javascript_tag do %>
+    $j(document).ready(function() {
+      var username = $j("#greeting").find(".username").text();
+
+      $j.ajax({
+        url: '/users/' + username + '/readings',
+        type: 'GET',
+        dataType: 'json',
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('X-CSRF-Token', $j('meta[name="csrf-token"]').attr('content'));
+        },
+        success: function(data) {
+          /* ids of works, extracted from blurbs' id attributes and converted to integers */
+          /* The map() method creates a new array with the results of calling a function for every array element. */
+          /* The map() method calls the provided function once for each element in an array, in order. */
+          var page_work_ids = $j.map($j(".blurb"), function(blurb) {
+            return parseInt(blurb.id.replace('work_', ''));
+          });
+
+          /* work_id: integer, toread: boolean */
+          var readings = data.readings;
+
+          /* a start, but we need to split this into mfl and not */
+          /* The filter() method creates an array filled with all array elements that pass a test (provided as a function). */
+          var history_works_on_this_page = page_work_ids.filter(function(work_id) {
+            return readings.some(function(reading) {
+              return reading.work_id === work_id;
+            });
+          });
+
+          /* TROUBLESHOOTING */
+          /* add username and work ids to div */
+          $j("#main").prepend("<div style='background: yellow;'><p><b>username:</b> " + username + "</p><p><b>works on this page:</b> " + page_work_ids + "</p></div>");
+
+          console.log(history_works_on_this_page);
+
+          /* ORIGINAL DRAFT FROM HERE DOWN */
+          var accessed_work_ids = data.accessed_work_ids;
+          var marked_for_later_work_ids = data.marked_for_later_work_ids;
+          var accessed_works_on_this_page = page_work_ids.filter(function(id) {
+            return accessed_work_ids.indexOf(id) !== -1;
+          });
+
+          $j.each(accessed_works_on_this_page, function(i, work) {
+            var id_attribute = "#work_" + work;
+            console.log(id_attribute);
+            $j('.work').find(id_attribute).append("<div style='background: red; color: white'><p>👀 Seen</p></div>");
+          });
+
+          /* add new info to a div */
+          $j("#main").prepend("<div style='background: pink;'><p><b>accessed works:</b> " + accessed_work_ids + "</p><p><b>marked for later works:</b> " + marked_for_later_work_ids + "</p></div>");
+
+          /* add comparison results to a div */
+          $j("#main").prepend("<div style='background: cyan;'><p><b>accessed works on this page:</b> " + accessed_works_on_this_page + "</p></div>");
+        },
+        error: function(xhr, status, response) {/* your error callback */}
+      });
+    });
+  <% end %>
+<% end %>
