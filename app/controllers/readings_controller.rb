@@ -16,7 +16,10 @@ class ReadingsController < ApplicationController
       @readings = @readings.where(toread: true)
       @page_subtitle = ts("Saved For Later")
     end
-    @readings = @readings.order("last_viewed DESC").page(params[:page])
+    respond_to do |format|
+      format.html { @readings = @readings.order("last_viewed DESC").page(params[:page]) }
+      format.json { render json: { accessed_work_ids: @readings.pluck(:work_id), marked_for_later_work_ids: @readings.where(toread: true).pluck(:work_id), readings: @readings.as_json(only: [:work_id, :toread]) } }
+    end
   end
 
   def destroy
