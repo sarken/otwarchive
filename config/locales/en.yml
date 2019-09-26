@@ -6,6 +6,22 @@ en:
       emails_found:
         one: "one email found"
         other: "%{count} emails found"
+  tags:
+    show:
+      description:
+        archive_warning:
+          choose_not_to_use_archive_warnings: "TBD"
+          graphic_depictions_of_violence: "Content with this warning contains gory, graphic, explicitly described violence."
+          major_character_death: "Content with this warning contains the death of a major character. Whether or not a character counts as a major character is up to the creator's discretion."
+          no_archive_warnings_apply: "TBD"
+          rape_non-con: "Content with this warning contains non-consensual sexual activity."
+          underage: "Content with this warning contains graphic descriptions or depictions of sexual activity by characters under the age of eighteen."
+        rating:
+          explicit: "Content with this rating contains explicit adult themes, such as porn, graphic violence, etc."
+          general_audiences: "Content with this rating is unlikely to be disturbing to anyone, and is suitable for all ages."
+          mature: "Content with this rating contains adult themes (sex, violence, etc.) that aren't as graphic as explicit-rated content."
+          not_rated: "TBD"
+          teen_and_up_audiences: "Content with this rating may be inappropriate for audiences under 13."
   users:
     delete_preview:
       heading: "What do you want to do with your works?"

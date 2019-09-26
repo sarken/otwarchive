@@ -31,10 +31,15 @@
     <%= link_to ts('filter bookmarks'), {:controller => :bookmarks, :action => :index, :tag_id => @tag} %>.
   <% end %>
   </p>
-  
 
   <% if @tag.is_a?(Rating) && @tag.adult %>
   <p class="warning"><%= ts('This tag indicates adult content.') %></p>
+  <% end %>
+
+  <% if %w[ArchiveWarning Rating].include?(@tag.type) && @tag.canonical? %>
+    <% snake_cased_tag_category = @tag.class::NAME.downcase.gsub(" ", "_") %>
+    <% snake_cased_tag_name = @tag.name.downcase.gsub(" ", "_").gsub("/", "_") %>
+    <p class="warning"><%= t(".description.#{snake_cased_tag_category}.#{snake_cased_tag_name}") %></p>
   <% end %>
 
   <% if @tag.is_a?(Fandom) %>
