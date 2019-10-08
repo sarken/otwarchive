@@ -54,7 +54,7 @@ http://otwcode.github.com/docs/front_end_coding/patterns/listbox
 
 /* mods: alphabet, medium */
 
-.alphabet .listbox li, .media .listbox {
+.alphabet .listbox li {
   width: 45%;
   float: left;
   clear: none;

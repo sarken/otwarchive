@@ -16,6 +16,8 @@ Arguably filter and search could be styled in interactions but I've put them her
 
 .media-index .listbox {
   min-height: 17.5em;
+  margin: 0.643em;
+  flex: 1 0 25em;
 }
 
 /* INTERACTION: SEARCH */

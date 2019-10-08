@@ -145,6 +145,15 @@ dl.index dd .userstuff p {
   display: block;
 }
 
+/* mods */
+
+.media {
+  display: flex;
+  flex-wrap: wrap;
+  /* space-evenly would be better, but doesn't work with Edge */
+  justify-content: center;
+}
+
 /*TYPES*/
 
 a.rss span {

@@ -123,7 +123,7 @@ body .narrow-shown {
 
 /* 10 types and groups */
 
-.blurb dl.tags dt, .blurb dl.tags dd, dl.meta dt, dl.meta dd, .alphabet .listbox li, .media .listbox {
+.blurb dl.tags dt, .blurb dl.tags dd, dl.meta dt, dl.meta dd, .alphabet .listbox li {
   width: auto;
   float: none;
 }
