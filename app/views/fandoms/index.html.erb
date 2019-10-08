@@ -34,11 +34,8 @@
   <ol class="alphabet fandom index group <%= "collection" if @collection %>">
     <% @fandoms_by_letter.each_pair do |letter, fandoms| %>
       <li id="letter-<%= letter %>" class="letter listbox group">
-        <h3 class="heading">
-          <%= letter %>
-          <span class="action top" title="top">
-            <%= link_to "&#8593;".html_safe, "#alphabet" %>
-          </span>
+        <h3 class="heading" style="width: 100%; box-sizing: border-box;">
+          <button type="button" style="width: 100%; box-sizing: border-box; height: 2em; background: none; border: none; text-align: left;"><%= letter %></button>
         </h3>
         <ul class="tags index group">
           <% for fandom in fandoms %>
@@ -50,6 +47,9 @@
             </li>
           <% end %>
         </ul>
+        <p class="top actions" style="float: none; text-align: right; margin: 0; padding: 0;">
+          <%= link_to ts("Back to Top"), "#alphabet", style: "background: none; border: none; box-shadow: none; display: inline;" %>
+        </p>
       </li>
     <% end %>
   </ol>
@@ -57,3 +57,23 @@
   <h3 class="heading"><%= ts("No fandoms found") %></h3>
 <% end %>
 <!--/content-->
+
+<%= content_for :footer_js do %>
+  <%= javascript_tag do %>
+    $j(document).ready(function() {
+      setupFandomLists();
+    });
+
+    function setupFandomLists() {
+      $j(".fandom .tags").each(function() {
+        var pane = $j(this);
+        pane.addClass("hidden");
+
+        pane.parent().find("button").addClass("collapsed").click(function(e) {
+          var expander = $j(this);
+          expander.toggleClass("collapsed").toggleClass("expanded").parent().parent().find("ul").toggleClass("hidden");
+        });
+      });
+    }
+  <% end %>
+<% end %>
