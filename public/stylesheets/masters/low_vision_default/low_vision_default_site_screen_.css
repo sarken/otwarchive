@@ -137,7 +137,9 @@ pre {
 #header ul.primary,
 #footer,
 .actions a:hover,
-.actions a:focus {
+.actions a:focus,
+fieldset .actions a.current:hover, 
+fieldset .actions a.current:focus {
   background: #900;
   color: #eee;
 }
@@ -164,4 +166,9 @@ pre {
 .bookmark .recent,
 .bookmark .recent .index {
   border: none;
+}
+
+fieldset .actions a.current { 
+  background: #fff; 
+  border-width: 3px;
 }
