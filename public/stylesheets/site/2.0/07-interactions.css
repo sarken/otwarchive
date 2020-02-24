@@ -632,4 +632,36 @@ form.simple span.actions {
   clear: right;
 }
 
+/***** NEW FORMS WITHOUT DEFINITION LIST STRUCTURE *****/
+
+form.restructured {
+  font-size: 1rem;
+}
+
+form.restructured fieldset > div {
+  margin: 1.643em 0.875em;
+}
+
+form.restructured fieldset fieldset {
+  margin: 0;
+}
+
+/* lists inside nested fieldsets are vertical */
+form.restructured fieldset fieldset li {
+  display: block;
+}
+
+form.restructured label {
+  font-weight: bold;
+}
+
+form.restructured fieldset fieldset label {
+  font-weight: 500;
+}
+
+/* override to prevent weird spacing on tag fields */
+form.restructured .meta ul li.input {
+  padding: 0;
+}
+
 /*END== */
