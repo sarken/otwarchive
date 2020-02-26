@@ -12,6 +12,7 @@ class Chapter < ApplicationRecord
 
   acts_as_commentable
   has_many :kudos, as: :commentable
+  has_many :subscription_notifications, as: :creation, dependent: :destroy
 
   validates_length_of :title, allow_blank: true, maximum: ArchiveConfig.TITLE_MAX,
     too_long: ts("must be less than %{max} characters long.", max: ArchiveConfig.TITLE_MAX)
