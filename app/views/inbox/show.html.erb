@@ -34,12 +34,16 @@
 
       <ol class="comment index group">
         <% @inbox_comments.each do |inbox_comment| %>
-          <% feedback_comment = inbox_comment.feedback_comment %>
+          <% feedback_comment = inbox_comment.item %>
 
           <!-- START of single comment -->
-          <li class="<% if feedback_comment.unreviewed? %>unreviewed <% end %><%= inbox_comment.read? ? 'read' : 'unread' %> comment group" role="article" id="feedback_comment_<%= feedback_comment.id %>">
+          <li class="<% if inbox_comment.item_type == "Comment" && feedback_comment.unreviewed? %>unreviewed <% end %><%= inbox_comment.read? ? 'read' : 'unread' %> comment group" role="article" id="feedback_comment_<%= feedback_comment.id %>">
 
-            <%= render "inbox_comment_contents", feedback_comment: feedback_comment %>
+            <% if feedback_comment.is_a?(Comment) %>
+              <%= render "inbox_comment_contents", feedback_comment: feedback_comment %>
+            <% elsif feedback_comment.is_a?(SubscriptionAlert) %>
+              <%= render "inbox_subscription_alert_contents", feedback_comment: feedback_comment %>
+            <% end %>
 
             <h5 class="landmark heading"><%= ts("Comment Actions") %></h5>
 
@@ -47,18 +51,18 @@
               <% unless inbox_comment.read? %>
                 <li><span class="unread"><%= ts("Unread") %></span></li>
               <% end %>
-              <% if inbox_comment.replied_to? %>
+              <% if feedback_comment.is_a?(Comment) && inbox_comment.replied_to? %>
                 <li>
                   <span class="replied" title="<%= ts("replied to") %>">
                     <%= ts("&#10004;").html_safe %>
                   </span>
                 </li>
               <% end %>
-              <% if feedback_comment.unreviewed? %>
+              <% if feedback_comment.is_a?(Comment) && feedback_comment.unreviewed? %>
                 <li class="approve review" id="review_comment_link_<%= feedback_comment.id %>">
                   <%= render 'inbox/approve_button', feedback_comment: feedback_comment, approved_from: "inbox" %>
                 </li>
-              <% else %>
+              <% elsif feedback_comment.is_a?(Comment) %>
                 <li>
                   <%= render 'inbox/reply_button', feedback_comment: feedback_comment %>
                 </li>

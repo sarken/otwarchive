@@ -8,10 +8,10 @@ class InboxController < ApplicationController
   end
 
   def show
-    @inbox_total = @user.inbox_comments.with_feedback_comment.count
-    @unread = @user.inbox_comments.with_feedback_comment.count_unread
+    @inbox_total = @user.inbox_comments.with_item.count
+    @unread = @user.inbox_comments.with_item.count_unread
     @filters = filter_params[:filters] || {}
-    @inbox_comments = @user.inbox_comments.with_feedback_comment.find_by_filters(@filters).page(params[:page])
+    @inbox_comments = @user.inbox_comments.with_item.find_by_filters(@filters).page(params[:page])
   end
 
   def reply

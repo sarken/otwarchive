@@ -3,7 +3,7 @@ class SubscriptionAlert < ApplicationRecord
   validates_presence_of :creation_type
 
   belongs_to :creation, polymorphic: true
-  has_many :inbox_comments, as: :feedback_comment
+  has_many :inbox_comments, as: :item, dependent: :destroy
 
   # Each user with a relevant subscription gets a new inbox comment. This way,
   # users can delete them or mark them as read on an individual basis.

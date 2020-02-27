@@ -4,6 +4,7 @@ class InboxComment < ApplicationRecord
 
   belongs_to :user
   belongs_to :feedback_comment, class_name: 'Comment', foreign_key: "item_id"
+  belongs_to :item, polymorphic: true
 
   # Filters inbox comments by read and/or replied to and sorts by date
   scope :find_by_filters, lambda { |filters|
@@ -30,15 +31,22 @@ class InboxComment < ApplicationRecord
       limit(ArchiveConfig.NUMBER_OF_ITEMS_VISIBLE_ON_HOMEPAGE)
   }
 
+  scope :join_item, -> {
+    joins("LEFT JOIN comments ON (inbox_comments.item_id = comments.id AND inbox_comments.item_type = 'Comment')
+           LEFT JOIN subscription_alerts ON (inbox_comments.item_id = subscription_alerts.id AND inbox_comments.item_type = 'SubscriptionAlert')")
+  }
+
+  # Get only the inbox_comments with a comment that exists or with a
+  # subscription alert.
+  scope :with_item, -> {
+    join_item.where(
+      "(comments.id IS NOT NULL AND comments.is_deleted = 0) OR
+      (inbox_comments.item_type = 'SubscriptionAlert')"
+    )
+  }
+
   # Gets the number of unread comments
   def self.count_unread
     where(read: false).count
-  end
-
-  # Get only the comments with a feedback_comment that exists
-  def self.with_feedback_comment
-    where(item_type: "Comment").
-    joins("LEFT JOIN comments ON comments.id = inbox_comments.item_id").
-    where("comments.id IS NOT NULL AND comments.is_deleted = 0")
   end
 end
