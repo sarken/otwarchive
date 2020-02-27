@@ -120,6 +120,7 @@ class User < ApplicationRecord
   has_many :wrangled_tags, class_name: "Tag", as: :last_wrangler
 
   has_many :inbox_comments, dependent: :destroy
+  # TODO: Update?
   has_many :feedback_comments, -> { where(is_deleted: false, approved: true).order(created_at: :desc) }, through: :inbox_comments
 
   has_many :log_items, dependent: :destroy

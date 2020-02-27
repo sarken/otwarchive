@@ -199,7 +199,7 @@ class Comment < ApplicationRecord
     end
 
     def update_feedback_in_inbox(user)
-      if (edited_feedback = user.inbox_comments.find_by(item_id: self.id))
+      if (edited_feedback = user.inbox_comments.find_by(item: self, item_type: self.class.name))
         edited_feedback.update_attribute(:read, false)
       else # original inbox comment was deleted
         add_feedback_to_inbox(user)
@@ -261,7 +261,7 @@ class Comment < ApplicationRecord
 
         # if I'm replying to a comment you left for me, mark your comment as replied to in my inbox
         if self.comment_owner
-          if (inbox_comment = self.comment_owner.inbox_comments.find_by(item_id: parent_comment.id))
+          if (inbox_comment = self.comment_owner.inbox_comments.find_by(item_id: parent_comment.id, item_type: parent_comment.class.name))
             inbox_comment.update_attributes(replied_to: true, read: true)
           end
         end
