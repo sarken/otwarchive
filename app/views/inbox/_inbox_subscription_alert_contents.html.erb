@@ -1,10 +1,29 @@
+<% creation_type = if feedback_comment.creation.is_a?(Work)
+                     "work"
+                   else
+                     "chapter of a work"
+                   end %>
+
+<% work = if feedback_comment.creation.is_a?(Work)
+            feedback_comment.creation
+          else
+            feedback_comment.creation.work
+          end %>
+
+<% title = if !feedback_comment.creation.title.blank?
+             link_to(feedback_comment.creation.title, polymorphic_path(feedback_comment.creation))
+           else
+             link_to(feedback_comment.creation.full_chapter_title,
+               polymorphic_path(feedback_comment.creation)) + " of " + 
+               link_to(work.title, polymorphic_path(work))
+           end %>
+
+<% subscription = Subscription.for_work(work).find_by(user_id: @user.id) %>
+
 <h4 class="heading byline">
-  <% title = if !feedback_comment.creation.title.blank?
-               feedback_comment.creation.title
-             else
-               "Chapter #{feedback_comment.creation.position} of #{feedback_comment.creation.work.title}"
-             end %>
-  <%= ts("%{pseuds} posted %{title}", pseuds: byline(feedback_comment.creation), title: title).html_safe %>
+  <%= ts("%{pseuds} posted a new %{creation_type}",
+    pseuds: byline(feedback_comment.creation),
+    creation_type: creation_type).html_safe %>
   <span class="posted datetime">
     <%= distance_of_time_in_words_to_now(feedback_comment.created_at) %>
   </span>
@@ -15,5 +34,16 @@
 </div>
 
 <blockquote class="userstuff">
-  The thing you like is updated!
+  <p><%= ts("%{pseuds} posted %{title}.", pseuds: byline(feedback_comment.creation),
+    title: title).html_safe %></p>
+  <p><%= get_embed_link_meta(work).html_safe %></p>
 </blockquote>
+
+<p class="footnote">
+  <% if subscription %>
+    <%= ts("You have received this message because you are subscribed to %{subscribable}.",
+      subscribable: subscription.name) %>
+  <% else %>
+    <%= ts("You received this message because of a subscription that has been deleted.") %>
+  <% end %>
+</p>
