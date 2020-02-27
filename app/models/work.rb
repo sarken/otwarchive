@@ -35,7 +35,7 @@ class Work < ApplicationRecord
   accepts_nested_attributes_for :gifts, allow_destroy: true
 
   has_many :subscriptions, as: :subscribable, dependent: :destroy
-  has_many :subscription_notifications, as: :creation, dependent: :destroy
+  has_many :subscription_alerts, as: :creation, dependent: :destroy
 
   has_many :challenge_assignments, as: :creation
   has_many :challenge_claims, as: :creation

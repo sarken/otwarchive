@@ -51,8 +51,9 @@ module CreationNotifier
     if work && !work.unrevealed? && !work.anonymous?
       Subscription.for_work(work).each do |subscription|
         RedisMailQueue.queue_subscription(subscription, self)
-        SubscriptionNotification.create(subscription_id: subscription.id,
-          user_id: subscription.user_id, creation_id: self.id,
+      end
+      if Subscription.for_work(work).any?
+        SubscriptionAlert.create(creation_id: self.id,
           creation_type: self.class.name)
       end
     end
