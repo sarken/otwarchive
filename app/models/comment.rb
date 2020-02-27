@@ -6,7 +6,7 @@ class Comment < ApplicationRecord
   belongs_to :commentable, polymorphic: true
   belongs_to :parent, polymorphic: true
 
-  has_many :inbox_comments, foreign_key: 'feedback_comment_id', dependent: :destroy
+  has_many :inbox_comments, foreign_key: 'item_id', dependent: :destroy
   has_many :users, through: :inbox_comments
 
   has_many :thread_comments, class_name: 'Comment', foreign_key: :thread
@@ -199,7 +199,7 @@ class Comment < ApplicationRecord
     end
 
     def update_feedback_in_inbox(user)
-      if (edited_feedback = user.inbox_comments.find_by(feedback_comment_id: self.id))
+      if (edited_feedback = user.inbox_comments.find_by(item_id: self.id))
         edited_feedback.update_attribute(:read, false)
       else # original inbox comment was deleted
         add_feedback_to_inbox(user)
@@ -208,7 +208,7 @@ class Comment < ApplicationRecord
 
     def add_feedback_to_inbox(user)
       new_feedback = user.inbox_comments.build
-      new_feedback.feedback_comment_id = self.id
+      new_feedback.item_id = self.id
       new_feedback.save
     end
 
@@ -261,7 +261,7 @@ class Comment < ApplicationRecord
 
         # if I'm replying to a comment you left for me, mark your comment as replied to in my inbox
         if self.comment_owner
-          if (inbox_comment = self.comment_owner.inbox_comments.find_by(feedback_comment_id: parent_comment.id))
+          if (inbox_comment = self.comment_owner.inbox_comments.find_by(item_id: parent_comment.id))
             inbox_comment.update_attributes(replied_to: true, read: true)
           end
         end

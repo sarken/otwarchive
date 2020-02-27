@@ -1,9 +1,9 @@
 class InboxComment < ApplicationRecord
   validates_presence_of :user_id
-  validates_presence_of :feedback_comment_id
+  validates_presence_of :item_id
 
   belongs_to :user
-  belongs_to :feedback_comment, class_name: 'Comment'
+  belongs_to :feedback_comment, class_name: 'Comment', foreign_key: "item_id"
 
   # Filters inbox comments by read and/or replied to and sorts by date
   scope :find_by_filters, lambda { |filters|
@@ -37,7 +37,8 @@ class InboxComment < ApplicationRecord
 
   # Get only the comments with a feedback_comment that exists
   def self.with_feedback_comment
-    joins("LEFT JOIN comments ON comments.id = inbox_comments.feedback_comment_id").
+    where(item_type: "Comment").
+    joins("LEFT JOIN comments ON comments.id = inbox_comments.item_id").
     where("comments.id IS NOT NULL AND comments.is_deleted = 0")
   end
 end

@@ -335,7 +335,7 @@ class CommentsController < ApplicationController
     return unless @comment && current_user_owns?(@comment.ultimate_parent) && @comment.unreviewed?
     @comment.toggle!(:unreviewed)
     # mark associated inbox comments as read
-    InboxComment.where(user_id: current_user.id, feedback_comment_id: @comment.id).update_all(read: true)
+    InboxComment.where(user_id: current_user.id, item_id: @comment.id).update_all(read: true)
     flash[:notice] = ts("Comment approved.")
     respond_to do |format|
       format.html do
