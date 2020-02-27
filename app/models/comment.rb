@@ -199,7 +199,7 @@ class Comment < ApplicationRecord
     end
 
     def update_feedback_in_inbox(user)
-      if (edited_feedback = user.inbox_comments.find_by(item: self, item_type: self.class.name))
+      if (edited_feedback = user.inbox_comments.find_by(item_id: self.id, item_type: self.class.name))
         edited_feedback.update_attribute(:read, false)
       else # original inbox comment was deleted
         add_feedback_to_inbox(user)
