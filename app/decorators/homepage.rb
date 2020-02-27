@@ -60,7 +60,7 @@ class Homepage
 
   def inbox_comments
     return unless logged_in?
-    @inbox_comments ||= @user.inbox_comments.with_feedback_comment.for_homepage
+    @inbox_comments ||= @user.inbox_comments.with_item.for_homepage
   end
 
   def estimate_number(number)
