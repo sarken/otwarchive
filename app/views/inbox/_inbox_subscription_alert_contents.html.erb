@@ -1,0 +1,19 @@
+<h4 class="heading byline">
+  <% title = if !feedback_comment.creation.title.blank?
+               feedback_comment.creation.title
+             else
+               "Chapter #{feedback_comment.creation.position} of #{feedback_comment.creation.work.title}"
+             end %>
+  <%= ts("%{pseuds} posted %{title}", pseuds: byline(feedback_comment.creation), title: title).html_safe %>
+  <span class="posted datetime">
+    <%= distance_of_time_in_words_to_now(feedback_comment.created_at) %>
+  </span>
+</h4>
+
+<div class="icon">
+  <span class="visitor icon"></span>
+</div>
+
+<blockquote class="userstuff">
+  The thing you like is updated!
+</blockquote>
