@@ -12,12 +12,12 @@ and a few variations for INTERACTION TYPES, which are, roughly:
 .post, .login, make .associations, set .preferences, [.search, .filter] => in searchbrowse
 */
 
-form {
+form:not(.restructured) {
   clear: right;
 }
 
 /* wrap long text in Opera, Safari, and Chrome */
-fieldset {
+form:not(.restructured) fieldset {
   min-width: 0;
 }
 
@@ -25,7 +25,7 @@ fieldset {
 I've written a load of possible different nests to give a reasonably/broadly consistent view whatever goes in, 
 but it's probably not complete. */
 
-fieldset, form dl, fieldset dl dl, fieldset fieldset fieldset, fieldset fieldset dl dl, dd.hideme, form blockquote.userstuff {
+form:not(.restructured) fieldset, form:not(.restructured) dl, form:not(.restructured) fieldset dl dl, form:not(.restructured) fieldset fieldset fieldset, form:not(.restructured) fieldset fieldset dl dl, form:not(.restructured) dd.hideme, form:not(.restructured) blockquote.userstuff {
   display: block;
   background: #ddd;
   border: 2px solid #f3efec;
@@ -34,25 +34,25 @@ fieldset, form dl, fieldset dl dl, fieldset fieldset fieldset, fieldset fieldset
     box-shadow: inset 1px 0 5px #999;
 }
 
-fieldset dl, fieldset.actions, fieldset dl fieldset dl {
+form:not(.restructured) fieldset dl, form:not(.restructured) fieldset.actions, form:not(.restructured) fieldset dl fieldset dl {
   background: transparent;
   border: none;
   clear: right;
     box-shadow: none;
 }
 
-fieldset fieldset, fieldset dl dl, form blockquote.userstuff {
+form:not(.restructured) fieldset fieldset, form:not(.restructured) fieldset dl dl, form:not(.restructured) blockquote.userstuff {
   background: #fff;
   clear: right;
 }
 
-fieldset dd dl, form .meta dd, fieldset dl fieldset dl, dd fieldset {
+form:not(.restructured) fieldset dd dl, form:not(.restructured) .meta dd, form:not(.restructured) fieldset dl fieldset dl, form:not(.restructured) dd fieldset {
   margin: 0.643em 0;
 }
 
 /*end nesting */
 
-legend, input[type="hidden"] {
+form:not(.restructured) legend, form:not(.restructured) input[type="hidden"] {
   height: 0;
   width: 0;
   font-size: 0;
@@ -61,64 +61,64 @@ legend, input[type="hidden"] {
   margin: 0;
 }
 
-label {
+form:not(.restructured) label {
   cursor: pointer;
   margin-right: 0.375em;
 }
 
-input, textarea {
+form:not(.restructured) input, form:not(.restructured) textarea {
   font: 100% 'Lucida Grande', 'Lucida Sans Unicode', 'GNU Unifont', Verdana, Helvetica, sans-serif;
   width: 100%;
   border: 1px solid #bbb;
     box-shadow: inset 0 1px 2px #ccc;
 }
 
-textarea {
+form:not(.restructured) textarea {
   min-height: 12em;
 }
 
-textarea.large {
+form:not(.restructured) textarea.large {
   height: 36em;
 }
 
-input:focus, select:focus, textarea:focus {
+form:not(.restructured) input:focus, form:not(.restructured) select:focus, form:not(.restructured) textarea:focus {
   background: #f3efec;
 }
 
-input[type="radio"] + label, input[type="checkbox"] + label {
+form:not(.restructured) input[type="radio"] + label, form:not(.restructured) input[type="checkbox"] + label {
   padding-left: 1em;
 }
 
-select {
+form:not(.restructured) select {
   vertical-align: text-top;
   width: 100%;
   min-width: 10.5em;
 }
 
-.datetime select {
+form:not(.restructured) .datetime select {
   width: 32.5%;
 }
 
-input[type="radio"], input[type="checkbox"], input[type="file"], input.number, p input, p select, .heading select, li select {
+form:not(.restructured) input[type="radio"], form:not(.restructured) input[type="checkbox"], form:not(.restructured) input[type="file"], form:not(.restructured) input.number, form:not(.restructured) p input, form:not(.restructured) p select, form:not(.restructured) .heading select, form:not(.restructured) li select {
   width: auto;
   margin-right: 0.375em;
 }
 
-input.number {
+form:not(.restructured) input.number {
   width: 4em;
 }
 
-option, .actions option, form code {
+form:not(.restructured) option, form:not(.restructured) .actions option, form:not(.restructured) code {
   display: block;
 }
 
-form p {
+form:not(.restructured) p {
   clear: right;
   margin: auto;
   padding: 0.643em;
 }
 
-form dt {
+form:not(.restructured) dt {
   float: left;
   clear: left;
   min-width: 10.5em;
@@ -127,49 +127,49 @@ form dt {
   border-bottom: 1px solid #f3efec;
 }
 
-form dd, form dd.any {
+form:not(.restructured) dd, form:not(.restructured) dd.any {
   float: left;
   width: 72.5%;
 }
 
-form dd.any {
+form:not(.restructured) dd.any {
   margin-left: 25%;
 }
 
-form dd + dd {
+form:not(.restructured) dd + dd {
   width: 97.5%;
   margin-left: 0.5625em;
 }
 
-form dd.required {
+form:not(.restructured) dd.required {
   color: #2a2a2a;
 }
 
-form .footnote code {
+form:not(.restructured) .footnote code {
   display: inline;
 }
 
 /* when we display information that cannot be edited, 
 like the current username on the change username form */
-form dd p.informational {
+form:not(.restructured) dd p.informational {
   padding-top: 0;
 }
 
 /*END FORM RULES*/
 
 /* WIDGET: DEPENDENT OPTIONS */
-.toggle_formfield ~ ul.dependent {
+form:not(.restructured) .toggle_formfield ~ ul.dependent {
   margin-left: 2.625em;
 }
 
 /* WIDGET: CHARACTER COUNTER (todo: ARIA live region POLITE)*/
 
-p.character_counter {
+form:not(.restructured) p.character_counter {
   font-size: 87.5%;
   text-align: right;
 }
 
-.comment .character_counter {
+.comment form:not(.restructured) .character_counter {
   float: left;
 }
 
@@ -232,7 +232,7 @@ We only use error messages for LiveValidation. Style spoofs the system error mes
   margin: 0.25em 0 0;
 }
 
-form li ul.autocomplete li.input {
+form:not(.restructured) li ul.autocomplete li.input {
   border: 0;
 }
 
@@ -555,7 +555,7 @@ div.dynamic {
 TO DO: Make VERBOSE a class on FORM across the site; it is a surrounding DIV
 in some areas, hence .verbose form */
 
-form.verbose legend, .verbose form legend {
+form.verbose:not(.restructured) legend, .verbose form:not(.restructured) legend {
   height: auto;
   width: auto;
   font-size: 100%;
@@ -568,35 +568,35 @@ form.verbose legend, .verbose form legend {
 
 /*MODE: SIMPLE for forms with three or fewer fieldsets (default) */
 
-form.simple span.actions {
+form.simple:not(.restructured) span.actions {
   float: none;
 }
 
-.simple input[type="submit"] {
+form.simple:not(.restructured) input[type="submit"] {
   margin: 0;
 }
 
 /* WIDGET: TOGGLED FORMS (SHOW/HIDE bookmark and collection - hidden with jS) */
 
-.toggled form dd, .dynamic form dd {
+.toggled form:not(.restructured) dd, .dynamic form:not(.restructured) dd {
   width: 99%;
 }
 
-.toggled form p.footnote, .dynamic form p.footnote {
+.toggled form:not(.restructured) p.footnote, .dynamic form:not(.restructured) p.footnote {
   float: none;
   margin: auto;
   padding: 0;
   line-height: 0.5;
 }
 
-.toggled form, .dynamic form {
+.toggled form:not(.restructured), .dynamic form:not(.restructured) {
   padding: 0.5em;
   border: 2px solid #ccc;
   background: #fff;
     box-shadow: 1px 2px 5px;
 }
 
-.dynamic form fieldset, .toggled form fieldset, .toggled form dl, .secondary .toggled form, .secondary form {
+.dynamic form:not(.restructured) fieldset, .toggled form:not(.restructured) fieldset, .toggled form:not(.restructured) dl, .secondary .toggled form:not(.restructured), .secondary form:not(.restructured) {
   border: none;
   background: transparent;
   margin: 0;
@@ -604,7 +604,7 @@ form.simple span.actions {
     box-shadow: none;
 }
 
-.toggled .bookmark form p.footnote {
+.toggled .bookmark form:not(.restructured) p.footnote {
   padding-bottom: 0.643em;
 }
 
@@ -623,7 +623,7 @@ form.simple span.actions {
 
 /* CONTEXT: dashboard*/
 
-.dashboard > form {
+.dashboard > form:not(.restructured) {
   float: left;
   width: 100%;
 }
