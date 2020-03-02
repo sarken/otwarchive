@@ -91,9 +91,9 @@
       </dt>
       <dd class="ip">
         <% if @work.ip_address.nil? %>
-            <%= ts("No address recorded") %>
+          <%= ts("No address recorded") %>
         <% else %>
-            <%= @work.ip_address %>
+          <%= @work.ip_address %>
         <% end %>
       </dd>
 
@@ -102,9 +102,9 @@
       </dt>
       <dd class="akismet">
         <% if !@work.spam_checked? %>
-            <%= ts("No result recorded") %>
+          <%= ts("No result recorded") %>
         <% else %>
-            <%= @work.spam? %>
+          <%= @work.spam? %>
         <% end %>
       </dd>
 
