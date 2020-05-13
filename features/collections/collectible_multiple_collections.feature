@@ -65,7 +65,7 @@ Feature: Collectible items in multiple collections
     Then I should see "Added to collection(s): OtherCollection."
 
   Scenario: If a gift work is posted to multiple collections simultaneously, the
-  recipient should only be notified once
+  recipient is only be notified once
     Given the collection "Collection A" with name "collection_a"
       And the collection "Collection B" with name "collection_b"
       And the user "recip" exists and is activated
