@@ -466,11 +466,11 @@ class Collection < ApplicationRecord
 
   # Notifications are handled by callbacks on the items
   def reveal_collection_items
-    collection_items.each { |collection_item| collection_item.update_attribute(:unrevealed, false) }
+    approved_collection_items.each { |collection_item| collection_item.update_attribute(:unrevealed, false) }
   end
 
   def reveal_collection_item_authors
-    collection_items.each { |collection_item| collection_item.update_attribute(:anonymous, false) }
+    approved_collection_items.each { |collection_item| collection_item.update_attribute(:anonymous, false) }
   end
 
   def self.sorted_and_filtered(sort, filters, page)
