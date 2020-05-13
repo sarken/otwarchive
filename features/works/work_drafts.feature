@@ -1,5 +1,4 @@
 @works @search
-@no-txn
 Feature: Work Drafts
 
   Scenario: Creating a work draft
@@ -15,6 +14,7 @@ Feature: Work Drafts
   Then I should see "Post New Work"
     And I select "General Audiences" from "Rating"
     And I check "No Archive Warnings Apply"
+    And I select "English" from "Choose a language"
     And I fill in "Fandoms" with "MASH (TV)"
     And I fill in "Work Title" with "Draft Dodging"
     And I fill in "content" with "Klinger lay under his porch."

@@ -4,11 +4,11 @@ class WorksController < ApplicationController
   # only registered users and NOT admin should be able to create new works
   before_action :load_collection
   before_action :load_owner, only: [:index]
-  before_action :users_only, except: [:index, :show, :navigate, :search, :collected, :edit_tags, :update_tags, :reindex, :drafts]
-  before_action :check_user_status, except: [:index, :show, :navigate, :search, :collected, :reindex]
+  before_action :users_only, except: [:index, :show, :navigate, :search, :collected, :edit_tags, :update_tags, :drafts]
+  before_action :check_user_status, except: [:index, :show, :navigate, :search, :collected]
   before_action :load_work, except: [:new, :create, :import, :index, :show_multiple, :edit_multiple, :update_multiple, :delete_multiple, :search, :drafts, :collected]
   # this only works to check ownership of a SINGLE item and only if load_work has happened beforehand
-  before_action :check_ownership, except: [:index, :show, :navigate, :new, :create, :import, :show_multiple, :edit_multiple, :edit_tags, :update_tags, :update_multiple, :delete_multiple, :search, :mark_for_later, :mark_as_read, :drafts, :collected, :reindex]
+  before_action :check_ownership, except: [:index, :show, :navigate, :new, :create, :import, :show_multiple, :edit_multiple, :edit_tags, :update_tags, :update_multiple, :delete_multiple, :search, :mark_for_later, :mark_as_read, :drafts, :collected]
   # admins should have the ability to edit tags (:edit_tags, :update_tags) as per our ToS
   before_action :check_ownership_or_admin, only: [:edit_tags, :update_tags]
   before_action :log_admin_activity, only: [:update_tags]
@@ -100,7 +100,7 @@ class WorksController < ApplicationController
         # the subtag is for eg collections/COLL/tags/TAG
         subtag = @tag.present? && @tag != @owner ? @tag : nil
         user = logged_in? || logged_in_as_admin? ? 'logged_in' : 'logged_out'
-        @works = Rails.cache.fetch("#{@owner.works_index_cache_key(subtag)}_#{user}_page#{params[:page]}_true", expires_in: 20.minutes) do
+        @works = Rails.cache.fetch("#{@owner.works_index_cache_key(subtag)}_#{user}_page#{params[:page]}_true", expires_in: ArchiveConfig.SECONDS_UNTIL_WORK_INDEX_EXPIRE.seconds) do
           results = @search.search_results
           # calling this here to avoid frozen object errors
           results.items
@@ -122,11 +122,11 @@ class WorksController < ApplicationController
         end
       end
     elsif use_caching?
-      @works = Rails.cache.fetch('works/index/latest/v1', expires_in: 10.minutes) do
-        Work.latest.includes(:tags, :external_creatorships, :series, :language, collections: [:collection_items], pseuds: [:user]).to_a
+      @works = Rails.cache.fetch('works/index/latest/v1', expires_in: ArchiveConfig.SECONDS_UNTIL_WORK_INDEX_EXPIRE.seconds) do
+        Work.latest.includes(:tags, :external_creatorships, :series, :language, :approved_collections, pseuds: [:user]).to_a
       end
     else
-      @works = Work.latest.includes(:tags, :external_creatorships, :series, :language, collections: [:collection_items], pseuds: [:user]).to_a
+      @works = Work.latest.includes(:tags, :external_creatorships, :series, :language, :approved_collections, pseuds: [:user]).to_a
     end
     set_own_works
   end
@@ -192,7 +192,7 @@ class WorksController < ApplicationController
 
     # Users must explicitly okay viewing of adult content
     if params[:view_adult]
-      session[:adult] = true
+      cookies[:view_adult] = "true"
     elsif @work.adult? && !see_adult?
       render('_adult', layout: 'application') && return
     end
@@ -206,12 +206,12 @@ class WorksController < ApplicationController
         )
       else
         flash.keep
-        redirect_to([@work, @chapter]) && return
+        redirect_to([@work, @chapter, { only_path: true }]) && return
       end
     end
 
     @tag_categories_limited = Tag::VISIBLE - ['ArchiveWarning']
-    @kudos = @work.kudos.with_pseud.includes(pseud: :user).order('created_at DESC')
+    @kudos = @work.kudos.with_user.includes(:user).by_date
 
     if current_user.respond_to?(:subscriptions)
       @subscription = current_user.subscriptions.where(subscribable_id: @work.id,
@@ -220,7 +220,6 @@ class WorksController < ApplicationController
     end
 
     render :show
-    @work.increment_hit_count(request.remote_ip)
     Reading.update_or_create(@work, current_user) if current_user
   end
 
@@ -450,9 +449,14 @@ class WorksController < ApplicationController
   def import
     # check to make sure we have some urls to work with
     @urls = params[:urls].split
-
     if @urls.empty?
       flash.now[:error] = ts('Did you want to enter a URL?')
+      render(:new_import) && return
+    end
+
+    @language_id = params[:language_id]
+    if @language_id.empty?
+      flash.now[:error] = ts("Language cannot be blank.")
       render(:new_import) && return
     end
 
@@ -480,6 +484,7 @@ class WorksController < ApplicationController
     end
 
     options = build_options(params)
+    options[:ip_address] = request.remote_ip
 
     # now let's do the import
     if params[:import_multiple] == 'works' && @urls.length > 1
@@ -697,17 +702,6 @@ class WorksController < ApplicationController
     end
 
     redirect_to show_multiple_user_works_path(@user, work_ids: @works.map(&:id))
-  end
-
-  # Reindex the work.
-  def reindex
-    if logged_in_as_admin? || permit?('tag_wrangler')
-      RedisSearchIndexQueue.queue_works([params[:id]], priority: :high)
-      flash[:notice] = ts('Work queued to be reindexed')
-    else
-      flash[:error] = ts("Sorry, you don't have permission to perform this action.")
-    end
-    redirect_to(request.env['HTTP_REFERER'] || root_path)
   end
 
   # marks a work to read later
