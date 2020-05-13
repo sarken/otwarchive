@@ -348,7 +348,7 @@ class UserMailer < ActionMailer::Base
   # Emails a prompter to say that a response has been posted to their prompt
   def prompter_notification(work_id, collection_id = nil)
     @work = Work.find(work_id)
-    @collection = collection_for_email(collection_id)
+    @collection = Collection.find(collection_id) if collection_id
     @work.challenge_claims.each do |claim|
       user = User.find(claim.request_signup.pseud.user.id)
       I18n.with_locale(Locale.find(user.preference.preferred_locale).iso) do
