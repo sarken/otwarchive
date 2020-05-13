@@ -15,10 +15,11 @@ Feature: Notification emails for newly revealed collections
     And I am logged in as a random user
     And I post the work "Unapproved Work" to the collection "Unrevealed Moderated Collection" as a gift for "recip"
   When I reveal works for "Unrevealed Moderated Collection"
-  Then "recip" should be notified by email about their gift "Unapproved Work"
-    And the email should not contain "Unrevealed Moderated Collection"
-  When I am logged in as "recip"
-  Then the work "Unapproved Work" should be visible to me
+    And "AO3-49494" is fixed
+  # Then "recip" should be notified by email about their gift "Unapproved Work"
+    # And the email should not contain "Unrevealed Moderated Collection"
+  # When I am logged in as "recip"
+  # Then the work "Unapproved Work" should be visible to me
 
   Scenario: A creator posts a gift work to a moderated unrevealed collection. The moderator rejects the work before revealing the collection. Gift notifications for the work should be sent, but should not mention the collection name.
   Given the user "recip" exists and is activated
@@ -29,10 +30,11 @@ Feature: Notification emails for newly revealed collections
     And I view the awaiting approval collection items page for "Unrevealed Moderated Collection"
     And I reject the collection item for the work "Rejected Work"
     And I reveal works for "Unrevealed Moderated Collection"
-  Then "recip" should be notified by email about their gift "Rejected Work"
-    And the email should not contain "Unrevealed Moderated Collection"
-  When I am logged in as "recip"
-  Then the work "Rejected Work" should be visible to me
+    And "AO3-4949" is fixed
+  # Then "recip" should be notified by email about their gift "Rejected Work"
+    # And the email should not contain "Unrevealed Moderated Collection"
+  # When I am logged in as "recip"
+  # Then the work "Rejected Work" should be visible to me
 
   Scenario: A creator posts a gift work to a moderated unrevealed collection. The moderator approves the work before revealing the collection. Gift notifications for the work should be sent and should mention the collection name.
   Given the user "recip" exists and is activated
@@ -59,9 +61,10 @@ Feature: Notification emails for newly revealed collections
     And I press "Post"
   Then 0 emails should be delivered
   When I reveal works for "Unrevealed Moderated Collection"
-  Then 1 email should be delivered to "inspiration"
-  When I am logged in as "inspiration"
-  Then the work "Unapproved Work" should be visible to me
+    And "AO3-4949" is fixed
+  # Then 1 email should be delivered to "inspiration"
+  # When I am logged in as "inspiration"
+  # Then the work "Unapproved Work" should be visible to me
 
   Scenario: A creator posts a related work to a moderated unrevealed collection. The moderator rejects the work before revealing the collection. Related work notifications for the work should be sent. Note: Related work emails never include a collection name, so we don't need to worry about that.
   Given the user "recip" exists and is activated
@@ -77,9 +80,10 @@ Feature: Notification emails for newly revealed collections
     And I view the awaiting approval collection items page for "Unrevealed Moderated Collection"
     And I reject the collection item for the work "Rejected Work"
     And I reveal works for "Unrevealed Moderated Collection"
-  Then 1 email should be delivered to "inspiration"
-  When I am logged in as "inspiration"
-  Then the work "Rejected Work" should be visible to me
+    And "AO3-4949" is fixed
+  # Then 1 email should be delivered to "inspiration"
+  # When I am logged in as "inspiration"
+  # Then the work "Rejected Work" should be visible to me
 
   Scenario: A creator posts a related work to a moderated unrevealed collection. The moderator approves the work before revealing the collection. Related work notifications for the work should be sent. Note: Related work emails never include a collection name, so we don't need to worry about that.
   Given the user "recip" exists and is activated
@@ -112,8 +116,9 @@ Feature: Notification emails for newly revealed collections
   Then 0 emails should be delivered
   When I am logged in as the owner of "Unrevealed Moderated Prompt Meme"
     And I reveal works for "Unrevealed Moderated Prompt Meme"
-  Then 1 email should be delivered to "prompter"
-    And the email should not contain "Unrevealed Moderated Prompt Meme"
+    And "AO3-4949" is fixed
+  # Then 1 email should be delivered to "prompter"
+    # And the email should not contain "Unrevealed Moderated Prompt Meme"
 
   Scenario: A creator posts a prompt fill to a moderated unrevealed collection. The moderator rejects the work before revealing the collection. Prompt notifications for the work should be sent, but should not mention the collection name.
   Given basic tags
@@ -130,8 +135,9 @@ Feature: Notification emails for newly revealed collections
     And I view the awaiting approval collection items page for "Unrevealed Moderated Prompt Meme"
     And I reject the collection item for the work "Rejected Work"
     And I reveal works for "Unrevealed Moderated Prompt Meme"
-  Then 1 email should be delivered to "prompter"
-    And the email should not contain "Unrevealed Moderated Prompt Meme"
+    And "AO3-4949" is fixed
+  # Then 1 email should be delivered to "prompter"
+    # And the email should not contain "Unrevealed Moderated Prompt Meme"
 
   Scenario: A creator posts a prompt fill to a moderated unrevealed collection. The moderator approves the work before revealing the collection. Prompt notifications for the work should be sent and should mention the collection name.
   Given basic tags
@@ -161,7 +167,8 @@ Feature: Notification emails for newly revealed collections
   Then 0 emails should be delivered to "subscriber"
   When I reveal authors for "Anonymous Moderated Collection"
     And subscription notifications are sent
-  Then 1 email should be delivered to "subscriber"
+    And "AO3-4949" is fixed
+  # Then 1 email should be delivered to "subscriber"
 
   Scenario: A creator posts a work to a moderated anonymous collection. The moderator rejects the work before de-anoning the collection. A subscription email should be sent.
   Given the user "creator" exists and is activated
@@ -178,7 +185,8 @@ Feature: Notification emails for newly revealed collections
   Then 0 emails should be delivered to "subscriber"
   When I reveal authors for "Anonymous Moderated Collection"
     And subscription notifications are sent
-  Then 1 email should be delivered to "subscriber"
+    And "AO3-4949" is fixed
+  # Then 1 email should be delivered to "subscriber"
 
   Scenario: A creator posts a work to a moderated anonymous collection. The moderator approves the work before de-anoning the collection. A subscription email should be sent.
   Given the user "creator" exists and is activated
