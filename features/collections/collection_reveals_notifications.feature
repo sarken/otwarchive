@@ -9,7 +9,7 @@ Feature: Notification emails for newly revealed collections
   #
   #########################################
 
-  Scenario: A creator posts a gift work to a moderated unrevealed collection. The moderator does not approve or reject the work before revealing the collection. Gift notifications for the work should be sent, but should not mention the collection name.
+  Scenario: A creator posts a gift work to a moderated unrevealed collection. The moderator does not approve or reject the work before revealing the collection. Gift notifications for the work are sent, but do not mention the collection name.
   Given the user "recip" exists and is activated
     And I have the unrevealed moderated collection "Unrevealed Moderated Collection"
     And I am logged in as a random user
@@ -21,7 +21,7 @@ Feature: Notification emails for newly revealed collections
   # When I am logged in as "recip"
   # Then the work "Unapproved Work" should be visible to me
 
-  Scenario: A creator posts a gift work to a moderated unrevealed collection. The moderator rejects the work before revealing the collection. Gift notifications for the work should be sent, but should not mention the collection name.
+  Scenario: A creator posts a gift work to a moderated unrevealed collection. The moderator rejects the work before revealing the collection. Gift notifications for the work are sent, but do not mention the collection name.
   Given the user "recip" exists and is activated
     And I have the unrevealed moderated collection "Unrevealed Moderated Collection"
     And I am logged in as a random user
@@ -36,7 +36,7 @@ Feature: Notification emails for newly revealed collections
   # When I am logged in as "recip"
   # Then the work "Rejected Work" should be visible to me
 
-  Scenario: A creator posts a gift work to a moderated unrevealed collection. The moderator approves the work before revealing the collection. Gift notifications for the work should be sent and should mention the collection name.
+  Scenario: A creator posts a gift work to a moderated unrevealed collection. The moderator approves the work before revealing the collection. Gift notifications for the work are sent and should mention the collection name.
   Given the user "recip" exists and is activated
     And I have the unrevealed moderated collection "Unrevealed Moderated Collection"
     And I am logged in as a random user
@@ -50,7 +50,7 @@ Feature: Notification emails for newly revealed collections
   When I am logged in as "recip"
   Then the work "Approved Work" should be visible to me
 
-  Scenario: A creator posts a related work to a moderated unrevealed collection. The moderator does not approve or reject the work before revealing the collection. Related work notifications for the work should be sent. Note: Related work emails never include a collection name, so we don't need to worry about that.
+  Scenario: A creator posts a related work to a moderated unrevealed collection. The moderator does not approve or reject the work before revealing the collection. Related work notifications for the work are sent. Note: Related work emails never include a collection name, so we don't need to worry about that.
   Given the user "recip" exists and is activated
     And I have the unrevealed moderated collection "Unrevealed Moderated Collection"
     And I am logged in as "inspiration"
@@ -66,7 +66,7 @@ Feature: Notification emails for newly revealed collections
   # When I am logged in as "inspiration"
   # Then the work "Unapproved Work" should be visible to me
 
-  Scenario: A creator posts a related work to a moderated unrevealed collection. The moderator rejects the work before revealing the collection. Related work notifications for the work should be sent. Note: Related work emails never include a collection name, so we don't need to worry about that.
+  Scenario: A creator posts a related work to a moderated unrevealed collection. The moderator rejects the work before revealing the collection. Related work notifications for the work are sent. Note: Related work emails never include a collection name, so we don't need to worry about that.
   Given the user "recip" exists and is activated
     And I have the unrevealed moderated collection "Unrevealed Moderated Collection"
     And I am logged in as "inspiration"
@@ -85,7 +85,7 @@ Feature: Notification emails for newly revealed collections
   # When I am logged in as "inspiration"
   # Then the work "Rejected Work" should be visible to me
 
-  Scenario: A creator posts a related work to a moderated unrevealed collection. The moderator approves the work before revealing the collection. Related work notifications for the work should be sent. Note: Related work emails never include a collection name, so we don't need to worry about that.
+  Scenario: A creator posts a related work to a moderated unrevealed collection. The moderator approves the work before revealing the collection. Related work notifications for the work are sent. Note: Related work emails never include a collection name, so we don't need to worry about that.
   Given the user "recip" exists and is activated
     And I have the unrevealed moderated collection "Unrevealed Moderated Collection"
     And I am logged in as "inspiration"
@@ -103,7 +103,7 @@ Feature: Notification emails for newly revealed collections
   When I am logged in as "inspiration"
   Then the work "Approved Work" should be visible to me
 
-  Scenario: A creator posts a prompt fill to a moderated unrevealed collection. The moderator does not approve or reject the work before revealing the collection. Prompt notifications for the work should be sent, but should not mention the collection name.
+  Scenario: A creator posts a prompt fill to a moderated unrevealed collection. The moderator does not approve or reject the work before revealing the collection. Prompt notifications for the work are sent, but do not mention the collection name.
   Given basic tags
     And the prompt meme "Unrevealed Moderated Prompt Meme" with default settings
     And I am logged in as the owner of "Unrevealed Moderated Prompt Meme"
@@ -120,7 +120,7 @@ Feature: Notification emails for newly revealed collections
   # Then 1 email should be delivered to "prompter"
     # And the email should not contain "Unrevealed Moderated Prompt Meme"
 
-  Scenario: A creator posts a prompt fill to a moderated unrevealed collection. The moderator rejects the work before revealing the collection. Prompt notifications for the work should be sent, but should not mention the collection name.
+  Scenario: A creator posts a prompt fill to a moderated unrevealed collection. The moderator rejects the work before revealing the collection. Prompt notifications for the work are sent, but do not mention the collection name.
   Given basic tags
     And the prompt meme "Unrevealed Moderated Prompt Meme" with default settings
     And I am logged in as the owner of "Unrevealed Moderated Prompt Meme"
@@ -139,7 +139,7 @@ Feature: Notification emails for newly revealed collections
   # Then 1 email should be delivered to "prompter"
     # And the email should not contain "Unrevealed Moderated Prompt Meme"
 
-  Scenario: A creator posts a prompt fill to a moderated unrevealed collection. The moderator approves the work before revealing the collection. Prompt notifications for the work should be sent and should mention the collection name.
+  Scenario: A creator posts a prompt fill to a moderated unrevealed collection. The moderator approves the work before revealing the collection. Prompt notifications for the work are sent and should mention the collection name.
   Given basic tags
     And the prompt meme "Unrevealed Moderated Prompt Meme" with default settings
     And I am logged in as the owner of "Unrevealed Moderated Prompt Meme"
@@ -157,7 +157,7 @@ Feature: Notification emails for newly revealed collections
   Then 1 email should be delivered to "prompter"
     And the email should contain "Unrevealed Moderated Prompt Meme"
 
-  Scenario: A creator posts a work to a moderated anonymous collection. The moderator does not approve or reject the work before de-anoning the collection. A subscription email should be sent.
+  Scenario: A creator posts a work to a moderated anonymous collection. The moderator does not approve or reject the work before de-anoning the collection. A subscription email is sent.
   Given the user "creator" exists and is activated
     And I have the anonymous moderated collection "Anonymous Moderated Collection"
     And "subscriber" subscribes to author "creator"
@@ -170,7 +170,7 @@ Feature: Notification emails for newly revealed collections
     And "AO3-4949" is fixed
   # Then 1 email should be delivered to "subscriber"
 
-  Scenario: A creator posts a work to a moderated anonymous collection. The moderator rejects the work before de-anoning the collection. A subscription email should be sent.
+  Scenario: A creator posts a work to a moderated anonymous collection. The moderator rejects the work before de-anoning the collection. A subscription email is sent.
   Given the user "creator" exists and is activated
     And I have the anonymous moderated collection "Anonymous Moderated Collection"
     And "subscriber" subscribes to author "creator"
@@ -188,7 +188,7 @@ Feature: Notification emails for newly revealed collections
     And "AO3-4949" is fixed
   # Then 1 email should be delivered to "subscriber"
 
-  Scenario: A creator posts a work to a moderated anonymous collection. The moderator approves the work before de-anoning the collection. A subscription email should be sent.
+  Scenario: A creator posts a work to a moderated anonymous collection. The moderator approves the work before de-anoning the collection. A subscription email is sent.
   Given the user "creator" exists and is activated
     And I have the anonymous moderated collection "Anonymous Moderated Collection"
     And "subscriber" subscribes to author "creator"
@@ -211,7 +211,7 @@ Feature: Notification emails for newly revealed collections
   #
   ################
 
-  Scenario: A gift related work is invited to a collection and the creator neither rejects nor approves the invitation. The collection is then made unrevealed and anonymous. When the collection is later revealed and de-anoned, no notifications should be sent for the work.
+  Scenario: A gift related work is invited to a collection and the creator neither rejects nor approves the invitation. The collection is then made unrevealed and anonymous. When the collection is later revealed and de-anoned, no notifications are sent for the work.
   Given the user "recip" exists and is activated
     And the user "creator" exists and is activated
     And "subscriber" subscribes to author "creator"
@@ -252,7 +252,7 @@ Feature: Notification emails for newly revealed collections
     And subscription notifications are sent
   Then 0 emails should be delivered
 
-  Scenario: A gift related work is invited to a collection and the moderator changes their mind and rejects the work. The collection is then made anonymous and unrevealed. When the collection is later revealed and de-anoned, no notifications should be sent for the work.
+  Scenario: A gift related work is invited to a collection and the moderator changes their mind and rejects the work. The collection is then made anonymous and unrevealed. When the collection is later revealed and de-anoned, no notifications are sent for the work.
   Given the user "recip" exists and is activated
     And the user "creator" exists and is activated
     And "subscriber" subscribes to author "creator"

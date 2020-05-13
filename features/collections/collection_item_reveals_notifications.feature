@@ -9,7 +9,7 @@ Feature: Notification emails for individually revealed collection items
 #
 ###################################
 
-Scenario: When there are multiple gift works in an unrevealed collection, gift and subscription notifications should only be sent for the particular work that is being revealed, not for works that have not yet been revealed or that have previously been revealed.
+Scenario: When there are multiple gift works in an unrevealed collection, gift and subscription notifications are only sent for the particular work that is being revealed, not for works that have not yet been revealed or that have previously been revealed.
   Given the unrevealed collection "Unrevealed Collection"
     And the user "recip1" exists and is activated
     And the user "recip2" exists and is activated
@@ -48,7 +48,7 @@ Scenario: When there are multiple gift works in an unrevealed collection, gift a
     And 0 emails should be delivered to "subscriber1"
     And 0 emails should be delivered to "subscriber3"
 
-Scenario: When there are multiple prompt fills in an unrevealed collection, prompt fill notifications should only be sent for the particular work that is being revealed, not for works that have not yet been revealed or that have previously been revealed.
+Scenario: When there are multiple prompt fills in an unrevealed collection, prompt fill notifications are only sent for the particular work that is being revealed, not for works that have not yet been revealed or that have previously been revealed.
   Given basic tags
     And the prompt meme "Unrevealed Prompt Meme" with default settings
     And I am logged in as the owner of "Unrevealed Prompt Meme"
@@ -85,7 +85,7 @@ Scenario: When there are multiple prompt fills in an unrevealed collection, prom
     And 0 emails should be delivered to "prompter1"
     And 0 emails should be delivered to "prompter3"
 
-Scenario: When there are multiple child works in an unrevealed collection, related work notifications should only be sent for the particular work that is being revealed, not for works that have not yet been revealed or that have previously been revealed.
+Scenario: When there are multiple child works in an unrevealed collection, related work notifications are only sent for the particular work that is being revealed, not for works that have not yet been revealed or that have previously been revealed.
   Given I have the unrevealed collection "Unrevealed Collection"
     And "inspiration1" posts the work "Inspirational Work 1"
     And "inspiration2" posts the work "Inspirational Work 2"
@@ -134,7 +134,7 @@ Scenario: When there are multiple child works in an unrevealed collection, relat
 #
 ###################################
 
-Scenario: When a gift work is in multiple unrevealed collections, gift and subscription notifications should only be sent after it has been revealed in both collections.
+Scenario: When a gift work is in multiple unrevealed collections, gift and subscription notifications are only sent after it has been revealed in both collections.
   Given the unrevealed collection "Unrevealed Collection" with name "unrevealed_collection"
     And the unrevealed collection "Hidden Collection" with name "hidden_collection"
     And the user "recip" exists and is activated
@@ -163,7 +163,7 @@ Scenario: When a gift work is in multiple unrevealed collections, gift and subsc
   Then "recip" should be notified by email about their gift "Surprise Present"
     And 1 email should be delivered to "subscriber"
 
-Scenario: When a prompt fill is posted to an unrevealed collection and an anonymous collection, prompt fill notifications should be sent when the unrevealed work is revealed, and subscription notifications should not be sent until the anonymous collection reveals the creator.
+Scenario: When a prompt fill is posted to an unrevealed collection and an anonymous collection, prompt fill notifications are sent when the unrevealed work is revealed, and subscription notifications are not sent until the anonymous collection reveals the creator.
   Given basic tags
     And I have the anonymous collection "Anon Collection"
     And the prompt meme "Unrevealed Prompt Meme" with default settings
@@ -204,7 +204,7 @@ Scenario: When a prompt fill is posted to an unrevealed collection and an anonym
 #
 #############################
 
-Scenario: An existing work is edited to simultaneously add a recipient and a collection. The recipient should not be notified of the gift until it is revealed.
+Scenario: An existing work is edited to simultaneously add a recipient and a collection. The recipient is not notified of the gift until it is revealed.
   Given the unrevealed collection "Unrevealed Collection" with name "unrevealed_collection"
     And the user "recip" exists and is activated
     And I am logged in as a random user
@@ -224,7 +224,7 @@ Scenario: An existing work is edited to simultaneously add a recipient and a col
   Then "recip" should be notified by email about their gift "Regift"
     And the email should contain "Unrevealed Collection"
 
-Scenario: A gift work is posted to a moderated unrevealed collection. The moderator simultaneouesly rejects and reveals the work. One gift notification should be sent and should not include the collection name.
+Scenario: A gift work is posted to a moderated unrevealed collection. The moderator simultaneouesly rejects and reveals the work. One gift notification is sent and does not include the collection name.
   Given the user "recip" exists and is activated
     And I have the unrevealed moderated collection "Unrevealed Moderated Collection"
     And I am logged in as a random user
@@ -267,7 +267,7 @@ Scenario: A prompt fill is posted to an anonymous unrevealed collection. A promp
   Then 1 email should be delivered to "subscriber"
     And 0 emails should be delivered to "prompter"
 
-Scenario: A prompt fill is posted to an anonymous unrevealed collection. The moderator simultaneously rejects, reveals, and de-anons the work. One prompt notification and one subscription notification should be sent.
+Scenario: A prompt fill is posted to an anonymous unrevealed collection. The moderator simultaneously rejects, reveals, and de-anons the work. One prompt notification and one subscription notification are sent.
   Given basic tags
     And the prompt meme "Anon Unrevealed Prompt Meme" with default settings
     And I am logged in as the owner of "Anon Unrevealed Prompt Meme"
@@ -373,7 +373,7 @@ Scenario: A prompt fill is invited to a collection and the creator neither accep
 #
 #################################################
 
-Scenario: Three gift works are posted to an unrevealed collection. First, the moderator reveals one work by itself, which should just send gift and subscription emails for that one work. Then the moderator reveals the two remaining works by changing the collection setting, which should only send gift and subscription notifications for those two works.
+Scenario: Three gift works are posted to an unrevealed collection. First, the moderator reveals one work by itself, which just sends gift and subscription emails for that one work. Then the moderator reveals the two remaining works by changing the collection setting, which only sends gift and subscription notifications for those two works.
   Given I have the unrevealed collection "Unrevealed Collection"
     And the user "recip1" exists and is activated
     And the user "recip2" exists and is activated
@@ -412,7 +412,7 @@ Scenario: Three gift works are posted to an unrevealed collection. First, the mo
     And 0 emails should be delivered to "recip1"
     And 0 emails should be delivered to "subscriber1"
 
-Scenario: Three related works are posted to an anonymous moderated collection. They are neither approved nor rejected. First, the moderator reveals the creator of one work, which should just send subscription emails for that one work. Then the moderator reveals the two remaining works by changing the collection setting, which should only send subscription notifications for those two works.
+Scenario: Three related works are posted to an anonymous moderated collection. They are neither approved nor rejected. First, the moderator reveals the creator of one work, which just sends subscription emails for that one work. Then the moderator reveals the two remaining works by changing the collection setting, which only sends subscription notifications for those two works.
   Given I have the anonymous moderated collection "Anon Collection"
     And "inspiration1" posts the work "Inspirational Work 1"
     And "inspiration2" posts the work "Inspirational Work 2"
