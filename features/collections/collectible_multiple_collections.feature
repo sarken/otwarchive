@@ -63,3 +63,14 @@ Feature: Collectible items in multiple collections
       And I fill in "Collection name(s):" with "OtherCollection"
       And I press "Add"
     Then I should see "Added to collection(s): OtherCollection."
+
+  Scenario: If a gift work is posted to multiple collections simultaneously, the
+  recipient is only be notified once
+    Given the collection "Collection A" with name "collection_a"
+      And the collection "Collection B" with name "collection_b"
+      And the user "recip" exists and is activated
+    When I am logged in as a random user
+      And I set up the draft "Surprise Present" as a gift for "recip"
+      And I fill in "Post to Collections / Challenges" with "collection_a, collection_b"
+      And I press "Post"
+    Then "recip" should be notified by email about their gift "Surprise Present"

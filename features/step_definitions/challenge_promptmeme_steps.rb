@@ -76,6 +76,27 @@ Given /^"([^\"]*)" has claimed a prompt from Battle 12$/ do |username|
   step %{I claim a prompt from "Battle 12"}
 end
 
+Given /^"(.*?)" has submitted a prompt for "(.*?)"$/ do |username, challenge_title|
+  step %{I am logged in as "#{username}"}
+  step %{I start signing up for "#{challenge_title}"}
+  step %{I submit}
+end
+
+Given /^"(.*?)" has claimed a prompt from "(.*?)"$/ do |username, challenge_title|
+  step %{I am logged in as "#{username}"}
+  step %{I claim a prompt from "#{challenge_title}"}
+end
+
+Given /^the prompt meme "(.*?)" with default settings$/ do |challenge_title|
+  step %{I am logged in as "mod1"}
+  step %{I set up the collection "#{challenge_title}"}
+  select("Prompt Meme", from: "challenge_type")
+  click_button("Submit")
+  # This should be done by default, but let's be safe
+  check("prompt_meme_signup_open")
+  click_button("Submit")
+end
+
 When /^I set up an?(?: ([^"]*)) promptmeme "([^\"]*)"(?: with name "([^"]*)")?$/ do |type, title, name|
   step %{I am logged in as "mod1"}
   visit new_collection_path
@@ -318,8 +339,7 @@ When /^I add a new prompt to my signup for a prompt meme$/ do
 end
 
 When /^I edit the signup by "([^\"]*)"$/ do |participant|
-  visit collection_path(Collection.find_by(title: "Battle 12"))
-  step %{I follow "Prompts ("}
+  visit collection_requests_path(Collection.find_by(title: "Battle 12"))
   step %{I follow "Edit Sign-up"}
 end
 
@@ -337,21 +357,27 @@ When /^I view unposted claims for "([^\"]*)"$/ do |title|
 end
 
 When /^I view prompts for "([^\"]*)"$/ do |title|
-  visit collection_path(Collection.find_by(title: title))
-  step %{I follow "Prompts ("}
+  visit collection_requests_path(Collection.find_by(title: title))
 end
 
 ### WHEN claiming
 
 When /^I claim a prompt from "([^\"]*)"$/ do |title|
-  visit collection_path(Collection.find_by(title: title))
-    step %{I follow "Prompts ("}
-    step %{I press "Claim"}
+  visit collection_requests_path(Collection.find_by(title: title))
+  click_button("Claim")
 end
 
 When /^I claim two prompts from "([^\"]*)"$/ do |title|
   step %{I claim a prompt from "#{title}"}
   step %{I claim a prompt from "#{title}"}
+end
+
+When /^I claim a prompt by "(.*?)" from "(.*?)"$/ do |user, collection_title|
+  collection = Collection.find_by(title: collection_title)
+  default_pseud_id = User.find_by(login: user).default_pseud_id
+  prompt_id = Prompt.where(collection_id: collection.id, pseud_id: default_pseud_id).first.id
+  visit collection_requests_path(collection)
+  click_button("prompt_#{prompt_id}")
 end
 
 ### WHEN fulfilling claims
@@ -372,8 +398,9 @@ When /^I start to fulfill my claim$/ do
   step %{I start to fulfill my claim with "Fulfilled Story"}
 end
 
-When /^I fulfill my claim$/ do
-  step %{I start to fulfill my claim with "Fulfilled Story"}
+When /^I fulfill my claim(?: with "(.*?)")?$/ do |title|
+  title ||= "Fulfilled Story"
+  step %{I start to fulfill my claim with "#{title}"}
   step %{I press "Preview"}
     step %{I press "Post"}
   step %{I should see "Work was successfully posted"}
@@ -406,20 +433,17 @@ When /^mod fulfills claim$/ do
 end
 
 When /^I delete my prompt in "([^\"]*)"$/ do |title|
-  visit collection_path(Collection.find_by(title: title))
-  step %{I follow "Prompts ("}
+  visit collection_requests_path(Collection.find_by(title: title))
   step %{I press "Delete Prompt"}
 end
 
 When /^I delete the prompt by "([^\"]*)"$/ do |participant|
-  visit collection_path(Collection.find_by(title: "Battle 12"))
-  step %{I follow "Prompts ("}
+  visit collection_requests_path(Collection.find_by(title: "Battle 12"))
   step %{I follow "Delete Prompt"}
 end
 
 When /^I edit the first prompt$/ do
-  visit collection_path(Collection.find_by(title: "Battle 12"))
-  step %{I follow "Prompts ("}
+  visit collection_requests_path(Collection.find_by(title: "Battle 12"))
   # The 'Edit Sign-up' and 'Edit Prompt' buttons were removed for mods in
   # Prompt Meme challenges
   #step %{I follow "Edit Prompt"}
