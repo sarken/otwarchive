@@ -191,12 +191,13 @@ class CollectionItem < ApplicationRecord
 
   after_update :notify_of_status_change
   def notify_of_status_change
-    if saved_change_to_unrevealed? && item.respond_to?(:new_recipients)
-      # making sure notify_recipients in the work model has not already notified
-      if item.new_recipients.present?
-        notify_of_reveal
-      end
-    end
+    # If this isn't a work or its inclusion isn't approved by its creator, skip
+    # notifications.
+    return unless item.is_a?(Work) && approved_by_user?
+    # If the work is also in other unrevealed collections, skip notifications.
+    return if item.user_approved_collection_items.unrevealed.any?
+
+    notify_of_reveal if saved_change_to_unrevealed?
   end
 
   after_destroy :expire_caches
@@ -288,7 +289,8 @@ class CollectionItem < ApplicationRecord
 
   # Reveal an individual collection item
   # Can't use update_attribute because of potential validation issues
-  # with closed collections
+  # with closed collections.
+  # Does not appear to be called anywhere.
   def reveal!
     collection.collection_items.where("id = #{self.id}").update_all("unrevealed = 0")
     notify_of_reveal

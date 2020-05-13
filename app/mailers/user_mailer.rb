@@ -330,10 +330,10 @@ class UserMailer < ActionMailer::Base
   end
 
   # Emails a recipient to say that a gift has been posted for them
-  def recipient_notification(user_id, work_id, collection_id=nil)
+  def recipient_notification(user_id, work_id, collection_id = nil)
     @user = User.find(user_id)
     @work = Work.find(work_id)
-    @collection = Collection.find(collection_id) if collection_id
+    @collection = collection_for_email(collection_id)
     I18n.with_locale(Locale.find(@user.preference.preferred_locale).iso) do
       mail(
         to: @user.email,
@@ -470,6 +470,16 @@ class UserMailer < ActionMailer::Base
       attachment_string += "<br/>" + chapter.content + "<br />\n"
     end
     return attachment_string
+  end
+
+  # If a collection_id has been provided to the mailer, make sure the collection
+  # moderators and work creators have both approved the work's inclusion in the
+  # collection. If they haven't, we don't want to mention the collection in the
+  # email text.
+  def collection_for_email(collection_id)
+    return unless @work.approved_collection_items.where(collection_id: collection_id).any?
+
+     Collection.find(collection_id)
   end
 
   protected
