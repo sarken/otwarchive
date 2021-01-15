@@ -1,16 +1,16 @@
 PhraseApp::InContextEditor.configure do |config|
   # Enable or disable the In-Context-Editor in general
   if ENV['AO3_PHRASE_APP'] == 'true' || ArchiveConfig.PHRASEAPP_ENABLE == 'true' then
-    config.enabled = true 
-  else 
-    config.enabled = false 
+    config.enabled = true
+  else
+    config.enabled = false
   end
 
   # Fetch your project id after creating your first project
   # in Translation Center.
   # You can find the project id in your project settings
   # page (https://phraseapp.com/projects)
-  config.project_id = "47f2a1b0cf81df327878c6d89cee7af3"
+  config.project_id = "e8e5f5dafe68d0d080820c187afc06f4"
 
   # You can create and manage access tokens in your profile settings
   # in Translation Center or via the Authorizations API
