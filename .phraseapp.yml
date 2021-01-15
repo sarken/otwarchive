@@ -1,5 +1,5 @@
 phraseapp:
-  project_id: a3667b8095533c2b3f8d3ac946bb642f
+  project_id: e8e5f5dafe68d0d080820c187afc06f4
   push:
     sources:
     - file: ./config/locales/<tag>/<locale_name>.yml
