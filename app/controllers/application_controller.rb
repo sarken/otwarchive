@@ -316,9 +316,7 @@ public
   # Hide admin banner via cookies
   before_action :hide_banner
   def hide_banner
-    if params[:hide_banner]
-      session[:hide_banner] = true
-    end
+    cookies[:hide_banner] = "true" if params[:hide_banner]
   end
 
   # Store the current user as a class variable in the User class,
