@@ -235,8 +235,8 @@ module HtmlCleaner
   # Tags that need to go inside p tags
   def put_inside_p_tag?(tag)
     %w(a abbr acronym address b big cite code del dfn em i ins
-       kbd q s script samp small span strike strong style sub
-       sup tt u var).include?(tag)
+       kbd q ruby s script samp small span strike strong style
+       sub sup tt u var).include?(tag)
   end
 
   # Tags that can't be inside p tags

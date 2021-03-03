@@ -4,11 +4,11 @@ class Sanitize
   # This defines the configuration we use for HTML tags and attributes allowed in the archive.
   module Config
     ARCHIVE = freeze_config(
-      elements: [
-        'a', 'abbr', 'acronym', 'address', 'b', 'big', 'blockquote', 'br', 'caption', 'center', 'cite', 'code', 'col',
-        'colgroup', 'dd', 'del', 'dfn', 'div', 'dl', 'dt', 'em', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr',
-        'i', 'img', 'ins', 'kbd', 'li', 'ol', 'p', 'pre', 'q', 's', 'samp', 'small', 'span', 'strike', 'strong',
-        'sub', 'sup', 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'tt', 'u', 'ul', 'var'],
+      elements: %w[
+        a abr acronym address b big blockquote br caption center cite code col
+        colgroup dd del dfn div dl dt em h1 h2 h3 h4 h5 h6 hr i img ins kbd li
+        ol p pre q rp rt ruby s samp small span strike strong sub sub table
+        tbody td tfoot th thead tr tt u ul var],
 
       attributes: {
         all: ['align', 'title', 'dir'],
@@ -36,7 +36,7 @@ class Sanitize
         'img' => {'src' => ['http', 'https', :relative]},
         'q' => {'cite' => ['http', 'https', :relative]}
       },
-      
+
       # TODO: This can be removed once we upgrade sanitizer gem, AO3-5801
       # I would leave the tests we added in AO3-5974 though.
       remove_contents: %w[iframe math noembed noframes noscript plaintext script style svg xmp]
