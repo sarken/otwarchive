@@ -79,5 +79,14 @@
       </ul>
     <% end %>
 
+    <% # Table of contents %>
+    <% if @chapters.size > 1 %>
+      <p><%= ts("Table of Contents") %></p>
+      <ul>
+        <% @chapters.each do |chapter| %>
+          <li><a href="#chapter-<%= chapter.position %>"><%= chapter.chapter_title.html_safe %></a></li>
+        <% end %>
+      </ul>
+    <% end %>
   </div>
 </div>
