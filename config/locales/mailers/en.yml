@@ -257,20 +257,20 @@ en:
         html: "For more information, visit our %{faq_link}."
         text: "For more information, visit our Collections and Challenges FAQ: %{faq_url}"
       faq_link_text: "Collections and Challenges FAQ"
-  recipient_notification:
-    byline:
-      anonymous: "by an anonymous responder"
-      named: "by %{pseud_list}"
-    gift:
-      collection: "A gift work has been posted for you in the %{collection_title} collection at the Archive of Our Own!"
-      no_collection: "A gift work has been posted for you at the Archive of Our Own!"
-    html:
-      title_word_count: "%{work_link} (%{word_count} words)"
-    subject:
-      collection: "[%{app_name}][%{collection_title}] A gift work for you from %{collection_title}"
-      no_collection: "[%{app_name}] A gift work for you"
-    text:
-      title_word_count: "\"%{work_title}\" (%{word_count} words)"
+    recipient_notification:
+      byline:
+        anonymous: "by an anonymous responder"
+        named: "by %{pseud_list}"
+      gift:
+        collection: "A gift work has been posted for you in the %{collection_title} collection at the Archive of Our Own!"
+        no_collection: "A gift work has been posted for you at the Archive of Our Own!"
+      html:
+        title_word_count: "%{work_link} (%{word_count} words)"
+      subject:
+        collection: "[%{app_name}][%{collection_title}] A gift work for you from %{collection_title}"
+        no_collection: "[%{app_name}] A gift work for you"
+      text:
+        title_word_count: "\"%{work_title}\" (%{word_count} words)"
   users:
     mailer:
       reset_password_instructions:
