@@ -160,6 +160,7 @@ group :test, :development do
   gem 'whiny_validation'
   gem 'factory_bot', '~> 5.0.2'
   gem 'minitest'
+  gem 'i18n-tasks', '~> 0.9.34'
 end
 
 group :development do
