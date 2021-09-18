@@ -35,7 +35,9 @@ describe Invitation, :ready do
       let(:invite_for_existing) {build(:invitation, invitee_email: @user.email)}
       it "cannot be created" do
         expect(invite_for_existing.save).to be_falsey
-        expect(invite_for_existing.recipient_is_not_registered).to be_falsey
+        expect(invite_for_existing.errors.full_messages).to include(
+          'Invitee email is already being used by an account holder.'
+        )
       end
     end
 
@@ -60,7 +62,9 @@ describe Invitation, :ready do
       let(:invite_for_existing) {build(:invitation, invitee_email: user.email)}
       it "cannot be created" do
         expect(invite_for_existing.save).to be_falsey
-        expect(invite_for_existing.recipient_is_not_registered).to be_falsey
+        expect(invite_for_existing.errors.full_messages).to include(
+          'Invitee email is already being used by an account holder.'
+        )
       end
     end
 
@@ -72,6 +76,15 @@ describe Invitation, :ready do
           expect(bad_email.save).to be_falsey
           expect(bad_email.errors[:invitee_email]).to include("does not seem to be a valid address. Please use a different address or leave blank.")
         end
+      end
+    end
+
+    context "Sending an invitation to a valid email" do
+      let(:invite) { build(:invitation, invitee_email: "foo@example.com") }
+
+      it "succeeds and 'sent_at' is set" do
+        expect(invite.save).to be_truthy
+        expect(invite.reload.sent_at).not_to be_nil
       end
     end
   end

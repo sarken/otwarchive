@@ -1,18 +1,26 @@
 require 'fileutils'
-include HtmlCleaner
-include CssCleaner
-include SkinCacheHelper
-include SkinWizard
 
-class Skin < ActiveRecord::Base
+class Skin < ApplicationRecord
+  include ActiveModel::ForbiddenAttributesProtection
+
+  include HtmlCleaner
+  include CssCleaner
+  include SkinCacheHelper
+  include SkinWizard
 
   TYPE_OPTIONS = [
                    [ts("Site Skin"), "Skin"],
                    [ts("Work Skin"), "WorkSkin"],
                  ]
 
-  # any media types that are not a single alphanumeric word have to be specially handled in get_media_for_filename/parse_media_from_filename
-  MEDIA = %w(all screen handheld speech print braille embossed projection tty tv) + ['only screen and (max-width: 42em)'] + ['only screen and (max-width: 62em)']
+  # any media types that are not a single alphanumeric word have to be specially
+  # handled in get_media_for_filename/parse_media_from_filename
+  MEDIA = %w(all screen handheld speech print braille embossed projection tty tv) + [
+    "only screen and (max-width: 42em)",
+    "only screen and (max-width: 62em)",
+    "(prefers-color-scheme: dark)",
+    "(prefers-color-scheme: light)"
+  ]
   IE_CONDITIONS = %w(IE IE5 IE6 IE7 IE8 IE9 IE8_or_lower)
   ROLES = %w(user override)
   ROLE_NAMES = {"user" => "add on to archive skin", "override" => "replace archive skin entirely"}
@@ -22,47 +30,60 @@ class Skin < ActiveRecord::Base
   DEFAULT_ROLES_TO_INCLUDE = %w(user override site)
   DEFAULT_MEDIA = ["all"]
 
-  SKIN_PATH = '/stylesheets/skins/'
-  SITE_SKIN_PATH = '/stylesheets/site/'
+  SKIN_PATH = 'stylesheets/skins/'
+  SITE_SKIN_PATH = 'stylesheets/site/'
 
-  belongs_to :author, :class_name => 'User'
+  belongs_to :author, class_name: 'User'
   has_many :preferences
 
   serialize :media, Array
 
   # a skin can be both parent and child
-  has_many :skin_parents, :foreign_key => 'child_skin_id',
-                          :class_name => 'SkinParent',
-                          :dependent => :destroy, :inverse_of => :child_skin
-  has_many :parent_skins, :through => :skin_parents, :order => "skin_parents.position ASC", :inverse_of => :child_skins
+  has_many :skin_parents, foreign_key: 'child_skin_id',
+                          class_name: 'SkinParent',
+                          dependent: :destroy, inverse_of: :child_skin
+  has_many :parent_skins, -> { order("skin_parents.position ASC") }, through: :skin_parents, inverse_of: :child_skins
 
-  has_many :skin_children, :foreign_key => 'parent_skin_id',
-                                  :class_name => 'SkinParent', :dependent => :destroy, :inverse_of => :parent_skin
-  has_many :child_skins, :through => :skin_children, :inverse_of => :parent_skins
+  has_many :skin_children, foreign_key: 'parent_skin_id',
+                                  class_name: 'SkinParent', dependent: :destroy, inverse_of: :parent_skin
+  has_many :child_skins, through: :skin_children, inverse_of: :parent_skins
 
-  accepts_nested_attributes_for :skin_parents, :allow_destroy => true, :reject_if => proc { |attrs| attrs[:position].blank? }
+  accepts_nested_attributes_for :skin_parents, allow_destroy: true, reject_if: proc { |attrs| attrs[:position].blank? }
 
   has_attached_file :icon,
-                    :styles => { :standard => "100x100>" },
-                    :url => "/system/:class/:attachment/:id/:style/:basename.:extension",
-                    :path => %w(staging production).include?(Rails.env) ? ":class/:attachment/:id/:style.:extension" : ":rails_root/public:url",
-                    :storage => %w(staging production).include?(Rails.env) ? :s3 : :filesystem,
-                    :s3_credentials => "#{Rails.root}/config/s3.yml",
-                    :bucket => %w(staging production).include?(Rails.env) ? YAML.load_file("#{Rails.root}/config/s3.yml")['bucket'] : "",
-                    :default_url => "/images/skins/iconsets/default/icon_skins.png"
+                    styles: { standard: "100x100>" },
+                    url: "/system/:class/:attachment/:id/:style/:basename.:extension",
+                    path: %w(staging production).include?(Rails.env) ? ":class/:attachment/:id/:style.:extension" : ":rails_root/public:url",
+                    storage: %w(staging production).include?(Rails.env) ? :s3 : :filesystem,
+                    s3_protocol: "https",
+                    s3_credentials: "#{Rails.root}/config/s3.yml",
+                    bucket: %w(staging production).include?(Rails.env) ? YAML.load_file("#{Rails.root}/config/s3.yml")['bucket'] : "",
+                    default_url: "/images/skins/iconsets/default/icon_skins.png"
 
   after_save :skin_invalidate_cache
+  def skin_invalidate_cache
+    skin_chooser_expire_cache
+    skin_cache_version_update(id)
 
-  validates_attachment_content_type :icon, :content_type => /image\/\S+/, :allow_nil => true
-  validates_attachment_size :icon, :less_than => 500.kilobytes, :allow_nil => true
-  validates_length_of :icon_alt_text, :allow_blank => true, :maximum => ArchiveConfig.ICON_ALT_MAX,
-    :too_long => ts("must be less than %{max} characters long.", :max => ArchiveConfig.ICON_ALT_MAX)
+    # Work skins can't have children, but site skins (which have type nil)
+    # might have children that need expiration:
+    return unless type.nil?
 
-  validates_length_of :description, :allow_blank => true, :maximum => ArchiveConfig.SUMMARY_MAX,
-    :too_long => ts("must be less than %{max} characters long.", :max => ArchiveConfig.SUMMARY_MAX)
+    SkinParent.get_all_child_ids(id).each do |child_id|
+      skin_cache_version_update(child_id)
+    end
+  end
 
-  validates_length_of :css, :allow_blank => true, :maximum => ArchiveConfig.CONTENT_MAX,
-    :too_long => ts("must be less than %{max} characters long.", :max => ArchiveConfig.CONTENT_MAX)
+  validates_attachment_content_type :icon, content_type: /image\/\S+/, allow_nil: true
+  validates_attachment_size :icon, less_than: 500.kilobytes, allow_nil: true
+  validates_length_of :icon_alt_text, allow_blank: true, maximum: ArchiveConfig.ICON_ALT_MAX,
+    too_long: ts("must be less than %{max} characters long.", max: ArchiveConfig.ICON_ALT_MAX)
+
+  validates_length_of :description, allow_blank: true, maximum: ArchiveConfig.SUMMARY_MAX,
+    too_long: ts("must be less than %{max} characters long.", max: ArchiveConfig.SUMMARY_MAX)
+
+  validates_length_of :css, allow_blank: true, maximum: ArchiveConfig.CONTENT_MAX,
+    too_long: ts("must be less than %{max} characters long.", max: ArchiveConfig.CONTENT_MAX)
 
   before_validation :clean_media
   def clean_media
@@ -76,26 +97,23 @@ class Skin < ActiveRecord::Base
   validate :valid_media
   def valid_media
     if media && media.is_a?(Array) && media.any? {|m| !MEDIA.include?(m)}
-      errors.add(:base, ts("We don't currently support the media type %{media}, sorry! If we should, please let Support know.", :media => media.join(', ')))
+      errors.add(:base, ts("We don't currently support the media type %{media}, sorry! If we should, please let Support know.", media: media.join(', ')))
     end
   end
 
-  validates :ie_condition, :inclusion => {:in => IE_CONDITIONS, :allow_nil => true, :allow_blank => true}
-  validates :role, :inclusion => {:in => ALL_ROLES, :allow_blank => true, :allow_nil => true }
+  validates :ie_condition, inclusion: {in: IE_CONDITIONS, allow_nil: true, allow_blank: true}
+  validates :role, inclusion: {in: ALL_ROLES, allow_blank: true, allow_nil: true }
 
   validate :valid_public_preview
   def valid_public_preview
     return true if (self.official? || !self.public? || self.icon_file_name)
     errors.add(:base, ts("You need to upload a screencap if you want to share your skin."))
-    return false
   end
 
-  attr_protected :official, :rejected, :admin_note, :icon_file_name, :icon_content_type, :icon_size, :description_sanitizer_version, :cached, :featured, :in_chooser
-
   validates_presence_of :title
-  validates_uniqueness_of :title, :message => ts('must be unique')
+  validates_uniqueness_of :title, message: ts('must be unique')
 
-  validates_numericality_of :margin, :base_em, :allow_nil => true
+  validates_numericality_of :margin, :base_em, allow_nil: true
   validate :valid_font
   def valid_font
     return if self.font.blank?
@@ -124,12 +142,12 @@ class Skin < ActiveRecord::Base
     self.css = clean_css_code(self.css)
   end
 
-  scope :public_skins, where(:public => true)
-  scope :approved_skins, where(:official => true, :public => true)
-  scope :unapproved_skins, where(:public => true, :official => false, :rejected => false)
-  scope :rejected_skins, where(:public => true, :official => false, :rejected => true)
-  scope :site_skins, where(:type => nil)
-  scope :wizard_site_skins, where("type IS NULL AND (
+  scope :public_skins, -> { where(public: true) }
+  scope :approved_skins, -> { where(official: true, public: true) }
+  scope :unapproved_skins, -> { where(public: true, official: false, rejected: false) }
+  scope :rejected_skins, -> { where(public: true, official: false, rejected: true) }
+  scope :site_skins, -> { where(type: nil) }
+  scope :wizard_site_skins, -> { where("type IS NULL AND (
       margin IS NOT NULL OR
       background_color IS NOT NULL OR
       foreground_color IS NOT NULL OR
@@ -139,30 +157,34 @@ class Skin < ActiveRecord::Base
       headercolor IS NOT NULL OR
       accent_color IS NOT NULL
     )
-  ")
+  ") }
 
   def self.cached
-    where(:cached => true)
+    where(cached: true)
   end
 
   def self.in_chooser
-    where(:in_chooser => true)
+    where(in_chooser: true)
   end
 
   def self.featured
-    where(:featured => true)
+    where(featured: true)
   end
 
   def self.approved_or_owned_by(user = User.current_user)
     if user.nil?
-      where(:public => true, :official => true)
+      approved_skins
     else
-      where("(public = 1 AND official = 1) OR author_id = ?", user.id)
+      approved_or_owned_by_any([user])
     end
   end
 
+  def self.approved_or_owned_by_any(users)
+    where("(public = 1 AND official = 1) OR author_id in (?)", users.map(&:id))
+  end
+
   def self.usable
-    where(:unusable => false)
+    where(unusable: false)
   end
 
   def self.sort_by_recent
@@ -173,8 +195,12 @@ class Skin < ActiveRecord::Base
     order("featured DESC, updated_at DESC")
   end
 
+  def approved_or_owned_by?(user)
+    self.public? && self.official? || author_id == user.id
+  end
+
   def remove_me_from_preferences
-    Preference.update_all("skin_id = #{Skin.default.id}", "skin_id = #{self.id}")
+    Preference.where(skin_id: self.id).update_all(skin_id: AdminSetting.default_skin_id)
   end
 
   def editable?
@@ -242,6 +268,11 @@ class Skin < ActiveRecord::Base
     save!
   end
 
+  def recache_children!
+    child_ids = SkinParent.get_all_child_ids(id)
+    Skin.where(cached: true, id: child_ids).find_each(&:cache!)
+  end
+
   def get_sheet_role
     "#{get_role}_#{get_media_for_filename}_#{ie_condition}"
   end
@@ -254,14 +285,22 @@ class Skin < ActiveRecord::Base
         "narrow"
       when m.match(/max-width: 62em/)
         "midsize"
+      when m.match(/prefers-color-scheme: dark/)
+        "dark"
+      when m.match(/prefers-color-scheme: light/)
+        "light"
       else
         m
       end
-    }.join('.')
+    }.join(".")
   end
 
   def parse_media_from_filename(media_string)
-    media_string.gsub(/narrow/, 'only screen and (max-width: 42em)').gsub(/midsize/, 'only screen and (max-width: 62em)').gsub('.', ', ')
+    media_string.gsub(/narrow/, "only screen and (max-width: 42em)")
+      .gsub(/midsize/, "only screen and (max-width: 62em)")
+      .gsub(/dark/, "(prefers-color-scheme: dark)")
+      .gsub(/light/, "(prefers-color-scheme: light)")
+      .gsub(".", ", ")
   end
 
   def parse_sheet_role(role_string)
@@ -271,10 +310,10 @@ class Skin < ActiveRecord::Base
   end
 
   def get_css
-    if self.filename
-      File.read(Rails.public_path + self.filename)
+    if filename
+      File.read(Rails.public_path.join(filename))
     else
-      self.css
+      css
     end
   end
 
@@ -297,14 +336,16 @@ class Skin < ActiveRecord::Base
 
   # This is the main function that actually returns code to be embedded in a page
   def get_style(roles_to_include = DEFAULT_ROLES_TO_INCLUDE)
-    Rails.cache.fetch(skin_cache_html_key(self, roles_to_include)) do
-      style = ""
-      if self.get_role != "override" && self.get_role != "site"
-        style += AdminSetting.default_skin != Skin.default ? AdminSetting.default_skin.get_style(roles_to_include) : (Skin.get_current_site_skin ? Skin.get_current_site_skin.get_style(roles_to_include) : '')
-      end
-      style += self.get_style_block(roles_to_include)
-      style.html_safe
+    style = ""
+
+    if self.get_role != "override" && self.get_role != "site" &&
+       self.id != AdminSetting.default_skin_id &&
+       AdminSetting.default_skin.is_a?(Skin)
+      style += AdminSetting.default_skin.get_style(roles_to_include)
     end
+
+    style += self.get_style_block(roles_to_include)
+    style.html_safe
   end
 
   def get_ie_comment(style, ie_condition = self.ie_condition)
@@ -386,7 +427,8 @@ class Skin < ActiveRecord::Base
   end
 
   def stylesheet_link(file, media)
-    '<link rel="stylesheet" type="text/css" media="' + media + '" href="' + file + '" />'
+    # we want one and only one / in the url path
+    '<link rel="stylesheet" type="text/css" media="' + media + '" href="/' + file.gsub(/^\/*/,"") + '" />'
   end
 
   def self.naturalized(string)
@@ -395,7 +437,7 @@ class Skin < ActiveRecord::Base
 
   def self.load_site_css
     Skin.skin_dir_entries(Skin.site_skins_dir, /^\d+\.\d+$/).each do |version|
-      version_dir = Skin.site_skins_dir + version + '/'
+      version_dir = "#{Skin.site_skins_dir + version}/"
       if File.directory?(version_dir)
         # let's load up the file
         skins = []
@@ -423,7 +465,7 @@ class Skin < ActiveRecord::Base
           end
 
           full_title = "Archive #{version}: (#{position}) #{title}"
-          skin = Skin.find_by_title(full_title)
+          skin = Skin.find_by(title: full_title)
           if skin.nil?
             skin = Skin.new
           end
@@ -444,19 +486,19 @@ class Skin < ActiveRecord::Base
         end
 
         # set up the parent relationship of all the skins in this version
-        top_skin = Skin.find_by_title("Archive #{version}")
+        top_skin = Skin.find_by(title: "Archive #{version}")
         if top_skin
           top_skin.clear_cache! if top_skin.cached?
           top_skin.skin_parents.delete_all
         else
-          top_skin = Skin.new(:title => "Archive #{version}", :css => "", :description => "Version #{version} of the default Archive style.",
-                              :public => true, :role => "site", :media => ["screen"])
+          top_skin = Skin.new(title: "Archive #{version}", css: "", description: "Version #{version} of the default Archive style.",
+                              public: true, role: "site", media: ["screen"])
         end
         File.open(version_dir + 'preview.png', 'rb') {|preview_file| top_skin.icon = preview_file}
         top_skin.official = true
         top_skin.save!
         skins.each_with_index do |skin, index|
-          skin_parent = top_skin.skin_parents.build(:child_skin => top_skin, :parent_skin => skin, :position => index+1)
+          skin_parent = top_skin.skin_parents.build(child_skin: top_skin, parent_skin: skin, position: index+1)
           skin_parent.save!
         end
         if %w(staging production).include? Rails.env
@@ -472,7 +514,7 @@ class Skin < ActiveRecord::Base
   end
 
   def self.skins_dir
-    Rails.public_path + SKIN_PATH
+    Rails.public_path.join(SKIN_PATH).to_s
   end
 
   def self.skin_dir_entries(dir, regex)
@@ -480,7 +522,7 @@ class Skin < ActiveRecord::Base
   end
 
   def self.site_skins_dir
-    Rails.public_path + SITE_SKIN_PATH
+    Rails.public_path.join(SITE_SKIN_PATH).to_s
   end
 
   # Get the most recent version and find the topmost skin
@@ -491,27 +533,58 @@ class Skin < ActiveRecord::Base
   def self.get_current_site_skin
     current_version = Skin.get_current_version
     if current_version
-      Skin.find_by_title_and_official("Archive #{Skin.get_current_version}", true)
+      Skin.find_by(title: "Archive #{Skin.get_current_version}", official: true)
     else
       nil
     end
   end
 
   def self.default
-    Skin.find_by_title_and_official("Default", true) || Skin.create_default
+    Skin.find_by(title: "Default", official: true) || Skin.create_default
   end
 
   def self.create_default
-    skin = Skin.find_or_create_by_title_and_official(:title => "Default", :css => "", :public => true, :role => "user")
-    current_version = Skin.get_current_version
-    if current_version
-      File.open(Skin.site_skins_dir + current_version + '/preview.png', 'rb') {|preview_file| skin.icon = preview_file}
-    else
-      File.open(Skin.site_skins_dir + '/preview.png', 'rb') {|preview_file| skin.icon = preview_file}
+    transaction do
+      skin = Skin.find_or_initialize_by(title: "Default")
+
+      skin.official = true
+      skin.public = true
+      skin.role = "site"
+      skin.css = ""
+      skin.set_thumbnail_from_current_version
+
+      skin.save!
+      skin
     end
-    skin.official = true
-    skin.save!
-    skin
   end
 
+  def self.set_default_to_current_version
+    transaction do
+      default_skin = default
+
+      default_skin.set_thumbnail_from_current_version
+
+      parent_skin = get_current_site_skin
+      if parent_skin && default_skin.parent_skins != [parent_skin]
+        default_skin.skin_parents.destroy_all
+        default_skin.skin_parents.build(parent_skin: parent_skin, position: 1)
+      end
+
+      default_skin.save!
+    end
+  end
+
+  def set_thumbnail_from_current_version
+    current_version = self.class.get_current_version
+
+    icon_path = if current_version
+                  self.class.site_skins_dir + current_version + "/preview.png"
+                else
+                  self.class.site_skins_dir + "preview.png"
+                end
+
+    File.open(icon_path) do |icon_file|
+      self.icon = icon_file
+    end
+  end
 end

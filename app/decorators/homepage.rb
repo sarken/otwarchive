@@ -25,7 +25,7 @@ class Homepage
       @admin_posts = AdminPost.non_translated.for_homepage.all
     else
       @admin_posts = Rails.cache.fetch("home/index/home_admin_posts", expires_in: 20.minutes) do
-        AdminPost.non_translated.for_homepage.all
+        AdminPost.non_translated.for_homepage.to_a
       end
     end
   end
@@ -44,16 +44,16 @@ class Homepage
   def readings
     return unless logged_in? && @user.preference.try(:history_enabled?)
     if Rails.env.development?
-      @readings ||= @user.readings.order("RAND()").
+      @readings ||= @user.readings.random_order.
           limit(ArchiveConfig.NUMBER_OF_ITEMS_VISIBLE_ON_HOMEPAGE).
           where(toread: true).
           all
     else
       @readings ||= Rails.cache.fetch("home/index/#{@user.id}/home_marked_for_later") do
-        @user.readings.order("RAND()").
+        @user.readings.random_order.
           limit(ArchiveConfig.NUMBER_OF_ITEMS_VISIBLE_ON_HOMEPAGE).
           where(toread: true).
-          all
+          to_a
       end
     end
   end
@@ -68,5 +68,5 @@ class Homepage
     divide = 10**digits
     divide * (number / divide).to_i
   end
- 
+
 end

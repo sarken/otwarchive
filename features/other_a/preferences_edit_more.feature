@@ -3,13 +3,8 @@ Feature: Preferences
 
   Scenario: View and edit preferences - show/hide mature content warning
 
-  Given a rating exists with name: "Mature", canonical: true, adult: true
-  When I am logged in as "mywarning1"
-  And I post the work "Adult Work by mywarning1"
-  When I edit the work "Adult Work by mywarning1"
-    And I select "Mature" from "Rating"
-    And I press "Preview"
-    And I press "Update"
+  Given I am logged in as "mywarning1"
+    And I post the work "Adult Work by mywarning1" with rating "Mature"
   When I am logged in as "mywarning2"
     And I go to my preferences page
     And I check "Show me adult content without checking."
@@ -30,7 +25,7 @@ Feature: Preferences
 
   Scenario: set preference to hide custom css on stories
   Given basic tags
-    And basic skins    
+    And basic skins
     And I am logged in as "tasteless"
   When I set up the draft "Big and Loud"
     And I select "Basic Formatting" from "work_work_skin_id"
@@ -53,4 +48,3 @@ Feature: Preferences
   Given I am logged out
     And I am logged in as "tasteful"
     And I go to the "Big and Loud" work page
-

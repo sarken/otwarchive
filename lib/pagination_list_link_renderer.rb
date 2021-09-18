@@ -12,9 +12,11 @@ class PaginationListLinkRenderer < WillPaginate::ActionView::LinkRenderer
 
   def to_html
     html = pagination.map do |item|
-      item.is_a?(Fixnum) ?
-        page_number(item, @options[:remote]) :
+      if item.is_a?(Integer)
+        page_number(item, @options[:remote])
+      else
         send(item)
+      end
     end.join(@options[:link_separator])
 
     @options[:container] ? html_container(html) : html
@@ -23,14 +25,14 @@ class PaginationListLinkRenderer < WillPaginate::ActionView::LinkRenderer
   protected
 
     def gap
-      tag(:li, "…", :class => "gap")
+      tag(:li, "…", class: "gap")
     end
 
     def page_number(page, remote = nil)
       unless page == current_page
-        tag(:li, link(page, page, {:rel => rel_value(page)}.merge(:"data-remote" => remote)))
+        tag(:li, link(page, page, {rel: rel_value(page)}.merge(:"data-remote" => remote)))
       else
-        tag(:li, tag(:span, page, :class => "current"))
+        tag(:li, tag(:span, page, class: "current"))
       end
     end
 
@@ -46,15 +48,15 @@ class PaginationListLinkRenderer < WillPaginate::ActionView::LinkRenderer
 
     def previous_or_next_page(page, text, classname, remote = nil)
       if page
-        tag(:li, link(text, page, {:"data-remote" => remote}), :class => classname, :title => classname)
+        tag(:li, link(text, page, {:"data-remote" => remote}), class: classname, title: classname)
       else
-        tag(:li, tag(:span, text, :class => "disabled"), :class => classname, :title => classname)
+        tag(:li, tag(:span, text, class: "disabled"), class: classname, title: classname)
       end
     end
 
     def html_container(html)
-      tag(:h4, "Pages Navigation", :class => "landmark heading") +
-        tag(:ol, html, container_attributes.merge(:class => "pagination actions", :role => "navigation", :title => "pagination"))
+      tag(:h4, "Pages Navigation", class: "landmark heading") +
+        tag(:ol, html, container_attributes.merge(class: "pagination actions", role: "navigation", title: "pagination"))
     end
 
 end

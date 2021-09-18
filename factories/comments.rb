@@ -1,30 +1,33 @@
 require 'faker'
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :comment do
-    name {Faker::Name.first_name}
-    content {Faker::Lorem.sentence(25)}
-    email {Faker::Internet.email}
-    commentable_type {"Work"}
-    commentable_id { FactoryGirl.create(:work).id }
-    pseud
+    comment_content { Faker::Lorem.sentence(word_count: 25) }
+    commentable { create(:work).last_posted_chapter }
+    pseud { create(:user).default_pseud }
+
+    trait :by_guest do
+      pseud { nil }
+      name { Faker::Name.first_name }
+      email { Faker::Internet.email }
+    end
+
+    trait :on_admin_post do
+      commentable { create(:admin_post) }
+    end
+
+    trait :on_tag do
+      commentable { create(:fandom) }
+    end
+
+    trait :unreviewed do
+      commentable { create(:work, moderated_commenting_enabled: true).last_posted_chapter }
+      unreviewed { true }
+    end
   end
 
-  factory :adminpost_comment, class: Comment do
-    name {Faker::Name.first_name}
-    content {Faker::Lorem.sentence(25)}
-    email {Faker::Internet.email}
-    commentable_type {"AdminPost"}
-    commentable_id { FactoryGirl.create(:admin_post).id }
-    pseud
-  end
-
-  factory :tag_comment, class: Comment do
-    name {Faker::Name.first_name}
-    content {Faker::Lorem.sentence(25)}
-    email {Faker::Internet.email}
-    commentable_type {"Tag"}
-    commentable_id { FactoryGirl.create(:fandom).id }
-    pseud
+  factory :inbox_comment do
+    user { create(:user) }
+    feedback_comment { create(:comment) }
   end
 end

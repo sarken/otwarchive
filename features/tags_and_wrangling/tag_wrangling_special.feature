@@ -23,7 +23,7 @@ Feature: Tag Wrangling - special cases
   When I follow "New Tag"
     And I fill in "Name" with "România"
     And I check "Canonical"
-    And I choose "Freeform"
+    And I choose "Additional Tag"
     And I press "Create Tag"
   Then I should see "Tag was successfully created."
     But I should see "România - Freeform"
@@ -113,11 +113,70 @@ Feature: Tag Wrangling - special cases
     And I press "Preview"
     And I press "Update"
   Then I should see "Work was successfully updated"
-    And all search indexes are updated
+    And all indexing jobs have been run
   When I view the tag "Evan ?"
     And I follow "filter works"
   Then I should see "1 Work in Evan ?"
   When I view the tag "James T. Kirk"
     And I follow "filter works"
   Then I should see "1 Work in James T. Kirk"
-  
+
+  Scenario: Adding a noncanonical tag with "a.k.a.", and viewing works for that tag.
+
+    Given basic tags
+      And I am logged in as a random user
+
+    When I post the work "Escape Attempt" with fandom "a.k.a. Jessica Jones"
+      And I follow "a.k.a. Jessica Jones"
+
+    Then I should see "This tag belongs to the Fandom Category"
+      And I should see "a.k.a. Jessica Jones" within "h2.heading"
+      And I should see "Escape Attempt"
+
+  Scenario: Wranglers can edit a tag with "a.k.a." in the name.
+
+    Given a noncanonical fandom "a.k.a. Jessica Jones"
+      And a canonical fandom "Jessica Jones (TV)"
+
+    When I am logged in as a tag wrangler
+      And I edit the tag "a.k.a. Jessica Jones"
+    Then I should see "Edit a.k.a. Jessica Jones Tag"
+
+    When I fill in "Synonym of" with "Jessica Jones (TV)"
+      And I press "Save changes"
+    Then I should see "Tag was updated"
+
+  Scenario Outline: Tag with a, d, h, q, or s between special characters.
+
+    Given a canonical fandom "<char>a<char>d<char>h<char>q<char>s<char>"
+
+    When I am logged in as a tag wrangler
+      And I view the tag "<char>a<char>d<char>h<char>q<char>s<char>"
+    Then I should see "This tag belongs to the Fandom Category"
+      And I should see "Edit"
+
+    When I follow "Edit"
+    Then I should see "Edit <char>a<char>d<char>h<char>q<char>s<char> Tag"
+
+    Examples:
+      | char |
+      | /    |
+      | #    |
+      | .    |
+      | &    |
+      | ?    |
+
+  Scenario: Error messages show correct links even if tags contain special characters
+
+    Given the following activated tag wrangler exists
+      | login  | password    |
+      | Enigel | wrangulate! |
+      And a character exists with name: "Evelyn \"Evie\" Carnahan", canonical: false
+      And a character exists with name: "Evelyn \"Evy\" Carnahan", canonical: false
+      And I am logged in as "Enigel" with password "wrangulate!"
+    When I edit the tag 'Evelyn "Evy" Carnahan'
+      And I fill in "Synonym of" with 'Evelyn "Evie" Carnahan'
+      And I press "Save changes"
+    Then I should see "is not a canonical tag. Please make it canonical before adding synonyms to it."
+    When I follow 'Evelyn "Evie" Carnahan'
+    Then I should be on the 'Evelyn "Evie" Carnahan' tag edit page

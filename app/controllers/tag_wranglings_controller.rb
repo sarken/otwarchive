@@ -1,8 +1,6 @@
 class TagWranglingsController < ApplicationController
-  cache_sweeper :tag_sweeper
-
-  before_filter :check_user_status
-  before_filter :check_permission_to_wrangle
+  before_action :check_user_status
+  before_action :check_permission_to_wrangle
 
   def index
     @counts = {}
@@ -11,21 +9,22 @@ class TagWranglingsController < ApplicationController
         klass.unwrangled.in_use.count
       end
     end
-    @counts[:UnsortedTag] = Rails.cache.fetch("/wrangler/counts/sidebar/UnsortedTag", race_condition_ttl: 10, expires_in: 1.hour) do 
+    @counts[:UnsortedTag] = Rails.cache.fetch("/wrangler/counts/sidebar/UnsortedTag", race_condition_ttl: 10, expires_in: 1.hour) do
       UnsortedTag.count
-    end 
+    end
     unless params[:show].blank?
       params[:sort_column] = 'created_at' if !valid_sort_column(params[:sort_column], 'tag')
       params[:sort_direction] = 'ASC' if !valid_sort_direction(params[:sort_direction])
       sort = params[:sort_column] + " " + params[:sort_direction]
-      sort = sort + ", name ASC" if sort.include?('taggings_count')
+      sort = sort + ", name ASC" if sort.include?('taggings_count_cache')
       if params[:show] == "fandoms"
-        @media_names = Media.by_name.value_of(:name)
+        @media_names = Media.by_name.pluck(:name)
         @page_subtitle = ts("fandoms")
-        @tags = Fandom.unwrangled.in_use.order(sort).paginate(:page => params[:page], :per_page => ArchiveConfig.ITEMS_PER_PAGE)
+        @tags = Fandom.unwrangled.in_use.order(sort).paginate(page: params[:page], per_page: ArchiveConfig.ITEMS_PER_PAGE)
       else # by fandom
+        raise "Redshirt: Attempted to constantize invalid class initialize tag_wranglings_controller_index #{params[:show].classify}" unless Tag::USER_DEFINED.include?(params[:show].classify)
         klass = params[:show].classify.constantize
-        @tags = klass.unwrangled.in_use.order(sort).paginate(:page => params[:page], :per_page => ArchiveConfig.ITEMS_PER_PAGE)
+        @tags = klass.unwrangled.in_use.order(sort).paginate(page: params[:page], per_page: ArchiveConfig.ITEMS_PER_PAGE)
       end
     end
   end
@@ -60,21 +59,6 @@ class TagWranglingsController < ApplicationController
       @media = Media.find_by_name(params[:media])
       @fandoms = Fandom.find(params[:selected_tags])
       @fandoms.each { |fandom| fandom.add_association(@media) }
-    elsif params[:character_string] && !params[:selected_tags].blank?
-      options.merge!(character_string: params[:character_string], fandom_string: params[:fandom_string])
-      @character = Character.find_by_name(params[:character_string])
-
-      if @character && @character.canonical?
-        @tags = Tag.find(params[:selected_tags])
-        @tags.each { |tag| tag.add_association(@character) }
-        flash[:notice] = "#{@tags.length} relationships were wrangled to #{params[:character_string]}."
-
-        redirect_to tag_wranglings_path(options) and return
-      else
-        flash[:error] = "#{params[:character_string]} is not a canonical character."
-
-        redirect_to tag_wranglings_path(options) and return
-      end
     elsif params[:fandom_string].blank? && params[:selected_tags].is_a?(Array) && !params[:selected_tags].empty?
       error_messages << ts('There were no Fandom tags!')
     elsif params[:fandom_string].present? && params[:selected_tags].is_a?(Array) && !params[:selected_tags].empty?
@@ -115,7 +99,6 @@ class TagWranglingsController < ApplicationController
   end
 
   def discuss
-    @comments = Comment.where(:commentable_type => 'Tag').order('updated_at DESC').paginate(:page => params[:page])
+    @comments = Comment.where(commentable_type: 'Tag').order('updated_at DESC').paginate(page: params[:page])
   end
-
 end

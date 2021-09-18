@@ -37,7 +37,7 @@ class RedisMailQueue
       # queue the notification for delivery
       begin
         # don't die if we hit one deleted user
-        KudoMailer.batch_kudo_notification(author_id, user_kudos.to_json).deliver
+        KudoMailer.batch_kudo_notification(author_id, user_kudos.to_json).deliver_later
       rescue
       end
     end
@@ -65,8 +65,9 @@ class RedisMailQueue
       end
       begin
         # don't die if we hit one deleted subscription
-        UserMailer.batch_subscription_notification(subscription_id, entries.to_json).deliver
-      rescue
+        UserMailer.batch_subscription_notification(subscription_id, entries.to_json).deliver_later
+      rescue ActiveRecord::RecordNotFound
+        # never rescue all errors
       end
     end
   end
@@ -74,7 +75,7 @@ class RedisMailQueue
   def self.clear_queue(notification_type)
     redis = redis_for_type(notification_type)
     keys = redis.keys("#{notification_type}_*")
-    redis.del(*keys)
+    redis.del(*keys) unless keys.empty?
     redis.del("notification_#{notification_type}")
   end
 

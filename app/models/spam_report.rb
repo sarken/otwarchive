@@ -20,7 +20,7 @@ class SpamReport
     end
     spam = Hash[spam.sort_by { |_user_id, info| info[:score] }.reverse]
     if spam.length > 0
-      AdminMailer.send_spam_alert(spam).deliver
+      AdminMailer.send_spam_alert(spam).deliver_later
     end
   end
 
@@ -67,7 +67,7 @@ class SpamReport
                  where("works.created_at > ? AND works.created_at < ?",
                        recent_date,
                        new_date).
-                 posted.not_spam.count
+                 posted.not_spam.size
     score -= (count * 2)
     score += ips.uniq.length
     [new_works, score]

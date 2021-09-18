@@ -20,7 +20,7 @@ Scenario: Remixer can see their remix / related work on their related works page
   When I follow "Related Works"
   Then I should see "Works that inspired remixer"
     And I should see "Worldbuilding by inspiration"
-    
+
 Scenario: Creator of original work can see a remix on their related works page
 
   Given I have related works setup
@@ -47,7 +47,7 @@ Scenario: Translator can see their translation on their related works page
   Then I should see "Works translated by translator"
     And I should see "Worldbuilding by inspiration"
     And I should see "From English to Deutsch"
-    
+
 Scenario: Creator of original work can see a translation on their related works page
 
   Given I have related works setup
@@ -73,7 +73,7 @@ Scenario: Unapproved related works do not appear or produce an associations list
   When I view the work "Worldbuilding"
   Then I should not see the related work listed on the original work
     And I should not find a list for associations
-  
+
 Scenario: The creator of the original work can approve a related work that is NOT a translation and see it referenced in the beginning notes and linked in the end notes
 
   Given I have related works setup
@@ -97,7 +97,7 @@ Scenario: The creator of the original work can approve a translation and see it 
     And I should see the translation in the beginning notes
     And I should not see "Works inspired by this one:"
     And I should find a list for associations
-    
+
 Scenario: Translation, related work, and parent work links appear in the right places even when viewing a multi-chapter work with draft chapters in chapter-by-chapter mode
 
   Given I have related works setup
@@ -107,7 +107,7 @@ Scenario: Translation, related work, and parent work links appear in the right p
   When I am logged in as "inspiration"
     And I edit the work "Worldbuilding"
     And I list the work "Parent Work" as inspiration
-    And I press "Post Without Preview"
+    And I press "Post"
     And a chapter is added to "Worldbuilding"
     And a draft chapter is added to "Worldbuilding"
   When I view the work "Worldbuilding"
@@ -128,17 +128,6 @@ Scenario: The creator of the original work can see approved and unapproved relat
   When I view my related works
   Then I should see "Worldbuilding Approve"
     And I should see "Deutsch Remove"
-    
-Scenario: A user cannot see another user's related works page
-
-  Given I have related works setup
-    And a related work has been posted
-  When I am logged in as "inspiration"
-  When I go to remixer's user page
-  Then I should not see "Related Works"
-  When I go to remixers's related works page
-  # It's currently possible to access a user's related works page directly
-  # Then I should see "Sorry, you don't have permission to access the page you were trying to reach."
 
 Scenario: The creator of the original work can remove a previously approved related work
 
@@ -150,7 +139,7 @@ Scenario: The creator of the original work can remove a previously approved rela
   When I press "Remove link"
   Then I should see "Link was successfully removed"
     And I should not see the related work listed on the original work
-    
+
 Scenario: The creator of the original work can remove a previously approved translation
 
   Given I have related works setup
@@ -185,7 +174,7 @@ Scenario: Remixer receives comments on remix, creator of original work doesn't
   When I post the comment "Blah" on the work "Followup"
   Then "remixer" should be emailed
     And "inspiration" should not be emailed
-    
+
 Scenario: Translator receives comments on translation, creator of original work doesn't
 
   Given I have related works setup
@@ -219,7 +208,7 @@ Scenario: Creator of original work doesn't receive comments if they haven't appr
   #When I am logged in as "commenter"
   #When I post the comment "Blah" on the work "Worldbuilding Translated"
   #Then "inspiration" should not be emailed
-  
+
 Scenario: Can post a translation of a mystery work
 
 Scenario: Posting a translation of a mystery work should not allow you to see the work
@@ -246,19 +235,14 @@ Scenario: Draft works should not show up on related works
   When I view my related works
   Then I should not see "Worldbuilding Translated"
 
-@work_external_parent
 Scenario: Listing external works as inspirations
 
   Given basic tags
+    And mock websites with no content
   When I am logged in as "remixer" with password "password"
-    And I go to the new work page
-    And I select "Not Rated" from "Rating"
-    And I check "No Archive Warnings Apply"
-    And I fill in "Fandoms" with "Stargate"
-    And I fill in "Work Title" with "Followup"
-    And I fill in "content" with "That could be an amusing crossover."
+    And I set up the draft "Followup"
     And I check "parent-options-show"
-    And I fill in "URL" with "google.com"
+    And I fill in "URL" with "http://example.org/200"
     And I press "Preview"
   Then I should see a save error message
     And I should see "A parent work outside the archive needs to have a title."
@@ -273,12 +257,11 @@ Scenario: Listing external works as inspirations
     And I should see "A translation of Worldbuilding by BNF"
   When I edit the work "Followup"
     And I check "parent-options-show"
-    And I fill in "URL" with "testarchive.transformativeworks.org"
-    And "AO3-1803" is fixed
-    # And I press "Preview"
-  # Then I should see a save error message
-    # And I should see "A parent work outside the archive needs to have a title."
-    # And I should see "A parent work outside the archive needs to have an author."
+    And I fill in "URL" with "http://example.org/301"
+    And I press "Preview"
+  Then I should see a save error message
+    And I should see "A parent work outside the archive needs to have a title."
+    And I should see "A parent work outside the archive needs to have an author."
   When I fill in "Title" with "Worldbuilding Two"
     And I fill in "Author" with "BNF"
     And I press "Preview"
@@ -289,33 +272,35 @@ Scenario: Listing external works as inspirations
     And I should see "Inspired by Worldbuilding Two by BNF"
   When I view my related works
   Then I should see "From N/A to English"
-  #invalid URL should give a helpful message (issue 1786)
+  # inactive URL should give a helpful message (AO3-1783)
+  # unreachable URL should give a more helpful message (A03-3536)
   When I edit the work "Followup"
     And I check "parent-options-show"
-    And I fill in "URL" with "this.is.an.invalid/URL"
+    And I fill in "URL" with "http://example.org/404"
     And I fill in "Title" with "Worldbuilding Two"
     And I fill in "Author" with "BNF"
     And I press "Preview"
-  Then I should see "Parent work info would not save."
-    
-@work_external_language
-Scenario: External work language    
+  Then I should see "Parent work Url could not be reached. If the URL is correct and the site is currently down, please try again later."
+
+Scenario: External work language
 
   Given basic tags
     And basic languages
+    And mock websites with no content
   When I am logged in as "remixer" with password "password"
     And I go to the new work page
     And I select "Not Rated" from "Rating"
     And I check "No Archive Warnings Apply"
+    And I select "English" from "Choose a language"
     And I fill in "Fandoms" with "Stargate"
     And I fill in "Work Title" with "Followup 4"
     And I fill in "content" with "That could be an amusing crossover."
     And I check "parent-options-show"
-    And I fill in "URL" with "www.google.com"
+    And I fill in "URL" with "http://example.org/200"
     And I fill in "Title" with "German Worldbuilding"
     And I fill in "Author" with "BNF"
     And I select "Deutsch" from "Language"
-    And I check "This is a translation"    
+    And I check "This is a translation"
     And I press "Preview"
   Then I should see "Draft was successfully created"
   When I press "Post"
@@ -324,7 +309,7 @@ Scenario: External work language
   When I view my related works
   Then I should see "From Deutsch to English"
     And I should not see "From N/A to English"
-    
+
 # TODO after issue 1741 is resolved
 # Scenario: Test that I can remove relationships that I initiated from my own works
 # especially during posting / editing / previewing a work
@@ -349,21 +334,252 @@ Scenario: Restricted works listed as Inspiration show up [Restricted] for guests
     And I view the work "Followup"
   Then I should see "Inspired by [Restricted Work] by inspiration"
 
-  Scenario: When a user is notified that a co-authored work has been inspired by a work they posted, the e-mail should link to each author's URL instead of showing escaped HTML
+Scenario: Anonymous works listed as inspiration should have links to the authors,
+  but only for the authors themselves and admins
   Given I have related works setup
+    And I have the anonymous collection "Muppets Anonymous"
+    And a related work has been posted and approved
+
+  When I am logged in as "remixer"
+    And I add the work "Followup" to the collection "Muppets Anonymous"
+    And I view the work "Worldbuilding"
+  Then I should see "Works inspired by this one: Followup by Anonymous [remixer]"
+  When I follow "remixer" within ".afterword .children"
+  Then I should be on my "remixer" pseud page
+
+  When I am logged in as an admin
+    And I view the work "Worldbuilding"
+  Then I should see "Works inspired by this one: Followup by Anonymous [remixer]"
+  When I follow "remixer" within ".afterword .children"
+  Then I should be on remixer's "remixer" pseud page
+
+  When I am logged out
+    And I view the work "Worldbuilding"
+  Then I should see "Works inspired by this one: Followup by Anonymous"
+    And I should not see "remixer" within ".afterword .children"
+
+Scenario: When a user is notified that a co-authored work has been inspired by a work they posted,
+  the e-mail should link to each author's URL instead of showing escaped HTML
+  Given I have related works setup
+    And the user "misterdeejay" exists and is activated
+    And the user "misterdeejay" allows co-creators
     And I am logged in as "inspiration"
     And I post the work "Seed of an Idea"
   When I am logged in as "inspired"
     And I set up the draft "Seedling of an Idea"
-    And I add the co-author "misterdeejay"
+    And I invite the co-author "misterdeejay"
+    And I preview the work
+  Then I should not see "misterdeejay"
+    But 1 email should be delivered to "misterdeejay"
+    And the email should contain "The user inspired has invited your pseud misterdeejay to be listed as a co-creator on the following work"
+  When the user "misterdeejay" accepts all co-creator requests
+    And I edit the work "Seedling of an Idea"
     And I list the work "Seed of an Idea" as inspiration
     And I preview the work
     And I post the work
-  Then 1 email should be delivered to "misterdeejay"
-    And the email should contain "You have been listed as a coauthor on the following work"
   Then 1 email should be delivered to "inspiration"
     And the email should link to inspired's user url
     And the email should not contain "&lt;a href=&quot;http://archiveofourown.org/users/inspired/pseuds/inspired&quot;"
     And the email should link to misterdeejay's user url
     And the email should not contain "&lt;a href=&quot;http://archiveofourown.org/users/misterdeejay/pseuds/misterdeejay&quot;"
-  
+
+  Scenario: When using a URL on the site to cite a parent work, the URL can't be
+  for something that isn't a work
+  Given I am logged in
+    And I set up a draft "Inspired"
+  When I list a series as inspiration
+    And I press "Post"
+  Then I should see "Only a link to a work can be listed as an inspiration."
+
+  Scenario: When using a URL on the site to cite a parent work, the URL must be
+  for a work that exists
+  Given I am logged in
+    And I set up a draft "Inspired"
+  When I list a nonexistent work as inspiration
+    And I press "Post"
+  Then I should see "The work you listed as an inspiration does not seem to exist."
+
+  Scenario: When a remix is anonymous, it's visible on the original creator's related works page, but not on the remixer's related works page
+    Given an anonymous collection "Anonymous"
+      And I have related works setup
+      And I post a related work as remixer
+    When I am logged in as "remixer"
+      And I add the work "Followup" to the collection "Anonymous"
+      And I go to remixer's related works page
+    Then I should see "Works that inspired remixer"
+      And I should see "Worldbuilding by inspiration"
+    When I go to inspiration's related works page
+    Then I should see "Works inspired by inspiration"
+      And I should see "Followup by Anonymous [remixer]"
+    When I am logged in as "inspiration"
+      And I go to remixer's related works page
+    Then I should not see "Works that inspired remixer"
+      And I should not see "Worldbuilding by inspiration"
+    When I go to inspiration's related works page
+    Then I should see "Works inspired by inspiration"
+      And I should see "Followup by Anonymous"
+      And I should not see "remixer"
+
+  Scenario: When a remix is unrevealed, it's visible on the original creator's related works page, but not on the remixer's related works page
+    Given a hidden collection "Hidden"
+      And I have related works setup
+      And I post a related work as remixer
+    When I am logged in as "remixer"
+      And I add the work "Followup" to the collection "Hidden"
+      And I go to remixer's related works page
+    Then I should see "Works that inspired remixer"
+      And I should see "Worldbuilding by inspiration"
+    When I go to inspiration's related works page
+    Then I should see "Works inspired by inspiration"
+      And I should see "A work in an unrevealed collection"
+    When I am logged in as "inspiration"
+      And I go to remixer's related works page
+    Then I should not see "Works that inspired remixer"
+      And I should not see "A work in an unrevealed collection"
+      And I should not see "Worldbuilding by inspiration"
+    When I go to inspiration's related works page
+    Then I should see "Works inspired by inspiration"
+      And I should see "A work in an unrevealed collection"
+      And I should not see "remixer"
+
+  Scenario: A remix of an anonymous work is shown on the remixer's related works page, but not on the original creator's related works page
+    Given an anonymous collection "Anonymous"
+      And I have related works setup
+      And I post a related work as remixer
+    When I am logged in as "inspiration"
+      And I add the work "Worldbuilding" to the collection "Anonymous"
+      And I go to remixer's related works page
+    Then I should see "Works that inspired remixer"
+      And I should see "Worldbuilding by Anonymous [inspiration]"
+    When I go to inspiration's related works page
+    Then I should see "Works inspired by inspiration"
+      And I should see "Followup by remixer"
+    When I am logged in as "remixer"
+      And I go to remixer's related works page
+    Then I should see "Works that inspired remixer"
+      And I should see "Worldbuilding by Anonymous"
+      And I should not see "inspiration"
+    When I go to inspiration's related works page
+    Then I should not see "Works inspired by inspiration"
+      And I should not see "Followup"
+
+  Scenario: A remix of an unrevealed work is shown on the remixer's related works page, but not on the original creator's related works page
+    Given a hidden collection "Hidden"
+      And I have related works setup
+      And I post a related work as remixer
+    When I am logged in as "inspiration"
+      And I add the work "Worldbuilding" to the collection "Hidden"
+      And I go to remixer's related works page
+    Then I should see "Works that inspired remixer"
+      And I should see "A work in an unrevealed collection"
+    When I go to inspiration's related works page
+    Then I should see "Works inspired by inspiration"
+      And I should see "Followup by remixer"
+    When I am logged in as "remixer"
+      And I go to remixer's related works page
+    Then I should see "Works that inspired remixer"
+      And I should see "A work in an unrevealed collection"
+      And I should not see "inspiration"
+    When I go to inspiration's related works page
+    Then I should not see "Works inspired by inspiration"
+      And I should not see "A work in an unrevealed collection"
+      And I should not see "Followup"
+
+  Scenario: When a translation is anonymous, it's visible on the original creator's related works page, but not on the translator's related works page
+    Given an anonymous collection "Anonymous"
+      And I have related works setup
+      And I post a translation as translator
+    When I am logged in as "translator"
+      And I add the work "Worldbuilding Translated" to the collection "Anonymous"
+      And I go to translator's related works page
+    Then I should see "Works translated by translator"
+      And I should see "Worldbuilding by inspiration"
+      And I should see "From English to Deutsch"
+    When I go to inspiration's related works page
+    Then I should see "Translations of inspiration's works"
+      And I should see "Worldbuilding Translated by Anonymous [translator]"
+      And I should see "From English to Deutsch"
+    When I am logged in as "inspiration"
+      And I go to translator's related works page
+    Then I should not see "Works translated by translator"
+      And I should not see "Worldbuilding by inspiration"
+      And I should not see "From English to Deutsch"
+    When I go to inspiration's related works page
+    Then I should see "Translations of inspiration's works"
+      And I should see "Worldbuilding Translated by Anonymous"
+      And I should see "From English to Deutsch"
+      And I should not see "translator"
+
+  Scenario: When a translation is unrevealed, it's visible on the original creator's related works page, but not on the translator's related works page
+    Given a hidden collection "Hidden"
+      And I have related works setup
+      And I post a translation as translator
+    When I am logged in as "translator"
+      And I add the work "Worldbuilding Translated" to the collection "Hidden"
+      And I go to translator's related works page
+    Then I should see "Works translated by translator"
+      And I should see "Worldbuilding by inspiration"
+      And I should see "From English to Deutsch"
+    When I go to inspiration's related works page
+    Then I should see "Translations of inspiration's works"
+      And I should see "A work in an unrevealed collection"
+    When I am logged in as "inspiration"
+      And I go to translator's related works page
+    Then I should not see "Works translated by translator"
+      And I should not see "Worldbuilding by inspiration"
+      And I should not see "From English to Deutsch"
+    When I go to inspiration's related works page
+    Then I should see "Translations of inspiration's works"
+      And I should see "A work in an unrevealed collection"
+      And I should not see "translator"
+
+  Scenario: A translation of an anonymous work is shown on the translator's related works page, but not on the original creator's related works page
+    Given an anonymous collection "Anonymous"
+      And I have related works setup
+      And I post a translation as translator
+    When I am logged in as "inspiration"
+      And I add the work "Worldbuilding" to the collection "Anonymous"
+      And I go to translator's related works page
+    Then I should see "Works translated by translator"
+      And I should see "Worldbuilding by Anonymous [inspiration]"
+      And I should see "From English to Deutsch"
+    When I go to inspiration's related works page
+    Then I should see "Translations of inspiration's works"
+      And I should see "Worldbuilding Translated by translator"
+      And I should see "From English to Deutsch"
+    When I am logged in as "translator"
+      And I go to translator's related works page
+    Then I should see "Works translated by translator"
+      And I should see "Worldbuilding by Anonymous"
+      And I should see "From English to Deutsch"
+      And I should not see "inspiration"
+    When I go to inspiration's related works page
+    Then I should not see "Translations of inspiration's works"
+      And I should not see "Worldbuilding Translated by translator"
+      And I should not see "From English to Deutsch"
+
+  Scenario: A translation of an unrevealed work is shown on the translator's related works page, but not on the original creator's related works page
+    Given a hidden collection "Hidden"
+      And I have related works setup
+      And I post a translation as translator
+    When I am logged in as "inspiration"
+      And I add the work "Worldbuilding" to the collection "Hidden"
+      And I go to translator's related works page
+    Then I should see "Works translated by translator"
+      And I should see "A work in an unrevealed collection"
+      And I should see "From English to Deutsch"
+    When I go to inspiration's related works page
+    Then I should see "Translations of inspiration's works"
+      And I should see "Worldbuilding Translated by translator"
+      And I should see "From English to Deutsch"
+    When I am logged in as "translator"
+      And I go to translator's related works page
+    Then I should see "Works translated by translator"
+      And I should see "A work in an unrevealed collection"
+      And I should see "From English to Deutsch"
+      And I should not see "inspiration"
+    When I go to inspiration's related works page
+    Then I should not see "Translations of inspiration's works"
+      And I should not see "A work in an unrevealed collection"
+      And I should not see "Worldbuilding Translated by translator"
+      And I should not see "From English to Deutsch"

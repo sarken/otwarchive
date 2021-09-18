@@ -1,15 +1,17 @@
-include UrlHelpers
-class ExternalWork < ActiveRecord::Base
-  include Taggable
-  include Bookmarkable
+class ExternalWork < ApplicationRecord
+  include ActiveModel::ForbiddenAttributesProtection
 
-  attr_protected :summary_sanitizer_version
+  include UrlHelpers
+  include Bookmarkable
+  include Filterable
+  include Searchable
 
   has_many :related_works, as: :parent
 
   belongs_to :language
 
-  scope :duplicate, group: "url HAVING count(DISTINCT id) > 1"
+  # .duplicate.count.size returns the number of URLs with multiple external works
+  scope :duplicate, -> { group(:url).having("count(DISTINCT id) > 1") }
 
   AUTHOR_LENGTH_MAX = 500
 
@@ -30,6 +32,9 @@ class ExternalWork < ActiveRecord::Base
                                too_long: ts('^Creator must be less than %{max} characters long.',
                                             max: AUTHOR_LENGTH_MAX)
 
+  validates :user_defined_tags_count,
+            at_most: { maximum: proc { ArchiveConfig.USER_DEFINED_TAGS_MAX } }
+
   # TODO: External works should have fandoms, but they currently don't get added through the
   # post new work form so we can't validate them
   #validates_presence_of :fandoms
@@ -45,16 +50,21 @@ class ExternalWork < ActiveRecord::Base
     self.update_attribute(:dead, true) unless url_active?(self.url)
   end
 
+  # Allow encoded characters to display correctly in titles
+  def title
+    read_attribute(:title).try(:html_safe)
+  end
+
   ########################################################################
   # VISIBILITY
   ########################################################################
   # Adapted from work.rb
 
-  scope :visible_to_all, where(hidden_by_admin: false)
-  scope :visible_to_registered_user, where(hidden_by_admin: false)
-  scope :visible_to_admin, where("")
+  scope :visible_to_all, -> { where(hidden_by_admin: false) }
+  scope :visible_to_registered_user, -> { where(hidden_by_admin: false) }
+  scope :visible_to_admin, -> { where("") }
 
-  # a complicated dynamic scope here: 
+  # a complicated dynamic scope here:
   # if the user is an Admin, we use the "visible_to_admin" scope
   # if the user is not a logged-in User, we use the "visible_to_all" scope
   # otherwise, we use a join to get userids and then get all posted works that are either unhidden OR belong to this user.
@@ -63,82 +73,18 @@ class ExternalWork < ActiveRecord::Base
   scope :visible_to_user, lambda {|user| user.is_a?(Admin) ? visible_to_admin : visible_to_all}
 
   # Use the current user to determine what external works are visible
-  scope :visible, visible_to_user(User.current_user)
+  scope :visible, -> { visible_to_user(User.current_user) }
 
   # Visible unless we're hidden by admin, in which case only an Admin can see.
   def visible?(user=User.current_user)
     self.hidden_by_admin? ? user.kind_of?(Admin) : true
   end
-  # FIXME - duplicate of above but called in different ways in different places
-  def visible(user=User.current_user)
-    self.hidden_by_admin? ? user.kind_of?(Admin) : true
-  end
 
-  #######################################################################
-  # TAGGING
-  # External works are taggable objects.
-  #######################################################################
-
-  # FILTERING CALLBACKS
-  after_save :check_filter_taggings
-
-  # Add and remove filter taggings as tags are added and removed
-  def check_filter_taggings
-    current_filters = self.tags.collect{|tag| tag.canonical? ? tag : tag.merger }.compact
-    current_filters.each {|filter| self.add_filter_tagging(filter)}
-    filters_to_remove = self.filters - current_filters
-    unless filters_to_remove.empty?
-      filters_to_remove.each {|filter| self.remove_filter_tagging(filter)}
-    end
-    return true    
-  end
-
-  # Creates a filter_tagging relationship between the work and the tag or its canonical synonym
-  def add_filter_tagging(tag)
-    filter = tag.canonical? ? tag : tag.merger
-    if filter && !self.filters.include?(filter)
-      self.filters << filter
-      filter.reset_filter_count 
-    end
-  end
-
-  # Removes filter_tagging relationship unless the work is tagged with more than one synonymous tags
-  def remove_filter_tagging(tag)
-    filter = tag.canonical? ? tag : tag.merger
-    if filter && (self.tags & tag.synonyms).empty? && self.filters.include?(filter)
-      self.filters.delete(filter)
-      filter.reset_filter_count
-    end  
-  end
-
-  # Assign the bookmarks and related works of other external works
-  # to this one, and then delete them
-  # TODO: use update_all instead?
-  def merge_similar(externals)
-    for external_work in externals
-      unless external_work == self
-        if external_work.bookmarks
-          external_work.bookmarks.each do |bookmark|
-            bookmark.bookmarkable = self
-            bookmark.save!
-          end
-        end
-        if external_work.related_works
-          external_work.related_works.each do |related_work|
-            related_work.parent = self
-            related_work.save!
-          end        
-        end
-        external_work.reload
-        if external_work.bookmarks.empty? && external_work.related_works.empty?
-          external_work.destroy
-        end
-      end
-    end
-  end
-
-  def tag_groups
-    self.tags.group_by { |t| t.type.to_s }
+  # Visibility has changed, which means we need to reindex
+  # the external work's bookmarker pseuds, to update their bookmark counts.
+  def should_reindex_pseuds?
+    pertinent_attributes = %w[id hidden_by_admin]
+    destroyed? || (saved_changes.keys & pertinent_attributes).present?
   end
 
   ######################
@@ -149,14 +95,18 @@ class ExternalWork < ActiveRecord::Base
     as_json(
       root: false,
       only: [
-        :title, :summary, :hidden_by_admin, :created_at, :language_id
+        :title, :summary, :hidden_by_admin, :created_at
       ],
-      methods: [ 
+      methods: [
         :posted, :restricted, :tag, :filter_ids, :rating_ids,
-        :warning_ids, :category_ids, :fandom_ids, :character_ids,
+        :archive_warning_ids, :category_ids, :fandom_ids, :character_ids,
         :relationship_ids, :freeform_ids, :creators, :revised_at
       ]
-    ).merge(bookmarkable_type: "ExternalWork")
+    ).merge(
+      language_id: language&.short,
+      bookmarkable_type: "ExternalWork",
+      bookmarkable_join: { name: "bookmarkable" }
+    )
   end
 
   def posted
@@ -176,5 +126,4 @@ class ExternalWork < ActiveRecord::Base
   def revised_at
     created_at
   end
-
 end

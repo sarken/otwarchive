@@ -19,7 +19,7 @@
     <li><%= link_to ts('Manage Chapters'), manage_work_chapters_path(@work) %></li>
   <% end %>
   <% unless (@work.pseuds - current_user.pseuds).empty? %>
-    <li><%= link_to ts('Remove Me As Author'), { :action => "edit", :remove => "me"}, :confirm => 'This will remove you from all chapters as well. Are you sure?' %></li>
+    <li><%= link_to ts("Remove Me As Co-Creator"), { :action => "edit", :remove => "me"}, data: { confirm: "This will remove you from all chapters as well. Are you sure?" } %></li>
   <% end %>
   <% if @work.posted? %>
     <li><%= link_to ts('Orphan Work'), {:controller => 'orphans', :action => 'new', :work_id => @work.id} %></li>
@@ -40,3 +40,4 @@
     $j('#delete_work_form').html("<div class=\"works-confirm_delete\"><%= escape_javascript(render "works/confirm_delete_form") %></div>");
   <% end %>
 <% end %>
+<!--/content-->

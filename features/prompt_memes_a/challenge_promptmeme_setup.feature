@@ -79,7 +79,19 @@ Feature: Prompt Meme Challenge
     And I am logged in as "mod1"
   When I edit settings for "Battle 12" challenge
   Then I should be editing the challenge settings
-  
+
+  Scenario: Entering a greater number for required prompts than allowed prompts 
+  automatically increases the number of allowed promps
+
+  Given I set up Battle 12 promptmeme collection
+  When I require 3 prompts
+    And I allow 2 prompts
+    And I press "Submit"
+  Then I should see a success message
+  When I edit settings for "Battle 12" challenge
+  Then 3 prompts should be required
+    And 3 prompts should be allowed
+
   Scenario: Sign-up being open is shown on profile
   
   Given I have Battle 12 prompt meme fully set up
@@ -160,7 +172,7 @@ Feature: Prompt Meme Challenge
   Then I should see "Edit"
     And I should see "Delete"
   
-  Scenario: Edit individual prompt via signup show
+  Scenario: Edit individual prompt
   
   Given I have Battle 12 prompt meme fully set up
     And I am logged in as "myname1"
@@ -169,6 +181,10 @@ Feature: Prompt Meme Challenge
   When I follow "Edit Prompt"
   Then I should see single prompt editing
   And I should see "Edit Sign-up"
+  When I uncheck "Stargate Atlantis"
+    And I press "Update"
+  Then I should see "Sorry! We couldn't save this request because:"
+    And I should see "Your Request must include exactly 1 fandom tags"
  
  Scenario: Add one new prompt to existing signup
   
@@ -346,30 +362,7 @@ Feature: Prompt Meme Challenge
   When I am logged in as "mod1"
     And I view prompts for "Battle 12"
   Then I should not see "Edit Sign-up"
-  
-  Scenario: Mod can't delete whole signups
-
-  Given I have Battle 12 prompt meme fully set up
-  When I am logged in as "myname1"
-  When I sign up for Battle 12 with combination A
-  When I am logged in as "mod1"
-  When I start to delete the signup by "myname1"
-  Then I should see "myname1"
-    And I should not see a link "myname1"
-  
-  Scenario: Mod deletes a prompt that doesn't fit the challenge rules
-  
-  Given I have Battle 12 prompt meme fully set up
-  When I am logged in as "myname1"
-  When I sign up for Battle 12 with combination C
-	When I add a new prompt to my signup for a prompt meme
-  When I am logged in as "mod1"
-  When I delete the prompt by "myname1"
-  Then I should see "Prompt was deleted"
-    And I should see "Prompts for Battle 12"
-    And I should not see "Sign-ups for Battle 12"
-  #  TODO: And "myname1" should be emailed
-  
+ 
   Scenario: Mod cannot edit someone else's prompt
   
   Given I have Battle 12 prompt meme fully set up
@@ -379,23 +372,6 @@ Feature: Prompt Meme Challenge
     # The next step just takes you to the 'Prompts' page
   When I edit the first prompt
   Then I should not see "Edit Prompt"
-
-  Scenario: User can't delete prompt if they don't have enough
-
-  Given I have Battle 12 prompt meme fully set up
-  When I am logged in as "myname1"
-  When I sign up for Battle 12 with combination C
-  When I view prompts for "Battle 12"
-	Then I should not see "Delete"
-  
-  Scenario: User deletes one prompt
-  
-  Given I have Battle 12 prompt meme fully set up
-  When I am logged in as "myname1"
-  When I sign up for Battle 12 with combination C
-    And I add a new prompt to my signup for a prompt meme
-  When I delete the prompt by "myname1"
-  Then I should see "Prompt was deleted"
   
   Scenario: Claim an anon prompt
   

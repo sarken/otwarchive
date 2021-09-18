@@ -1,72 +1,19 @@
 class AdminMailer < ActionMailer::Base
-  include Resque::Mailer # see README in this directory
+  include HtmlCleaner
 
   layout 'mailer'
   helper :mailer
   default from: "Archive of Our Own " + "<#{ArchiveConfig.RETURN_ADDRESS}>"
 
-  def abuse_report(abuse_report_id)
-    abuse_report = AbuseReport.find(abuse_report_id)
-    @email = abuse_report.email
-    @url = abuse_report.url
-    @comment = abuse_report.comment
-    mail(
-      to: ArchiveConfig.ABUSE_ADDRESS,
-      subject: "[#{ArchiveConfig.APP_SHORT_NAME}] Admin Abuse Report"
-    )
-  end
-
-  def created_faq(archive_faq_id, admin)
-    @admin = admin
-    @archive_faq = ArchiveFaq.find(archive_faq_id)
-    @email = "translation@transformativeworks.org"
-    mail(
-      to: @email,
-      subject: "[#{ArchiveConfig.APP_SHORT_NAME}] FAQ Creation",
-    )
-  end
-
-  def edited_faq(archive_faq_id, admin)
-    @admin = admin
-    @archive_faq = ArchiveFaq.find(archive_faq_id)
-    @email = "translation@transformativeworks.org"
-    mail(
-      to: @email,
-      subject: "[#{ArchiveConfig.APP_SHORT_NAME}] FAQ Edit",
-         )
-  end
-
   def feedback(feedback_id)
-    feedback = Feedback.find(feedback_id)
-    @summary = feedback.summary
-    @comment = feedback.comment
-    @username = feedback.username if feedback.username.present?
-    @email = if feedback.email.present?
-               feedback.email
-             end
-    @language = feedback.language
+    @feedback = Feedback.find(feedback_id)
     mail(
-      from: feedback.email.blank? ? ArchiveConfig.RETURN_ADDRESS : feedback.email,
+      from: @feedback.email.blank? ? ArchiveConfig.RETURN_ADDRESS : @feedback.email,
       to: ArchiveConfig.FEEDBACK_ADDRESS,
-      subject: "[#{ArchiveConfig.APP_SHORT_NAME}] Support - #{strip_html_breaks_simple(feedback.summary)}"
+      subject: "[#{ArchiveConfig.APP_SHORT_NAME}] Support - #{strip_html_breaks_simple(@feedback.summary)}"
     )
   end
 
-  def archive_notification(admin_login, user_ids, subject, message)
-    @admin_login = admin_login
-    @subject = subject
-    @message = message
-    @user_login_string = if user_ids.size < 20
-      User.find(user_ids).map(&:login).join(", ")
-    else
-      user_ids.size.to_s + " users, including: " + User.limit(20).find(user_ids).map(&:login).join(", ")
-    end
-    mail(
-      to: ArchiveConfig.WEBMASTER_ADDRESS,
-      subject: "[#{ArchiveConfig.APP_SHORT_NAME}] Admin Archive Notification Sent - #{subject}"
-    )
-  end
-  
   # Sends email to an admin when a new comment is created on an admin post
   def comment_notification(comment_id)
     # admin = Admin.find(admin_id)
@@ -89,7 +36,19 @@ class AdminMailer < ActionMailer::Base
 
   # Sends a spam report
   def send_spam_alert(spam)
-    @spam = spam
+    # Make sure that the keys of the spam array are integers, so that we can do
+    # an easy look-up with user IDs. We call stringify_keys first because
+    # the currently installed version of Resque::Mailer does odd things when
+    # you pass a hash as an argument, and we want to know what we're dealing with.
+    @spam = spam.stringify_keys.transform_keys(&:to_i)
+
+    @users = User.where(id: @spam.keys).to_a
+    return if @users.empty?
+
+    # The users might have been retrieved from the database out of order, so
+    # re-sort them by their score.
+    @users.sort_by! { |user| @spam[user.id]["score"] }.reverse!
+
     mail(
       to: ArchiveConfig.SPAM_ALERT_ADDRESS,
       subject: "[#{ArchiveConfig.APP_SHORT_NAME}] Potential spam alert"

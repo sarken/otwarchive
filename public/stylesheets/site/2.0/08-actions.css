@@ -15,6 +15,11 @@ ul.actions, p.actions, li.actions, span.actions, fieldset.actions, dd.actions {
   text-align: center;
 }
 
+ul.actions {
+  padding-bottom: 0;
+  padding-top: 0;
+}
+
 .actions a, .actions a:link, .action, .action:link, .actions input, input[type="submit"], button, .current, .actions label {
   background: #eee;
   color: #444;
@@ -28,7 +33,6 @@ ul.actions, p.actions, li.actions, span.actions, fieldset.actions, dd.actions {
   white-space: nowrap;
   overflow: visible;
   position: relative;
-  cursor: pointer;
   text-decoration: none;
   border: 1px solid #bbb;
   border-bottom: 1px solid #aaa;
@@ -42,6 +46,7 @@ ul.actions, p.actions, li.actions, span.actions, fieldset.actions, dd.actions {
 }
 
 button {
+  font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'GNU Unifont', Verdana, Helvetica, sans-serif;
   box-sizing: content-box;
 }
 
@@ -50,16 +55,14 @@ label.action {
 }
 
 input[type="submit"] {
-  height: 1.929em;
+  height: auto;
+  white-space: normal;
 }
 
 p.submit, input.submit, dd.submit {
   text-align: right;
 }
 
-.actions input.text, .actions input[type="text"] {
-  cursor: text;
-}
 
 .actions input[type="checkbox"] {
   background: transparent;
@@ -67,7 +70,7 @@ p.submit, input.submit, dd.submit {
   padding: 0;
 }
 
-/*subtypes and modes 
+/*subtypes and modes
 test note: this pagination clear needs to be kept an eye on*/
 
 ol.pagination, div.pagination, ol.year {
@@ -98,13 +101,16 @@ ol.pagination, div.pagination, ol.year {
   background: #ccc;
 }
 
+.actions li a, .actions li input, .actions li input[type="submit"], .actions li .current, .actions li label {
+  margin: 0.375em auto;
+}
+
 .delete a, span.delete {
   border: 0;
   color: #900;
   font-weight: 900;
   margin-right: 0.375em;
   padding: 0 0.1em 0.15em;
-  cursor: pointer;
     box-shadow: -1px -1px 2px rgba(0,0,0,0.75);
     border-radius: 0.875em;
 }
@@ -130,7 +136,7 @@ ul#skiplinks, .landmark, .landmark a, .index .heading.landmark {
   z-index: 99;
   border: 2px solid #bbb;
   margin: auto;
-  padding: 0.375em;
+  padding: 0 0.375em;
   overflow: hidden;
   right: 2.5em;
     box-shadow: 2px 2px 5px #bbb;
@@ -139,9 +145,13 @@ ul#skiplinks, .landmark, .landmark a, .index .heading.landmark {
 
 /* CONTEXTS */
 
+legend .action:link {
+  position: static;
+}
+
 .heading .actions, .heading .action, .heading span.actions {
   height: auto;
-  font: 100 75%/1.286 'Lucida Grande', 'Lucida Sans Unicode', 'Arial Unicode MS', 'GNU Unifont',sans-serif;
+  font: 100 75%/1.286 'Lucida Grande', 'Lucida Sans Unicode', 'GNU Unifont', Verdana, Helvetica, sans-serif;
   padding: 0.15em 0.375em;
 }
 
@@ -177,13 +187,13 @@ dl.stats + .landmark + .actions {
   padding: 0 0 0.15em 0;
 }
 
-.many p.actions { 
-  float: none; 
-  text-align: right; 
+.many p.actions {
+  float: none;
+  text-align: right;
 }
 
-.concise label.action { 
-  float: left; 
+.concise label.action {
+  float: left;
 }
 
 dd.any label.action {

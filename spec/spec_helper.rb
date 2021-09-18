@@ -1,77 +1,134 @@
-ENV["RAILS_ENV"] ||= 'test'
+ENV["RAILS_ENV"] ||= "test"
 
-require File.expand_path("../../config/environment", __FILE__)
-#require File.expand_path('../../features/support/factories.rb', __FILE__)
-require 'rspec/rails'
-require 'factory_girl'
-require 'database_cleaner'
-require 'email_spec'
+require File.expand_path("../config/environment", __dir__)
+require "simplecov"
+
+require "rspec/rails"
+require "factory_bot"
+require "database_cleaner"
+require "email_spec"
+require "webmock/rspec"
 
 DatabaseCleaner.start
-
 DatabaseCleaner.clean
-
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
-Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
+Dir[Rails.root.join("spec/support/**/*.rb")].sort.each { |f| require f }
 
-FactoryGirl.find_definitions
-FactoryGirl.definition_file_paths = %w(factories)
+FactoryBot.find_definitions
+FactoryBot.definition_file_paths = %w[factories]
 
 RSpec.configure do |config|
-  # == Mock Framework
-  #
-  # If you prefer to use mocha, flexmock or RR, uncomment the appropriate line:
-  #
-  # config.mock_with :mocha
-  # config.mock_with :flexmock
-  # config.mock_with :rr
   config.mock_with :rspec
-  #config.raise_errors_for_deprecations!
-  config.include FactoryGirl::Syntax::Methods
-  config.include(EmailSpec::Helpers)
-  config.include(EmailSpec::Matchers)
-  config.before(:suite) do
+
+  config.expect_with :rspec do |c|
+    c.syntax = [:should, :expect]
+  end
+
+  # TODO: Remove gems delorean and timecop now that Rails has time-travel helpers.
+  config.include ActiveSupport::Testing::TimeHelpers
+  config.include FactoryBot::Syntax::Methods
+  config.include EmailSpec::Helpers
+  config.include EmailSpec::Matchers
+  config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include Devise::Test::IntegrationHelpers, type: :request
+  config.include TaskExampleGroup, type: :task
+
+  config.before :suite do
+    Rails.application.load_tasks
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean
+    Indexer.all.map(&:prepare_for_testing)
+    ArchiveWarning.find_or_create_by!(name: ArchiveConfig.WARNING_CHAN_TAG_NAME, canonical: true)
+    ArchiveWarning.find_or_create_by!(name: ArchiveConfig.WARNING_NONE_TAG_NAME, canonical: true)
+    Category.find_or_create_by!(name: ArchiveConfig.CATEGORY_SLASH_TAG_NAME, canonical: true)
+
+    # TODO: The "Not Rated" tag ought to be marked as adult, but we want to
+    # keep the adult status of the tag consistent with the features, so for now
+    # we have a non-adult "Not Rated" tag:
+    Rating.find_or_create_by!(name: ArchiveConfig.RATING_DEFAULT_TAG_NAME, canonical: true)
+
+    Rating.find_or_create_by!(name: ArchiveConfig.RATING_EXPLICIT_TAG_NAME, canonical: true, adult: true)
+    # Needs these for the API tests.
+    ArchiveWarning.find_or_create_by!(name: ArchiveConfig.WARNING_DEFAULT_TAG_NAME, canonical: true)
+    ArchiveWarning.find_or_create_by!(name: ArchiveConfig.WARNING_NONCON_TAG_NAME, canonical: true)
+    Rating.find_or_create_by!(name: ArchiveConfig.RATING_GENERAL_TAG_NAME, canonical: true)
   end
 
-  config.before(:each) do
+  config.before :each do
     DatabaseCleaner.start
+    User.current_user = nil
+    clean_the_database
+
+    # Clears used values for all generators.
+    Faker::UniqueGenerator.clear
+
+    # Assume all spam checks pass by default.
+    allow(Akismetor).to receive(:spam?).and_return(false)
   end
 
-  config.after(:each) do
+  config.after :each do
     DatabaseCleaner.clean
   end
 
-  config.include Capybara::DSL
-
-  config.before(:suite) do
-    DatabaseCleaner.strategy = :transaction
-    DatabaseCleaner.clean
+  config.after :suite do
+    DatabaseCleaner.clean_with :truncation
+    Indexer.all.map(&:delete_index)
   end
 
-  config.before(:each) do
-    DatabaseCleaner.start
+  config.before :each, bookmark_search: true do
+    BookmarkIndexer.prepare_for_testing
   end
 
-  config.after(:each) do
-    DatabaseCleaner.clean
+  config.after :each, bookmark_search: true do
+    BookmarkIndexer.delete_index
   end
 
-  # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-  config.fixture_path = "#{::Rails.root}/spec/fixtures"
+  config.before :each, pseud_search: true do
+    PseudIndexer.prepare_for_testing
+  end
+
+  config.after :each, pseud_search: true do
+    PseudIndexer.delete_index
+  end
+
+  config.before :each, tag_search: true do
+    TagIndexer.prepare_for_testing
+  end
+
+  config.after :each, tag_search: true do
+    TagIndexer.delete_index
+  end
+
+  config.before :each, work_search: true do
+    WorkIndexer.prepare_for_testing
+  end
+
+  config.after :each, work_search: true do
+    WorkIndexer.delete_index
+  end
+
+  config.before :each, default_skin: true do
+    AdminSetting.current.update_attribute(:default_skin, Skin.default)
+  end
+
+  config.before :each, type: :controller do
+    @request.host = "www.example.com"
+  end
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   config.use_transactional_fixtures = true
 
-  BAD_EMAILS = ['Abc.example.com','A@b@c@example.com','a\"b(c)d,e:f;g<h>i[j\k]l@example.com','just"not"right@example.com','this is"not\allowed@example.com','this\ still\"not/\/\allowed@example.com', 'nodomain']
-  INVALID_URLS = ['no_scheme.com', 'ftp://ftp.address.com','http://www.b@d!35.com','https://www.b@d!35.com','http://b@d!35.com','https://www.b@d!35.com']
-  VALID_URLS = ['http://rocksalt-recs.livejournal.com/196316.html','https://rocksalt-recs.livejournal.com/196316.html']
-  INACTIVE_URLS = ['https://www.iaminactive.com','http://www.iaminactive.com','https://iaminactive.com','http://iaminactive.com']
+  # For email veracity checks
+  BAD_EMAILS = ['Abc.example.com', 'A@b@c@example.com', 'a\"b(c)d,e:f;g<h>i[j\k]l@example.com', 'this is"not\allowed@example.com', 'this\ still\"not/\/\allowed@example.com', 'nodomain', 'foo@oops'].freeze
+  # For email format checks
+  BADLY_FORMATTED_EMAILS = ['ast*risk@example.com', 'asterisk@ex*ample.com'].freeze
+  INVALID_URLS = ['no_scheme.com', 'ftp://ftp.address.com', 'http://www.b@d!35.com', 'https://www.b@d!35.com', 'http://b@d!35.com', 'https://www.b@d!35.com'].freeze
+  VALID_URLS = ['http://rocksalt-recs.livejournal.com/196316.html', 'https://rocksalt-recs.livejournal.com/196316.html'].freeze
+  INACTIVE_URLS = ['https://www.iaminactive.com', 'http://www.iaminactive.com', 'https://iaminactive.com', 'http://iaminactive.com'].freeze
 
   # rspec-rails 3 will no longer automatically infer an example group's spec type
   # from the file location. You can explicitly opt-in to the feature using this
@@ -79,19 +136,66 @@ RSpec.configure do |config|
   # To explicitly tag specs without using automatic inference, set the `:type`
   # metadata manually:
   #
-  #     describe ThingsController, :type => :controller do
+  #     describe ThingsController, type: :controller do
   #       # Equivalent to being in spec/controllers
   #     end
   config.infer_spec_type_from_file_location!
-end
-
-def get_message_part (mail, content_type)
-  mail.body.parts.find { |p| p.content_type.match content_type }.body.raw_source
-end
-
-shared_examples_for "multipart email" do
-  it "generates a multipart message (plain text and html)" do
-    expect(email.body.parts.length).to eq(2)
-    expect(email.body.parts.collect(&:content_type)).to eq(["text/plain; charset=UTF-8", "text/html; charset=UTF-8"])
+  config.define_derived_metadata(file_path: %r{/spec/lib/tasks/}) do |metadata|
+    metadata[:type] = :task
   end
+
+  config.formatter = :documentation
+
+  config.file_fixture_path = "spec/support/fixtures"
+end
+
+RSpec::Matchers.define_negated_matcher :avoid_changing, :change
+
+def clean_the_database
+  # Now clear memcached
+  Rails.cache.clear
+
+  # Clear Redis
+  REDIS_AUTOCOMPLETE.flushall
+  REDIS_GENERAL.flushall
+  REDIS_HITS.flushall
+  REDIS_KUDOS.flushall
+  REDIS_RESQUE.flushall
+  REDIS_ROLLOUT.flushall
+end
+
+def run_all_indexing_jobs
+  %w[main background stats].each do |reindex_type|
+    ScheduledReindexJob.perform reindex_type
+  end
+  Indexer.all.map(&:refresh_index)
+end
+
+# Suspend resque workers for the duration of the block, then resume after the
+# contents of the block have run. Simulates what happens when there's a lot of
+# jobs already in the queue, so there's a long delay between jobs being
+# enqueued and jobs being run.
+def suspend_resque_workers
+  # Set up an array to keep track of delayed actions.
+  queue = []
+
+  # Override the default Resque.enqueue_to behavior.
+  #
+  # The first argument is which queue the job is supposed to be added to, but
+  # it doesn't matter for our purposes, so we ignore it.
+  allow(Resque).to receive(:enqueue_to) do |_, klass, *args|
+    queue << [klass, args]
+  end
+
+  # Run the code inside the block.
+  yield
+
+  # Empty out the queue and perform all of the operations.
+  while queue.any?
+    klass, args = queue.shift
+    klass.perform(*args)
+  end
+
+  # Resume the original Resque.enqueue_to behavior.
+  allow(Resque).to receive(:enqueue_to).and_call_original
 end

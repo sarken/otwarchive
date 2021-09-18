@@ -1,22 +1,24 @@
-class Admin::SettingsController < ApplicationController
-
-  before_filter :admin_only
+class Admin::SettingsController < Admin::BaseController
+  before_action :load_admin_setting
 
   def index
-    @admin_setting = AdminSetting.first || AdminSetting.create(:last_updated_by => Admin.first)
+    authorize @admin_setting
   end
 
   # PUT /admin_settings/1
-  # PUT /admin_settings/1.xml
   def update
-    @admin_setting = AdminSetting.first || AdminSetting.create(:last_updated_by => Admin.first)
-
-    if @admin_setting.update_attributes(params[:admin_setting])
-      flash[:notice] = ts("Archive settings were successfully updated.")
+    authorize @admin_setting
+    if @admin_setting.update(permitted_attributes(@admin_setting).merge(last_updated: current_admin))
+      flash[:notice] = t(".success")
       redirect_to admin_settings_path
     else
-      render :action => "index"
+      render :index
     end
   end
 
+  private
+
+  def load_admin_setting
+    @admin_setting = AdminSetting.first || AdminSetting.create(last_updated_by: Admin.first)
+  end
 end

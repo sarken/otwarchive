@@ -45,7 +45,13 @@ describe WorksOwner do
         expect(@original_cache_key).not_to eq(@owner.works_index_cache_key)
       end
 
-      xit "should change after a work is deleted" do
+      it "should change after a work is deleted" do
+        if @owner.class.name == "Collection"
+          Delorean.time_travel_to "10 minutes ago"
+          @work.add_to_collection(@owner)
+          @original_cache_key = @owner.works_index_cache_key
+          Delorean.back_to_the_present
+        end
         @work.destroy
         expect(@original_cache_key).not_to eq(@owner.works_index_cache_key)
       end
@@ -53,14 +59,14 @@ describe WorksOwner do
 
     shared_examples_for "an owner tag" do
       it "should change after a new work is created" do
-        new_work = FactoryGirl.create(:work, fandom_string: @owner.name, posted: true)
+        FactoryBot.create(:work, fandom_string: @owner.name)
         expect(@original_cache_key).not_to eq(@owner.works_index_cache_key)
       end
     end
 
     shared_examples_for "an owner collection" do
       it "should change after a new work is created" do
-        new_work = FactoryGirl.create(:work, collection_names: @owner.name, posted: true)
+        FactoryBot.create(:work, collection_names: @owner.name)
         @owner.collection_items.each {|ci| ci.approve(nil); ci.save}
         @child.collection_items.each {|ci| ci.approve(nil); ci.save} if @child
         expect(@original_cache_key).not_to eq(@owner.works_index_cache_key)
@@ -70,11 +76,13 @@ describe WorksOwner do
     shared_examples_for "an owner user" do
       it "should change after a new work is created" do
         author = @owner.is_a?(Pseud) ? @owner : @owner.default_pseud
-        new_work = FactoryGirl.create(:work, authors: [author], posted: true)
+        FactoryBot.create(:work, authors: [author])
         expect(@original_cache_key).not_to eq(@owner.works_index_cache_key)
       end
 
       it "should change after a work is orphaned" do
+        # Ensure that the orphan account exists:
+        build(:user, login: "orphan_account").save
         author = @owner.is_a?(Pseud) ? @owner : @owner.default_pseud
         Creatorship.orphan([author], [@work])
         expect(@original_cache_key).not_to eq(@owner.works_index_cache_key)
@@ -84,8 +92,8 @@ describe WorksOwner do
     describe "for a canonical tag" do
       before do
         Delorean.time_travel_to "10 minutes ago"
-        @owner = FactoryGirl.create(:fandom, canonical: true)
-        @work = FactoryGirl.create(:work, fandom_string: @owner.name, posted: true)
+        @owner = FactoryBot.create(:fandom, canonical: true)
+        @work = FactoryBot.create(:work, fandom_string: @owner.name)
         @original_cache_key = @owner.works_index_cache_key
         Delorean.back_to_the_present
       end
@@ -95,11 +103,11 @@ describe WorksOwner do
       describe "with a synonym" do
         before do
           Delorean.time_travel_to "10 minutes ago"
-          @syn_tag = FactoryGirl.create(:fandom, canonical: false)
+          @syn_tag = FactoryBot.create(:fandom, canonical: false)
           @syn_tag.syn_string = @owner.name
           @syn_tag.save
           @work2 = @work
-          @work = FactoryGirl.create(:work, fandom_string: @syn_tag.name, posted: true)
+          @work = FactoryBot.create(:work, fandom_string: @syn_tag.name)
           @original_cache_key = @owner.works_index_cache_key
           Delorean.back_to_the_present
         end
@@ -107,18 +115,17 @@ describe WorksOwner do
         it_should_behave_like "an owner tag"
 
         it "should change after a new work is created in the synonym" do
-          new_work = FactoryGirl.create(:work, fandom_string: @syn_tag.name, posted: true)
+          FactoryBot.create(:work, fandom_string: @syn_tag.name)
           expect(@original_cache_key).not_to eq(@owner.works_index_cache_key)
         end
-
       end
     end
 
     describe "for a collection" do
       before do
         Delorean.time_travel_to "10 minutes ago"
-        @owner = FactoryGirl.create(:collection)
-        @work = FactoryGirl.create(:work, collection_names: @owner.name, posted: true)
+        @owner = FactoryBot.create(:collection)
+        @work = FactoryBot.create(:work, collection_names: @owner.name)
 
         # we have to approve the collection items before we get a change in
         # the cache key, since it uses approved works
@@ -133,13 +140,16 @@ describe WorksOwner do
       describe "with a child" do
         before do
           Delorean.time_travel_to "10 minutes ago"
-          # Stub out User.current_user to get past the collection needing to be owned by same person as parent
-          allow(User).to receive(:current_user).and_return(@owner.owners.first.user)
-          @child = FactoryGirl.create(:collection, parent_name: @owner.name)
+          @owner = FactoryBot.create(:collection)
+          # Temporarily set User.current_user to get past the collection
+          # needing to be owned by same person as parent:
+          User.current_user = @owner.owners.first.user
+          @child = FactoryBot.create(:collection, parent_name: @owner.name)
+          User.current_user = nil
           # reload the parent collection
           @owner.reload
           @work1 = @work
-          @work = FactoryGirl.create(:work, collection_names: @child.name, posted: true)
+          @work = FactoryBot.create(:work, collection_names: @child.name)
           @child.collection_items.each {|ci| ci.approve(nil); ci.save}
           @original_cache_key = @owner.works_index_cache_key
           Delorean.back_to_the_present
@@ -150,7 +160,7 @@ describe WorksOwner do
 
       describe "with a subtag" do
         before do
-          @fandom = FactoryGirl.create(:fandom)
+          @fandom = FactoryBot.create(:fandom)
           @work.fandom_string = @fandom.name
           @work.save
           @original_cache_key = @owner.works_index_cache_key(@fandom)
@@ -164,7 +174,7 @@ describe WorksOwner do
         describe "when a new work is added with that tag" do
           before do
             Delorean.time_travel_to "1 second from now"
-            @work2 = FactoryGirl.create(:work, fandom_string: @fandom.name, collection_names: @owner.name, posted: true)
+            @work2 = FactoryBot.create(:work, fandom_string: @fandom.name, collection_names: @owner.name)
             @owner.collection_items.each {|ci| ci.approve(nil); ci.save}
             Delorean.back_to_the_present
           end
@@ -177,9 +187,9 @@ describe WorksOwner do
 
         describe "when a new work is added without that tag" do
           before do
-            @fandom2 = FactoryGirl.create(:fandom)
+            @fandom2 = FactoryBot.create(:fandom)
             Delorean.time_travel_to "1 second from now"
-            @work2 = FactoryGirl.create(:work, fandom_string: @fandom2.name, collection_names: @owner.name, posted: true)
+            @work2 = FactoryBot.create(:work, fandom_string: @fandom2.name, collection_names: @owner.name)
             @owner.collection_items.each { |ci| ci.approve(nil); ci.save }
             Delorean.back_to_the_present
           end
@@ -199,8 +209,8 @@ describe WorksOwner do
 
     describe "for a user" do
       before do
-        @owner = FactoryGirl.create(:user)
-        @work = FactoryGirl.create(:work, authors: [@owner.default_pseud], posted: true)
+        @owner = FactoryBot.create(:user)
+        @work = FactoryBot.create(:work, authors: [@owner.default_pseud])
       end
       it_should_behave_like "an owner"
       it_should_behave_like "an owner user"
@@ -208,15 +218,13 @@ describe WorksOwner do
 
     describe "for a pseud" do
       before do
-        user = FactoryGirl.create(:user)
-        @owner = FactoryGirl.create(:pseud, user: user)
-        @work = FactoryGirl.create(:work, authors: [@owner], posted: true)
+        user = FactoryBot.create(:user)
+        @owner = FactoryBot.create(:pseud, user: user)
+        @work = FactoryBot.create(:work, authors: [@owner])
       end
       it_should_behave_like "an owner"
       it_should_behave_like "an owner user"
     end
 
   end
-
-
 end

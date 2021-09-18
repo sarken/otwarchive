@@ -2,7 +2,8 @@
 Feature: Collection
   I want to test Yuletide, because it has several specific settings that are different from an ordinary gift exchange
 
-  # TODO: Add nominations and tag sets to this test, or somewhere
+  # Basic tag set testing is covered in challenge_giftexchange_tagsets.feature.
+  # Advanced stuff and nominations are covered in tags_and_wrangling/tag_set.feature.
 
   # uncomment this and the other 'javascript' lines below when testing on local
   # in order to test javascript-based features
@@ -97,7 +98,7 @@ Feature: Collection
     And I should see "Sign-up Closes:" within ".collection .meta"
     And I should see "Assignments Due:" within ".collection .meta"
     And I should see "Works Revealed:" within ".collection .meta"
-    And I should see "Authors Revealed:" within ".collection .meta"
+    And I should see "Creators Revealed:" within ".collection .meta"
     And I should see "Signed up:" within ".collection .meta"
     And I should see "0" within ".collection .meta"
     And I should see "Welcome to the exchange" within "#intro"
@@ -431,7 +432,7 @@ Feature: Collection
     And I fill in "Fandoms" with "Stargate Atlantis"
     And I select "Not Rated" from "Rating"
     And I check "No Archive Warnings Apply"
-    And I select "myname1" from "work_author_attributes_ids_"
+    And I select "English" from "Choose a language"
     And I fill in "content" with "This is an exciting story about Atlantis"
   When I press "Preview"
   Then I should see "Preview"
@@ -477,6 +478,7 @@ Feature: Collection
     And I should see "Anonymous"
     And 0 emails should be delivered
   When I press "Post"
+    And all indexing jobs have been run
   Then I should see "Work was successfully posted"
     And I should see "For myname"
     And I should see "Collections:"
@@ -517,7 +519,7 @@ Feature: Collection
     And I log out
   Then I should see "Sorry, you don't have permission to access the page you were trying to reach. Please log in."
 
-  # TODO: Mod checks for unfulfilled assignments, and gets pinch-hitters to do them.
+  # Mod checks for unfulfilled assignments, and gets pinch-hitters to do them.
   When I am logged in as "mod1"
     And I go to the collections page
     And I follow "Yuletide"
@@ -569,9 +571,9 @@ Feature: Collection
   When I reload the page
   # 5 gift notification emails are delivered for the 5 stories that have been posted so far (4 standard, 1 pinch-hit, 1 still a draft)
   Then 5 emails should be delivered
-    And the email should contain "A gift work has been posted for you"
-    # TODO: Check this capitalisation with someone, since it seems odd to me
-    And the email should contain "in the Yuletide collection at the Archive of Our Own"
+    And the email should contain "A gift work has been posted for you in the"
+    And the email should contain "Yuletide"
+    And the email should contain "at the Archive of Our Own"
     And the email should contain "by an anonymous responder"
     And the email should not contain "by myname1"
     And the email should not contain "by myname2"

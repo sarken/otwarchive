@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="<%= I18n.locale %>">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
     <meta name="keywords" content="fanfiction, transformative works, otw, fair use, archive" />
     <meta name="language" content="en-US" />
     <meta name="subject" content="fandom" />
@@ -14,7 +15,7 @@
       <meta name="robots" content="noindex" />
       <meta name="googlebot" content="noindex" />
     <% end %>
-  	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>  
+  	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>
       <% if defined?(@page_title) %>
         <%= @page_title %>
@@ -37,6 +38,7 @@
   <body class="<%= logged_in? ? 'logged-in' : 'logged-out' %>" <%= PhraseApp::InContextEditor.enabled? ? "data-no-turbolink" : "" %>>
     <div id="outer" class="wrapper">
       <ul id="skiplinks"><li><a href="#main"><%= ts('Main Content') %></a></li></ul>
+      <% # layouts/proxy_notice is rendered here by JavaScript found in layouts/javascripts. %>
       <%= render :partial => 'layouts/header' %>
       <div id="inner" class="wrapper">
         <!-- BEGIN sidebar -->
@@ -53,7 +55,7 @@
 
         <!-- BEGIN main -->
         <div id="main" class="<%= classes_for_main %> region" role="main">
-          <%= flash_div :error, :caution, :notice %>
+          <%= flash_div :error, :caution, :notice, :alert %>
           <div class="flash"></div>
           <%= yield %>
           <div class="clear"><!--presentational--></div>

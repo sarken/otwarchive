@@ -1,15 +1,21 @@
+# frozen_string_literal: true
+
+require "zoho_auth_client"
+require "zoho_resource_client"
+
 class FeedbackReporter
   include HtmlCleaner
-  require 'url_formatter'
+  require "url_formatter"
 
-  attr_accessor :title, 
-    :description,
-    :email,
-    :language,
-    :category,
-    :username
+  attr_accessor :title,
+                :description,
+                :email,
+                :language,
+                :category,
+                :username,
+                :url
 
-  def initialize(attrs={})
+  def initialize(attrs = {})
     attrs.each_pair do |key, val|
       self.send("#{key}=", val)
     end
@@ -20,39 +26,38 @@ class FeedbackReporter
   end
 
   def description
-    strip_html_breaks_simple(@description)
+    add_break_between_paragraphs(@description)
   end
 
   def send_report!
-    # We're sending the XML data via a URL to our Support ticket service. The URL needs to be Percent-encoded so that
-    # everything shows up correctly on the other end. (https://en.wikipedia.org/wiki/Percent-encoding)
-    encoded_xml = CGI.escape(xml.to_str)
-    HTTParty.post("#{ArchiveConfig.BUGS_SITE}",
-      body: "&xml=#{encoded_xml}"
+    zoho_resource_client.create_ticket(ticket_attributes: report_attributes)
+  end
+
+  def report_attributes
+    {
+      "email" => email,
+      "contactId" => zoho_contact_id,
+      "cf" => {
+        "cf_language" => language.presence || Language.default.name,
+        "cf_name" => username.presence || "Anonymous user"
+      }
+    }
+  end
+
+  private
+
+  def zoho_contact_id
+    zoho_resource_client.retrieve_contact_id
+  end
+
+  def access_token
+    @access_token ||= ZohoAuthClient.new.access_token
+  end
+
+  def zoho_resource_client
+    @zoho_resource_client ||= ZohoResourceClient.new(
+      access_token: access_token,
+      email: email
     )
-  end
-
-  def send_abuse_report!
-    HTTParty.post("#{ArchiveConfig.ABUSE_REPORTS_SITE}/projects/#{project_id}/bugs",
-      headers: {
-        "Content-Type" => "application/xml",
-        "Accept" => "application/xml"
-      },
-      basic_auth: {
-        username: ArchiveConfig.ABUSE_REPORTS_USER,
-        password: ArchiveConfig.ABUSE_REPORTS_PASSWORD
-      },
-      body: xml
-    )
-  end
-
-  def xml
-    view = ActionView::Base.new(Rails.root.join("app", "views"))
-    view.assign({report: self})
-    view.render(template: template)
-  end
-
-  def project_id
-    self.class::PROJECT_ID
   end
 end

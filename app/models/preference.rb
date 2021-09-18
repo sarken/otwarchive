@@ -1,14 +1,18 @@
-class Preference < ActiveRecord::Base
+class Preference < ApplicationRecord
+  include ActiveModel::ForbiddenAttributesProtection
+
   belongs_to :user
   belongs_to :skin
 
+  validates_format_of :work_title_format, with: /^[a-zA-Z0-9_\-,\. ]+$/,
+    message: ts("can only contain letters, numbers, spaces, and some limited punctuation (comma, period, dash, underscore)."),
+    multiline: true
 
-  validates_format_of :work_title_format, :with => /^[a-zA-Z0-9_\-,\. ]+$/,
-    :message => ts("can only contain letters, numbers, spaces, and some limited punctuation (comma, period, dash, underscore).")
+  validate :can_use_skin, if: :skin_id_changed?
 
   before_create :set_default_skin
   def set_default_skin
-    self.skin = Skin.default
+    self.skin_id = AdminSetting.current.default_skin_id
   end
 
   def self.disable_work_skin?(param)
@@ -18,16 +22,10 @@ class Preference < ActiveRecord::Base
      return User.current_user.try(:preference).try(:disable_work_skins)
   end
 
-  #FIXME hack because time zones are being html encoded. couldn't figure out why.
-  before_save :fix_time_zone
-  def fix_time_zone
-    return true if self.time_zone.nil?
-    return true if ActiveSupport::TimeZone[self.time_zone]
-    try = self.time_zone.gsub('&amp;', '&')
-    self.time_zone = try if ActiveSupport::TimeZone[try]
-  end
+  def can_use_skin
+    return if skin_id == AdminSetting.default_skin_id ||
+              (skin.is_a?(Skin) && skin.approved_or_owned_by?(user))
 
-  def hide_hit_counts
-    self.try(:hide_all_hit_counts) || self.try(:hide_private_hit_count)
+    errors.add(:base, "You don't have permission to use that skin!")
   end
 end
