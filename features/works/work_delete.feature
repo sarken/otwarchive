@@ -13,6 +13,17 @@ Feature: Delete Works
     When I go to newbie's user page
     Then I should not see "All Hell Breaks Loose"
 
+  Scenario: Deleting a work with escapable characters in title
+    Given I am logged in as "newbie"
+      And I post the work "All Hell <b>Breaks</b> Loose"
+    When I delete the work "All Hell <b>Breaks</b> Loose"
+    Then I should see "Your work All Hell <b>Breaks</b> Loose was deleted."
+      And "newbie" should be notified by email about the deletion of "All Hell &lt;b&gt;Breaks&lt;/b&gt; Loose"
+    When I go to the works page
+    Then I should not see "All Hell <b>Breaks</b> Loose"
+    When I go to newbie's user page
+    Then I should not see "All Hell <b>Breaks</b> Loose"
+
   Scenario: Deleting minimally valid work when you have more than one pseud
     Given basic tags
       And I am logged in as "newbie"
@@ -180,3 +191,11 @@ Feature: Delete Works
     Then I should not see "All Something Breaks Loose"
       And I should see "This has been deleted, sorry!"
       And I should see "My thoughts on the work"
+
+  Scenario: A work with too many tags can be deleted
+    Given the user-defined tag limit is 2
+      And the work "Over the Limit"
+      And the work "Over the Limit" has 3 fandom tags
+    When I am logged in as the author of "Over the Limit"
+      And I delete the work "Over the Limit"
+    Then I should see "Your work Over the Limit was deleted."

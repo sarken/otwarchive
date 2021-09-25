@@ -2,7 +2,7 @@ class Indexer
 
   BATCH_SIZE = 1000
   INDEXERS_FOR_CLASS = {
-    "Work" => %w(WorkIndexer BookmarkedWorkIndexer),
+    "Work" => %w(WorkIndexer WorkCreatorIndexer BookmarkedWorkIndexer),
     "Bookmark" => %w(BookmarkIndexer),
     "Tag" => %w(TagIndexer),
     "Pseud" => %w(PseudIndexer),
@@ -30,7 +30,8 @@ class Indexer
       CollectionIndexer,
       PseudIndexer,
       TagIndexer,
-      WorkIndexer
+      WorkIndexer,
+      WorkCreatorIndexer
     ]
   end
 
