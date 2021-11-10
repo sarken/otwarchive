@@ -13,6 +13,7 @@ class KudoMailer < ActionMailer::Base
     @kudo_givers = {}
     user = User.find(user_id)
     kudos_hash = JSON.parse(user_kudos)
+    @kh = JSON.parse(user_kudos)
 
     I18n.with_locale(Locale.find(user.preference.preferred_locale).iso) do
       kudos_hash.each_pair do |commentable_info, kudo_givers_hash|
@@ -29,9 +30,15 @@ class KudoMailer < ActionMailer::Base
         if !names.nil? && names.size > 0
           kudo_givers = names
           kudo_givers << guest_kudos(guest_count) unless guest_count == 0
+          @names_size = names.size
+          @guest_count = guest_count
+          @cid = commentable_id
           @kudos_count = names.size + guest_count
         else
           kudo_givers << guest_kudos(guest_count).capitalize unless guest_count == 0
+          @names_size = 0
+          @guest_count = guest_count
+          @cid = commentable_id
           @kudos_count = guest_count
         end
         next if kudo_givers.empty?

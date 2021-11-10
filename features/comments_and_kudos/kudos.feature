@@ -141,14 +141,19 @@ Feature: Kudos
 
     Given I am logged in as "myname1"
       And I post the work "Another Awesome Story"
+      And I post the work "Less Than Awesome Story"
       And all emails have been delivered
       And the kudos queue is cleared
+      # 3 user kudos
       And I am logged in as "myname2"
       And I leave kudos on "Awesome Story"
       And I leave kudos on "Another Awesome Story"
+      And I leave kudos on "Less Than Awesome Story"
+      # 2 user kudos
       And I am logged in as "someone_else"
       And I leave kudos on "Awesome Story"
       And I leave kudos on "Another Awesome Story"
+      # 2 guest kudos
       And I am logged out
       And I leave kudos on "Awesome Story"
       And I leave kudos on "Another Awesome Story"
@@ -159,3 +164,4 @@ Feature: Kudos
       And the email should contain "guest"
       And the email should contain "Awesome Story"
       And the email should contain "Another Awesome Story"
+      And the email should contain "has left kudos on Less Than Awesome Story"

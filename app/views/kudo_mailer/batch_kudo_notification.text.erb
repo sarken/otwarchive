@@ -6,9 +6,12 @@
     %>
 
     <%= t 'mailer.kudos.text.left_kudos', givers_list: givers_list, commentable_link: commentable_link, count: @kudos_count.to_i %>
+    Count for pluralization: <%= @kudos_count %> (<%= @kudos_count.class %>) | Names size: <%= @names_size %> (<%= @names_size.class %>) | Guest count: <%= @guest_count %> (<%= @guest_count.class %>) | Commentable ID: <%= @cid %>
 
     <% if (index < @commentables.length-1) %>
       <%= text_divider %>
     <% end %>
   <% end %>
+  The hash we're working with for this email:
+  <%= @kh %>
 <% end %>
