@@ -24,6 +24,14 @@ When /^I leave kudos on "([^\"]*)"$/ do |work_title|
   click_button("kudo_submit")
 end
 
+When /^a random guest leaves kudos on "([^\"]*)"$/ do |work_title|
+  # step %{I view the work "#{work_title}"}
+  work = Work.find_by(title: work_title)
+  # click_button("kudo_submit")
+  ip = "13.13.13"
+  Kudo.create(commentable_type: "Work", commentable_id: work.id, ip_address: ip)
+end
+
 ### THEN
 
 Then /^I should see kudos on every chapter$/ do

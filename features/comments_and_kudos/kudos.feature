@@ -157,6 +157,8 @@ Feature: Kudos
       And I am logged out
       And I leave kudos on "Awesome Story"
       And I leave kudos on "Another Awesome Story"
+      # Bonus guest kudos
+      And a random guest leaves kudos on "Awesome Story"
     When kudos are sent
     Then 1 email should be delivered to "myname1@foo.com"
       And the email should contain "myname2"
