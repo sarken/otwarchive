@@ -399,7 +399,6 @@ class TagsController < ApplicationController
       :name,
       :fandoms,
       :type,
-      :fandom_ids,
       :canonical,
       :created_at,
       :uses,
