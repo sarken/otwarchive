@@ -9,7 +9,6 @@ class TagSearchForm
     :name,
     :canonical,
     :fandoms,
-    :fandom_ids,
     :type,
     :created_at,
     :uses,
