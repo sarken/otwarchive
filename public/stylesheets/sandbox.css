@@ -114,6 +114,6 @@ a.resp-sharing-button__link:hover {
   border-color: #222d3c;
 }
 
-.comment.muted { display: block !important; visibility: visible !important; }
+.comment.muted, .blurb.muted { display: block !important; visibility: visible !important; }
 
 .muted summary.message { margin: 0.643em; }

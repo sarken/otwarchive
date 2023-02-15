@@ -45,12 +45,16 @@ module MuteHelper
 
     return if user.muted_users.empty?
 
-    selectors = user.muted_users.map { |muted_user| ".comment.user-#{muted_user.id}" }.join(", ").to_s
+    commenter_selectors = user.muted_users.map { |muted_user| ".comment.user-#{muted_user.id}" }.join(", ").to_s
+    cocreation_selectors = user.muted_users.map { |muted_user| ".user-#{user.id}.user-#{muted_user.id}" }.join(", ").to_s
 
     script = <<-SCRIPT
       <script>
-        const mutedUserClasses = "#{selectors}";
-        const mutedComments = document.querySelectorAll(mutedUserClasses);
+        const mutedCommenterClasses = "#{commenter_selectors}";
+        const mutedComments = document.querySelectorAll(mutedCommenterClasses);
+
+        const mutedCoCreatorClasses = "#{cocreation_selectors}";
+        const mutedCoCreations = document.querySelectorAll(mutedCoCreatorClasses);
 
         mutedComments.forEach(function (comment) {
           let details_wrapper = document.createElement("details");
@@ -64,6 +68,22 @@ module MuteHelper
             details_wrapper.appendChild(comment.firstChild);
 
           comment.appendChild(details_wrapper);
+          details_wrapper.prepend(wrapper_summary);
+          wrapper_summary.appendChild(summary_text);
+        });
+
+        mutedCoCreations.forEach(function (cocreation) {
+          let details_wrapper = document.createElement("details");
+          let wrapper_summary = document.createElement("summary");
+          let summary_text = document.createTextNode("You co-created this with a user you've muted.");
+
+          cocreation.classList.add("muted");
+          wrapper_summary.classList.add("message");
+
+          while(cocreation.firstChild)
+            details_wrapper.appendChild(cocreation.firstChild);
+
+          cocreation.appendChild(details_wrapper);
           details_wrapper.prepend(wrapper_summary);
           wrapper_summary.appendChild(summary_text);
         });

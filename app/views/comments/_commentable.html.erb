@@ -123,9 +123,6 @@
       </ol><!-- need to tack this on to close thread -->
       <%= will_paginate @comments, params: { anchor: :comments } %>
     <% end %>
-    <% content_for(:footer_js) do %>
-      <%= mute_comment_javascript %>
-    <% end %>
   </div>
 
   <% if logged_in? && @work %>
