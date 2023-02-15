@@ -32,8 +32,53 @@ module MuteHelper
     "<style>#{css_classes} { display: none !important; visibility: hidden !important; }</style>".html_safe
   end
 
+  def mute_comment_javascript
+    return if current_user.nil?
+
+    Rails.cache.fetch(mute_comment_javascript_key(current_user)) do
+      mute_comment_javascript_uncached(current_user)
+    end
+  end
+
+  def mute_comment_javascript_uncached(user)
+    user.reload
+
+    return if user.muted_users.empty?
+
+    selectors = user.muted_users.map { |muted_user| ".comment.user-#{muted_user.id}" }.join(", ").to_s
+
+    script = <<-SCRIPT
+      <script>
+        const mutedUserClasses = "#{selectors}";
+        const mutedComments = document.querySelectorAll(mutedUserClasses);
+
+        mutedComments.forEach(function (comment) {
+          let details_wrapper = document.createElement("details");
+          let wrapper_summary = document.createElement("summary");
+          let summary_text = document.createTextNode("This comment is from a user you've muted.");
+
+          comment.classList.add("muted");
+          wrapper_summary.classList.add("message");
+
+          while(comment.firstChild)
+            details_wrapper.appendChild(comment.firstChild);
+
+          comment.appendChild(details_wrapper);
+          details_wrapper.prepend(wrapper_summary);
+          wrapper_summary.appendChild(summary_text);
+        });
+      </script>
+    SCRIPT
+
+    script.html_safe
+  end
+
   def mute_css_key(user)
     "muted/#{user.id}/mute_css"
+  end
+
+  def mute_comment_javascript_key(user)
+    "muted/#{user.id}/mute_comment_javascript"
   end
 
   def user_has_muted_users?

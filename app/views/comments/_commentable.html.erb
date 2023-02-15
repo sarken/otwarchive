@@ -123,32 +123,8 @@
       </ol><!-- need to tack this on to close thread -->
       <%= will_paginate @comments, params: { anchor: :comments } %>
     <% end %>
-    <% if logged_in? && @current_user&.muted_users.present? %>
-      <% user_classes = @current_user.muted_users.map { |muted_user| ".comment.user-#{muted_user.id}" }.join(", ").to_s %>
-      <script>
-        const mutedUserClasses = "<%= user_classes %>";
-        const mutedComments = document.querySelectorAll(mutedUserClasses);
-
-        //console.log(mutedUserClasses)
-        //console.log(mutedComments)
-
-        mutedComments.forEach(function (comment) {
-          let details_wrapper = document.createElement("details");
-          let wrapper_summary = document.createElement("summary");
-          let summary_text = document.createTextNode("This comment has been muted.");
-
-          //console.log(comment);
-          comment.classList.add("muted");
-          wrapper_summary.classList.add("message");
-
-          while(comment.firstChild)
-            details_wrapper.appendChild(comment.firstChild);
-
-          comment.appendChild(details_wrapper);
-          details_wrapper.prepend(wrapper_summary);
-          wrapper_summary.appendChild(summary_text);
-        });
-      </script>
+    <% content_for(:footer_js) do %>
+      <%= mute_comment_javascript %>
     <% end %>
   </div>
 
