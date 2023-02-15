@@ -67,12 +67,12 @@ module UsersHelper
     return pseud_bookmarks_link(pseud) if pseud.present? && !pseud.new_record?
 
     total = SearchCounts.bookmark_count_for_user(user)
-    span_if_current ts('Bookmarks (%{bookmark_number})', bookmark_number: total.to_s), user_bookmarks_path(@user)
+    span_if_current t("users.sidebar.bookmarks", number: total.to_s), user_bookmarks_path(@user)
   end
 
   def pseud_bookmarks_link(pseud)
     total = SearchCounts.bookmark_count_for_pseud(pseud)
-    span_if_current ts('Bookmarks (%{bookmark_number})', bookmark_number: total.to_s), user_pseud_bookmarks_path(@user, pseud)
+    span_if_current t("users.sidebar.bookmarks", number: total.to_s), user_pseud_bookmarks_path(@user, pseud)
   end
 
   # Prints link to works page with user-appropriate number of works
@@ -81,42 +81,42 @@ module UsersHelper
     return pseud_works_link(pseud) if pseud.present? && !pseud.new_record?
 
     total = SearchCounts.work_count_for_user(user)
-    span_if_current ts('Works (%{works_number})', works_number: total.to_s), user_works_path(@user)
+    span_if_current t("users.sidebar.works", number: total.to_s), user_works_path(@user)
   end
 
   def pseud_works_link(pseud)
     total = SearchCounts.work_count_for_pseud(pseud)
-    span_if_current ts('Works (%{works_number})', works_number: total.to_s), user_pseud_works_path(@user, pseud)
+    span_if_current t("users.sidebar.works", number: total.to_s), user_pseud_works_path(@user, pseud)
   end
 
   # Prints link to series page with user-appropriate number of series
   def series_link(user, pseud = nil)
     return pseud_series_link(pseud) if pseud.present? && !pseud.new_record?
 
-    if current_user.nil?
-      total = Series.visible_to_all.exclude_anonymous.for_pseuds(user.pseuds).length
-    else
-      total = Series.visible_to_registered_user.exclude_anonymous.for_pseuds(user.pseuds).length
-    end
-    span_if_current ts('Series (%{series_number})', series_number: total.to_s), user_series_index_path(@user)
+    total = if guest?
+              Series.visible_to_all.exclude_anonymous.for_pseuds(user.pseuds).length
+            else
+              Series.visible_to_registered_user.exclude_anonymous.for_pseuds(user.pseuds).length
+            end
+    span_if_current t("users.sidebar.series", number: total.to_s), user_series_index_path(@user)
   end
 
   def pseud_series_link(pseud)
-    if current_user.nil?
-      total = Series.visible_to_all.exclude_anonymous.for_pseuds([pseud]).length
-    else
-      total = Series.visible_to_registered_user.exclude_anonymous.for_pseuds([pseud]).length
-    end
-    span_if_current ts('Series (%{series_number})', series_number: total.to_s), user_pseud_series_index_path(@user, pseud)
+    total = if guest?
+              Series.visible_to_all.exclude_anonymous.for_pseuds([pseud]).length
+            else
+              Series.visible_to_registered_user.exclude_anonymous.for_pseuds([pseud]).length
+            end
+    span_if_current t("users.sidebar.series", number: total.to_s), user_pseud_series_index_path(@user, pseud)
   end
 
   def gifts_link(user)
-    if current_user.nil?
+    if guest?
       gift_number = user.gift_works.visible_to_all.distinct.count
     else
       gift_number = user.gift_works.visible_to_registered_user.distinct.count
     end
-    span_if_current ts('Gifts (%{gift_number})', gift_number: gift_number.to_s), user_gifts_path(user)
+    span_if_current t("users.sidebar.gifts", number: gift_number.to_s), user_gifts_path(user)
   end
 
   def authored_items(pseud, work_counts = {}, rec_counts = {})

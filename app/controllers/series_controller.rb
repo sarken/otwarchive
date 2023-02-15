@@ -29,14 +29,12 @@ class SeriesController < ApplicationController
       pseuds = [@pseud]
     end
 
-    if current_user.nil?
-      @series = Series.visible_to_all
-    else
-      @series = Series.visible_to_registered_user
-    end
-    if pseuds.present?
-      @series = @series.exclude_anonymous.for_pseuds(pseuds)
-    end
+    @series = if guest?
+                Series.visible_to_all
+              else
+                Series.visible_to_registered_user
+              end
+    @series = @series.exclude_anonymous.for_pseuds(pseuds) if pseuds.present?
     @series = @series.paginate(page: params[:page])
   end
 

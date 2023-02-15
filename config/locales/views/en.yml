@@ -234,6 +234,26 @@ en:
       more_info: "For information on how changing your user name will affect your account, please check out the %{account_faq_link}. Note that changes to your user name may take several days or longer to appear. If you are still seeing your old user name on your works, bookmarks, series, or collections after a week, please %{contact_support_link}."
       account_faq: "Account FAQ"
       contact_support: "contact Support"
+    sidebar:
+      dashboard: Dashboard
+      profile: Profile
+      preferences: Preferences
+      skins: Skins
+      works: "Works (%{number})"
+      drafts: "Drafts (%{number})"
+      series: "Series (%{number})"
+      bookmarks: "Bookmarks (%{number})"
+      collections: "Collections (%{number})"
+      inbox: "Inbox (%{number})"
+      statistics: Statistics
+      history: History
+      subscriptions: Subscriptions
+      cocreator_requests: "Co-creator Requests (%{number})"
+      signups: "Sign-ups (%{number})"
+      assignments: "Assignments (%{number})"
+      claims: "Claims (%{number}"
+      related_works: "Related Works (%{number})"
+      gifts: "Gifts (%{number})"
   troubleshooting:
     show:
       page_title:

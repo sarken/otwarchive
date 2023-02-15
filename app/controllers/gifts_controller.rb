@@ -11,7 +11,7 @@ class GiftsController < ApplicationController
       redirect_to(@collection || root_path) and return
     end
     if @user
-      if current_user.nil?
+      if guest?
         @works = @user.gift_works.visible_to_all
       else
         if @user == current_user && params[:refused]
@@ -23,13 +23,13 @@ class GiftsController < ApplicationController
     else
       pseud = Pseud.parse_byline(@recipient_name, assume_matching_login: true).first
       if pseud
-        if current_user.nil?
+        if guest?
           @works = pseud.gift_works.visible_to_all
         else
           @works = pseud.gift_works.visible_to_registered_user
         end
       else
-        if current_user.nil?
+        if guest?
           @works = Work.giftworks_for_recipient_name(@recipient_name).visible_to_all
         else
           @works = Work.giftworks_for_recipient_name(@recipient_name).visible_to_registered_user
