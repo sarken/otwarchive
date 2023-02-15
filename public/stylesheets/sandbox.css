@@ -113,3 +113,7 @@ a.resp-sharing-button__link:hover {
   background-color: #222d3c;
   border-color: #222d3c;
 }
+
+.comment.muted { display: block !important; visibility: visible !important; }
+
+.muted summary.message { margin: 0.643em; }
