@@ -32,61 +32,46 @@ module MuteHelper
     "<style>#{css_classes} { display: none !important; visibility: hidden !important; }</style>".html_safe
   end
 
-  def mute_comment_javascript
+  def mute_javascript
     return if current_user.nil?
 
-    Rails.cache.fetch(mute_comment_javascript_key(current_user)) do
-      mute_comment_javascript_uncached(current_user)
+    Rails.cache.fetch(mute_javascript_key(current_user)) do
+      mute_javascript_uncached(current_user)
     end
   end
 
-  def mute_comment_javascript_uncached(user)
+  def mute_javascript_uncached(user)
     user.reload
 
     return if user.muted_users.empty?
 
-    commenter_selectors = user.muted_users.map { |muted_user| ".comment.user-#{muted_user.id}" }.join(", ").to_s
+    comment_selectors = user.muted_users.map { |muted_user| ".comment.user-#{muted_user.id}" }.join(", ").to_s
     cocreation_selectors = user.muted_users.map { |muted_user| ".user-#{user.id}.user-#{muted_user.id}" }.join(", ").to_s
 
     script = <<-SCRIPT
       <script>
-        const mutedCommenterClasses = "#{commenter_selectors}";
-        const mutedComments = document.querySelectorAll(mutedCommenterClasses);
+        makeMutedItemsExpandable("#{comment_selectors}", "This comment is from a user you've muted.");
+        makeMutedItemsExpandable("#{cocreation_selectors}", "You co-created this with a user you've muted.");
 
-        const mutedCoCreatorClasses = "#{cocreation_selectors}";
-        const mutedCoCreations = document.querySelectorAll(mutedCoCreatorClasses);
+        function makeMutedItemsExpandable(css_selectors, expander_text) {
+          let items = document.querySelectorAll(css_selectors);
 
-        mutedComments.forEach(function (comment) {
-          let details_wrapper = document.createElement("details");
-          let wrapper_summary = document.createElement("summary");
-          let summary_text = document.createTextNode("This comment is from a user you've muted.");
+          items.forEach(function(item) {
+            let wrapper = document.createElement("details");
+            let expander = document.createElement("summary");
+            let text_node = document.createTextNode(expander_text);
 
-          comment.classList.add("muted");
-          wrapper_summary.classList.add("message");
+            item.classList.add("muted");
+            expander.classList.add("message");
 
-          while(comment.firstChild)
-            details_wrapper.appendChild(comment.firstChild);
+            while(item.firstChild)
+              wrapper.appendChild(item.firstChild);
 
-          comment.appendChild(details_wrapper);
-          details_wrapper.prepend(wrapper_summary);
-          wrapper_summary.appendChild(summary_text);
-        });
-
-        mutedCoCreations.forEach(function (cocreation) {
-          let details_wrapper = document.createElement("details");
-          let wrapper_summary = document.createElement("summary");
-          let summary_text = document.createTextNode("You co-created this with a user you've muted.");
-
-          cocreation.classList.add("muted");
-          wrapper_summary.classList.add("message");
-
-          while(cocreation.firstChild)
-            details_wrapper.appendChild(cocreation.firstChild);
-
-          cocreation.appendChild(details_wrapper);
-          details_wrapper.prepend(wrapper_summary);
-          wrapper_summary.appendChild(summary_text);
-        });
+            item.appendChild(wrapper);
+            wrapper.prepend(expander);
+            expander.appendChild(text_node);
+          });
+        };
       </script>
     SCRIPT
 
@@ -97,8 +82,8 @@ module MuteHelper
     "muted/#{user.id}/mute_css"
   end
 
-  def mute_comment_javascript_key(user)
-    "muted/#{user.id}/mute_comment_javascript"
+  def mute_javascript_key(user)
+    "muted/#{user.id}/mute_javascript"
   end
 
   def user_has_muted_users?

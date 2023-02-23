@@ -26,7 +26,7 @@ class Mute < ApplicationRecord
   after_destroy :update_cache
   def update_cache
     Rails.cache.write(mute_css_key(muter), mute_css_uncached(muter))
-    Rails.cache.write(mute_comment_javascript_key(muter), mute_comment_javascript_uncached(muter))
+    Rails.cache.write(mute_javascript_key(muter), mute_javascript_uncached(muter))
   end
 
   def muted_byline=(byline)

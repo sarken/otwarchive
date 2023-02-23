@@ -116,4 +116,14 @@ a.resp-sharing-button__link:hover {
 
 .comment.muted, .blurb.muted { display: block !important; visibility: visible !important; }
 
-.muted summary.message { margin: 0.643em; }
+.comment .message { background: yellow; }
+
+.comment.muted > details { margin: 0.643em 0; }
+.comment.muted summary.message { padding: 0.643em; }
+.comment.muted details[open] summary.message { margin-bottom: 0.643em; background: pink; }
+
+
+.blurb.muted summary.message { margin: 0.643em; }
+
+.bookmark.muted p.status { margin-top: 0; }
+
