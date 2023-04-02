@@ -249,6 +249,8 @@ Given /^the spam work "([^\"]*)"$/ do |work|
   step %{I have a work "#{work}"}
   step %{I log out}
   w = Work.find_by_title(work)
+  # If a work has been marked spam by Akismet, spam_checked_at is set.
+  w.update_attribute(:spam_checked_at, Time.now)
   w.update_attribute(:spam, true)
   w.update_attribute(:hidden_by_admin, true)
 end

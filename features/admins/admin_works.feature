@@ -279,9 +279,11 @@ Feature: Admin Actions for Works, Comments, Series, Bookmarks
     And I am logged in as a "policy_and_abuse" admin
     And I view the work "Spammity Spam"
   Then I should see "Mark As Spam"
+    And I should see "Akismet Reported As Spam: No result recorded"
   When I follow "Mark As Spam"
   Then I should see "marked as spam and hidden"
     And I should see "Mark Not Spam"
+    And I should see "Akismet Reported As Spam: No result recorded"
     And the work "Spammity Spam" should be marked as spam
     And the work "Spammity Spam" should be hidden
 
@@ -290,9 +292,11 @@ Feature: Admin Actions for Works, Comments, Series, Bookmarks
     And I am logged in as a "policy_and_abuse" admin
     And I view the work "Spammity Spam"
   Then I should see "Mark Not Spam"
+    And I should see "Akismet Reported As Spam: true"
   When I follow "Mark Not Spam"
   Then I should see "marked not spam and unhidden"
     And I should see "Mark As Spam"
+    And I should see "Akismet Reported As Spam: false"
     And the work "Spammity Spam" should not be marked as spam
     And the work "Spammity Spam" should not be hidden
 
