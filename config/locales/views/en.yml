@@ -517,13 +517,13 @@ en:
         label: "Akismet Reported As Spam:"
         data:
           none: No result recorded
-          yes: "true"
-          no: "false"
+          spam: "true"
+          ham: "false"
       tag_limit:
         label: "Over Tag Limit:"
         data:
-          yes: "Yes"
-          no: "No"
+          over: "Yes"
+          under: "No"
       rejected_gift: "Refused As Gift:"
     navigate:
       heading_html: "Chapter Index for %{title} by %{byline}"

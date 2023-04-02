@@ -113,7 +113,7 @@
         <% if !@work.spam_checked? %>
           <%= t(".spam.data.none") %>
         <% else %>
-          <%= @work.spam? ? t(".spam.data.yes") : t(".spam.data.no") %>
+          <%= @work.spam? ? t(".spam.data.spam") : t(".spam.data.ham") %>
         <% end %>
       </dd>
 
@@ -121,7 +121,7 @@
         <%= t(".tag_limit.label") %>
       </dt>
       <dd class="limit">
-        <%= @work.user_defined_tags_count > ArchiveConfig.USER_DEFINED_TAGS_MAX ? t(".tag_limit.data.yes") : t(".tag_limit.data.no") %>
+        <%= @work.user_defined_tags_count > ArchiveConfig.USER_DEFINED_TAGS_MAX ? t(".tag_limit.data.over") : t(".tag_limit.data.under") %>
       </dd>
 
       <% if @work.gifts.are_rejected.exists? %>
