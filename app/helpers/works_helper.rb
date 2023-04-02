@@ -4,12 +4,12 @@ module WorksHelper
   def work_meta_list(work, chapter = nil)
     # if we're previewing, grab the unsaved date, else take the saved first chapter date
     published_date = (chapter && work.preview_mode) ? chapter.published_at : work.first_chapter.published_at
-    list = [[ts('Published:'), 'published', localize(published_date)],
-            [ts('Words:'), 'words', work.word_count],
+    list = [[t("works.meta.stats.published"), "published", localize(published_date)],
+            [t("works.meta.stats.words"), "words", work.word_count],
             [ts('Chapters:'), 'chapters', work.chapter_total_display]]
 
     if (comment_count = work.count_visible_comments) > 0
-      list.concat([[ts('Comments:'), 'comments', work.count_visible_comments.to_s]])
+      list.concat([[t("works.meta.stats.comments"), "comments", work.count_visible_comments.to_s]])
     end
 
     if work.all_kudos_count > 0
@@ -184,5 +184,12 @@ module WorksHelper
     else
       work.chapter_total_display
     end
+  end
+
+  def show_chapter_stats(work)
+    return unless work.number_of_posted_chapters > 1
+
+    params[:controller] == "chapters" ||
+      params[:controller] == "work" && params[:view_full_work].nil?
   end
 end

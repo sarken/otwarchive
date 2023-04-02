@@ -500,32 +500,36 @@ en:
       original_creators:
         one: "Original Creator ID:"
         other: "Original Creator IDs:"
-      chapter:
-        stats: "Chapter Stats:"
+      stats:
+        work: "Work Stats:"
+        chapter: "Chapter Stats:"
         words: "Words:"
         comments: "Comments:"
         published: "Published:"
-      stats: "Work Stats:"
       collections: "Collections:"
       series: "Series:"
       language: "Language:"
-      admin:
-        ip:
-          label: "IP Address:"
-          data:
-            none: No address recorded
-        spam:
-          label: "Akismet Recorded As Spam:"
-          data:
-            none: No result recorded
-            yes: "True"
-            no: "False"
-        tag_limit:
-          label: "Over Tag Limit:"
-          data:
-            yes: "Yes"
-            no: "No"
-        rejected_gift: "Refused As Gift:"
+      ip:
+        label: "IP Address:"
+        data:
+          none: No address recorded
+      spam:
+        label: "Akismet Reported As Spam:"
+        data:
+          none: No result recorded
+          yes: "true"
+          no: "false"
+      tag_limit:
+        label: "Over Tag Limit:"
+        data:
+          yes: "Yes"
+          no: "No"
+      rejected_gift: "Refused As Gift:"
+    navigate:
+      heading_html: "Chapter Index for %{title} by %{byline}"
+      word_count:
+        one: "(%{count} word)"
+        other: "(%{count} words)"
   invite_requests:
     invite_request:
       title: "Invitation Status for %{email}"
