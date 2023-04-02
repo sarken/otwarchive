@@ -32,7 +32,7 @@
 
     <% unless @work.language.blank? %>
       <dt class="language">
-        <%= ts("Language:") %>
+        <%= t(".language") %>
       </dt>
       <dd class="language">
         <%= @work.language.name %>
@@ -41,7 +41,7 @@
 
     <% unless @work.serial_works.blank? %>
       <dt class="series">
-        <%= ts("Series:") %>
+        <%= t(".series") %>
       </dt>
       <dd class="series">
         <%= show_series_data(@work) %>
@@ -50,14 +50,14 @@
 
     <% unless @work.approved_collections.empty? %>
       <dt class="collections">
-        <%= ts('Collections:') %>
+        <%= t(".collections") %>
       </dt>
       <dd class="collections">
         <%= show_collections_data(@work.approved_collections) %>
       </dd>
     <% end %>
 
-    <dt class="work stats"><%= ts("Work Stats:") %></dt>
+    <dt class="work stats"><%= t(".stats") %></dt>
     <dd class="work stats">
 <% end %><!-- end of cache -->
 
@@ -70,16 +70,16 @@
     <% if @work.number_of_posted_chapters > 1 &&
           (params[:controller] == "chapters" ||
            params[:controller] == "work" && params[:view_full_work].nil?) %>
-      <dt class="chapter stats"><%= ts("Chapter Stats:") %></dt>
+      <dt class="chapter stats"><%= t(".chapter.stats") %></dt>
       <dd class="chapter stats">
         <dl class="stats">
-          <dt class="published"><%= ts("Published:") %></dt>
+          <dt class="published"><%= t(".chapter.published") %></dt>
           <dd class="published"><%= localize(@chapter.published_at) %></dd>
-          <dt class="words"><%= ts("Words:") %></dt>
-          <dd class="words"><%= @chapter.word_count %></dd>
+          <dt class="words"><%= t(".chapter.words") %></dt>
+          <dd class="words"><%= number_with_delimiter(@chapter.word_count) %></dd>
           <% unless @chapter.comments.count.zero? %>
-            <dt class="comments"><%= ts("Comments:") %></dt>
-            <dd class="comments"><%= @chapter.comments.count %></dd>
+            <dt class="comments"><%= t(".chapter.comments") %></dt>
+            <dd class="comments"><%= number_with_delimiter(@chapter.comments.count) %></dd>
           <% end %>
         </dl>
       </dd>
@@ -99,11 +99,11 @@
 
     <% if policy(:user_creation).show_ip_address? %>
       <dt class="ip">
-          <%= ts('IP Address:') %>
+          <%= t(".admin.ip.label") %>
       </dt>
       <dd class="ip">
         <% if @work.ip_address.nil? %>
-          <%= ts('No address recorded') %>
+          <%= t(".admin.ip.data.none") %>
         <% else %>
           <%= @work.ip_address %>
         <% end %>
@@ -112,26 +112,26 @@
 
     <% if logged_in_as_admin? %>
       <dt class="akismet">
-        <%= ts('Akismet Reported As Spam:') %>
+        <%= t(".admin.spam.label") %>
       </dt>
       <dd class="akismet">
         <% if !@work.spam_checked? %>
-          <%= ts('No result recorded') %>
+          <%= t(".admin.spam.data.none") %>
         <% else %>
-          <%= @work.spam? %>
+          <%= @work.spam? ? t(".admin.tag_limit.data.yes") : t(".admin.tag_limit.data.no") %>
         <% end %>
       </dd>
 
       <dt class="limit">
-        <%= ts("Over Tag Limit:") %>
+        <%= t(".admin.tag_limit.label") %>
       </dt>
       <dd class="limit">
-        <%= @work.user_defined_tags_count > ArchiveConfig.USER_DEFINED_TAGS_MAX ? ts("Yes") : ts("No") %>
+        <%= @work.user_defined_tags_count > ArchiveConfig.USER_DEFINED_TAGS_MAX ? t(".admin.tag_limit.data.yes") : t(".admin.tag_limit.data.no") %>
       </dd>
 
       <% if @work.gifts.are_rejected.exists? %>
         <dt class="gift">
-          <%= ts('Refused As Gift:') %>
+          <%= t(".admin.rejected_gift") %>
         </dt>
         <dd class="gift">
           <%= @work.gifts.are_rejected.map { |g| g.recipient }.join(", ") %>

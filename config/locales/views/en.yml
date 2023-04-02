@@ -500,6 +500,32 @@ en:
       original_creators:
         one: "Original Creator ID:"
         other: "Original Creator IDs:"
+      chapter:
+        stats: "Chapter Stats:"
+        words: "Words:"
+        comments: "Comments:"
+        published: "Published:"
+      stats: "Work Stats:"
+      collections: "Collections:"
+      series: "Series:"
+      language: "Language:"
+      admin:
+        ip:
+          label: "IP Address:"
+          data:
+            none: No address recorded
+        spam:
+          label: "Akismet Recorded As Spam:"
+          data:
+            none: No result recorded
+            yes: "True"
+            no: "False"
+        tag_limit:
+          label: "Over Tag Limit:"
+          data:
+            yes: "Yes"
+            no: "No"
+        rejected_gift: "Refused As Gift:"
   invite_requests:
     invite_request:
       title: "Invitation Status for %{email}"
