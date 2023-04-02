@@ -85,54 +85,58 @@
       </dd>
     <% end %>
 
-      <% if policy(:user_creation).show_original_creators? %>
-        <% if @work.original_creators.any? %>
-          <% original_creators = @work.original_creators.map(&:display) %>
-          <dt class="original_creators">
-            <%= t('.original_creators', count: original_creators.count) %>
-          </dt>
-          <dd class="original_creators">
-            <%= original_creators.join(", ") %>
-          </dd>
-        <% end %>
+    <% if policy(:user_creation).show_original_creators? %>
+      <% if @work.original_creators.any? %>
+        <% original_creators = @work.original_creators.map(&:display) %>
+        <dt class="original_creators">
+          <%= t('.original_creators', count: original_creators.count) %>
+        </dt>
+        <dd class="original_creators">
+          <%= original_creators.join(", ") %>
+        </dd>
       <% end %>
-      <% if policy(:user_creation).show_ip_address? %>
-        <dt class="ip">
+    <% end %>
+
+    <% if policy(:user_creation).show_ip_address? %>
+      <dt class="ip">
           <%= ts('IP Address:') %>
+      </dt>
+      <dd class="ip">
+        <% if @work.ip_address.nil? %>
+          <%= ts('No address recorded') %>
+        <% else %>
+          <%= @work.ip_address %>
+        <% end %>
+      </dd>
+    <% end %>
+
+    <% if logged_in_as_admin? %>
+      <dt class="akismet">
+        <%= ts('Akismet Reported As Spam:') %>
+      </dt>
+      <dd class="akismet">
+        <% if !@work.spam_checked? %>
+          <%= ts('No result recorded') %>
+        <% else %>
+          <%= @work.spam? %>
+        <% end %>
+      </dd>
+
+      <dt class="limit">
+        <%= ts("Over Tag Limit:") %>
+      </dt>
+      <dd class="limit">
+        <%= @work.user_defined_tags_count > ArchiveConfig.USER_DEFINED_TAGS_MAX ? ts("Yes") : ts("No") %>
+      </dd>
+
+      <% if @work.gifts.are_rejected.exists? %>
+        <dt class="gift">
+          <%= ts('Refused As Gift:') %>
         </dt>
-        <dd class="ip">
-          <% if @work.ip_address.nil? %>
-             <%= ts('No address recorded') %>
-          <% else %>
-             <%= @work.ip_address %>
-          <% end %>
+        <dd class="gift">
+          <%= @work.gifts.are_rejected.map { |g| g.recipient }.join(", ") %>
         </dd>
       <% end %>
-      <% if logged_in_as_admin? %>
-        <dt class="akismet">
-          <%= ts('Akismet Reported As Spam:') %>
-        </dt>
-        <dd class="akismet">
-          <% if !@work.spam_checked? %>
-             <%= ts('No result recorded') %>
-          <% else %>
-             <%= @work.spam? %>
-          <% end %>
-        </dd>
-        <dt class="limit">
-          <%= ts("Over Tag Limit:") %>
-        </dt>
-        <dd class="limit">
-          <%= @work.user_defined_tags_count > ArchiveConfig.USER_DEFINED_TAGS_MAX ? ts("Yes") : ts("No") %>
-        </dd>
-        <% if @work.gifts.are_rejected.exists? %>
-          <dt class="gift">
-            <%= ts('Refused As Gift:') %>
-          </dt>
-          <dd class="gift">
-            <%= @work.gifts.are_rejected.map { |g| g.recipient }.join(", ") %>
-          </dd>
-        <% end %>
     <% end %>
   </dl>
 </div>
