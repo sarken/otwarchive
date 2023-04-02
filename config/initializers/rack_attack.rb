@@ -20,9 +20,8 @@ class Rack::Attack
   # frontends will pass the internal network (10.0.0.0/8) to the
   # unicorns. We need to ensure that we don't block these requests.
 
-  Rack::Attack.safelist('allow from local net') do |req|
-    # Requests are allowed if the return value is truthy
-    req.ip.start_with?('127.') || req.ip == '::1' || req.ip.start_with?('10.')
+  ArchiveConfig.RATE_LIMIT_SAFELIST.each do |ip|
+    Rack::Attack.safelist_ip(ip)
   end
 
   # If any single client IP is making tons of requests, then they're
@@ -63,29 +62,28 @@ class Rack::Attack
   login_limit = ArchiveConfig.RATE_LIMIT_LOGIN_ATTEMPTS
   login_period = ArchiveConfig.RATE_LIMIT_LOGIN_PERIOD
 
-  # Throttle POST requests to /login by IP address
+  # Throttle POST requests to /users/login by IP address
   #
   # Key: "rack::attack:#{Time.now.to_i/:period}:logins/ip:#{req.ip}"
-  throttle('logins/ip', limit: login_limit, period: login_period) do |req|
-    if req.path == '/login' && req.post?
-      req.ip
-    end
+  throttle("logins/ip", limit: login_limit, period: login_period) do |req|
+    req.ip if req.path == "/users/login" && req.post?
   end
 
-  # Throttle POST requests to /login by email param
+  # Throttle POST requests to /users/login by login param (user name or email)
   #
-  # Key: "rack::attack:#{Time.now.to_i/:period}:logins/email:#{req.email}"
+  # Key: "rack::attack:#{Time.now.to_i/:period}:logins/email:#{login}"
   #
   # Note: This creates a problem where a malicious user could intentionally
   # throttle logins for another user and force their login requests to be
   # denied, but that's not very common and shouldn't happen to you. (Knock
   # on wood!)
   throttle("logins/email", limit: login_limit, period: login_period) do |req|
-    if req.path == '/login' && req.post?
-      # return the email if present, nil otherwise
-      req.params['email'].presence
-    end
+    req.params.dig("user", "login").presence if req.path == "/users/login" && req.post?
   end
+  
+  # Add Retry-After response header to let polite clients know
+  # how many seconds they should wait before trying again
+  Rack::Attack.throttled_response_retry_after_header = true
 
   ### Custom Throttle Response ###
 

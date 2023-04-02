@@ -7,20 +7,24 @@ Feature: Collectible items
     Given I have a collection "Various Penguins"
       And I am logged in as a random user
 
-  Scenario: Add my work to a collection
-    Given I post the work "Blabla"
-    When I add my work to the collection
-    Then I should see "Added"
+  Scenario: Post my work to a collection
+    Given I post the work "Blabla" in the collection "Various Penguins"
     When I go to "Various Penguins" collection's page
-    Then I should see "Works (1)"
+    Then I should see "Works (0)" within "#dashboard"
+      And I should see "Blabla"
+    When the collection counts have expired
+      And I reload the page
+    Then I should see "Works (1)" within "#dashboard"
       And I should see "Blabla"
 
   Scenario: Add my chaptered work to a collection
-    Given I post the chaptered work "Blabla"
-    When I add my work to the collection
-    Then I should see "Added"
+    Given I post the chaptered work "Blabla" in the collection "Various Penguins"
     When I go to "Various Penguins" collection's page
-    Then I should see "Works (1)"
+    Then I should see "Works (0)" within "#dashboard"
+      And I should see "Blabla"
+    When the collection counts have expired
+      And I reload the page
+    Then I should see "Works (1)" within "#dashboard"
       And I should see "Blabla"
 
   Scenario: Add my bookmark to a collection
@@ -28,6 +32,10 @@ Feature: Collectible items
     When I add my bookmark to the collection "Various_Penguins"
     Then I should see "Added"
     When I go to "Various Penguins" collection's page
+    Then I should see "Bookmarked Items (0)" within "#dashboard"
+      And I should see "Tundra penguins"
+    When the collection counts have expired
+      And I reload the page
     Then I should see "Bookmarked Items (1)" within "#dashboard"
       And I should see "Tundra penguins"
 

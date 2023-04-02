@@ -1,4 +1,4 @@
-# See http://www.robotstxt.org/wc/norobots.html for documentation on how to use the robots.txt file
+# See https://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
 #
 
 User-agent:	*
@@ -30,6 +30,9 @@ Disallow: /*?*pseud_id
 Disallow: /*?*user_id
 Disallow: /*?*pseud=
 Disallow: /people?*show=
+
+User-agent: CCBot
+Disallow: /
 
 User-agent: Slurp
 Crawl-delay: 30

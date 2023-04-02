@@ -1,15 +1,10 @@
-class UserMailer < BulletproofMailer::Base
-  include Resque::Mailer # see README in this directory
-
-  layout 'mailer'
-
+class UserMailer < ApplicationMailer
   helper_method :current_user
   helper_method :current_admin
   helper_method :logged_in?
   helper_method :logged_in_as_admin?
 
   helper :application
-  helper :mailer
   helper :tags
   helper :works
   helper :users
@@ -17,9 +12,7 @@ class UserMailer < BulletproofMailer::Base
   helper :series
   include HtmlCleaner
 
-  default from: "Archive of Our Own " + "<#{ArchiveConfig.RETURN_ADDRESS}>"
-
-  # Send an email letting authors know their work has been added to a collection
+  # Send an email letting creators know their work has been added to a collection
   def added_to_collection_notification(user_id, work_id, collection_id)
     @user = User.find(user_id)
     @work = Work.find(work_id)
@@ -72,8 +65,6 @@ class UserMailer < BulletproofMailer::Base
                    app_name: ArchiveConfig.APP_SHORT_NAME)
       )
     end
-  ensure
-    I18n.locale = I18n.default_locale
   end
 
   # Sends an invitation to join the archive
@@ -117,8 +108,6 @@ class UserMailer < BulletproofMailer::Base
         subject: "[#{ArchiveConfig.APP_SHORT_NAME}] Works uploaded"
       )
     end
-    ensure
-      I18n.locale = I18n.default_locale
   end
 
   # Sends a batched subscription notification
@@ -141,16 +130,13 @@ class UserMailer < BulletproofMailer::Base
       # If the subscription notification is for a user subscription, we don't
       # want to send updates about works that have recently become anonymous.
       if @subscription.subscribable_type == 'User'
-        next if creation.is_a?(Work) && creation.anonymous?
-        next if creation.is_a?(Chapter) && creation.work.anonymous?
+        next if Subscription.anonymous_creation?(creation)
       end
 
       @creations << creation
     end
 
-    # die if we haven't got any creations to notify about
-    # see lib/bulletproof_mailer.rb
-    abort_delivery if @creations.empty?
+    return if @creations.empty?
 
     # make sure we only notify once per creation
     @creations.uniq!
@@ -165,8 +151,6 @@ class UserMailer < BulletproofMailer::Base
         subject: "[#{ArchiveConfig.APP_SHORT_NAME}] #{subject}"
       )
     end
-    ensure
-      I18n.locale = I18n.default_locale
   end
 
   # Emails a user to say they have been given more invitations for their friends
@@ -179,8 +163,6 @@ class UserMailer < BulletproofMailer::Base
         subject: "#{t 'user_mailer.invite_increase_notification.subject', app_name: ArchiveConfig.APP_SHORT_NAME}"
       )
     end
-    ensure
-      I18n.locale = I18n.default_locale
   end
 
   # Emails a user to say that their request for invitation codes has been declined
@@ -194,10 +176,10 @@ class UserMailer < BulletproofMailer::Base
         subject: t('user_mailer.invite_request_declined.subject', app_name: ArchiveConfig.APP_SHORT_NAME)
       )
     end
-    ensure
-      I18n.locale = I18n.default_locale
   end
 
+  # TODO: This may be sent to multiple users simultaneously. We need to ensure
+  # each user gets the email for their preferred locale.
   def collection_notification(collection_id, subject, message)
     @message = message
     @collection = Collection.find(collection_id)
@@ -212,15 +194,17 @@ class UserMailer < BulletproofMailer::Base
     @invalid_signups = invalid_signup_ids
     mail(
       to: @collection.get_maintainers_email,
-      subject: "[#{ArchiveConfig.APP_SHORT_NAME}][#{@collection.title}] Invalid Sign-ups Found"
+      subject: "[#{ArchiveConfig.APP_SHORT_NAME}][#{@collection.title}] Invalid sign-ups found"
     )
   end
 
+  # This is sent at the end of matching, i.e., after assignments are generated.
+  # It is also sent when assignments are regenerated.
   def potential_match_generation_notification(collection_id)
     @collection = Collection.find(collection_id)
     mail(
       to: @collection.get_maintainers_email,
-      subject: "[#{ArchiveConfig.APP_SHORT_NAME}][#{@collection.title}] Potential Assignment Generation Complete"
+      subject: "[#{ArchiveConfig.APP_SHORT_NAME}][#{@collection.title}] Potential assignment generation complete"
     )
   end
 
@@ -229,10 +213,12 @@ class UserMailer < BulletproofMailer::Base
     @assigned_user = User.find(assigned_user_id)
     assignment = ChallengeAssignment.find(assignment_id)
     @request = (assignment.request_signup || assignment.pinch_request_signup)
-    mail(
-      to: @assigned_user.email,
-      subject: t("user_mailer.challenge_assignment_notification.subject", app_name: ArchiveConfig.APP_SHORT_NAME, collection_title: @collection.title)
-    )
+    I18n.with_locale(Locale.find(@assigned_user.preference.preferred_locale).iso) do
+      mail(
+        to: @assigned_user.email,
+        subject: default_i18n_subject(app_name: ArchiveConfig.APP_SHORT_NAME, collection_title: @collection.title)
+      )
+    end
   end
 
   # Asks a user to validate and activate their new account
@@ -244,8 +230,6 @@ class UserMailer < BulletproofMailer::Base
         subject: t('user_mailer.signup_notification.subject', app_name: ArchiveConfig.APP_SHORT_NAME)
       )
     end
-    ensure
-      I18n.locale = I18n.default_locale
   end
 
   # Confirms to a user that their email was changed
@@ -259,8 +243,6 @@ class UserMailer < BulletproofMailer::Base
         subject: t('user_mailer.change_email.subject', app_name: ArchiveConfig.APP_SHORT_NAME)
       )
     end
-    ensure
-      I18n.locale = I18n.default_locale
   end
 
   ### WORKS NOTIFICATIONS ###
@@ -271,15 +253,11 @@ class UserMailer < BulletproofMailer::Base
     @archivist = User.find(archivist_id)
     @user = @creatorship.pseud.user
     @creation = @creatorship.creation
-    I18n.with_locale(Locale.find(@user.preference.preferred_locale).iso) do
-      mail(
-        to: @user.email,
-        subject: t("user_mailer.creatorship_notification_archivist.subject",
-                   app_name: ArchiveConfig.APP_SHORT_NAME)
-      )
-    end
-  ensure
-    I18n.locale = I18n.default_locale
+    mail(
+      to: @user.email,
+      subject: t("user_mailer.creatorship_notification_archivist.subject",
+                 app_name: ArchiveConfig.APP_SHORT_NAME)
+    )
   end
 
   # Sends email when a user is added as a co-creator
@@ -288,35 +266,27 @@ class UserMailer < BulletproofMailer::Base
     @adding_user = User.find(adding_user_id)
     @user = @creatorship.pseud.user
     @creation = @creatorship.creation
-    I18n.with_locale(Locale.find(@user.preference.preferred_locale).iso) do
-      mail(
-        to: @user.email,
-        subject: t("user_mailer.creatorship_notification.subject",
-                   app_name: ArchiveConfig.APP_SHORT_NAME)
-      )
-    end
-  ensure
-    I18n.locale = I18n.default_locale
+    mail(
+      to: @user.email,
+      subject: t("user_mailer.creatorship_notification.subject",
+                 app_name: ArchiveConfig.APP_SHORT_NAME)
+    )
   end
 
   # Sends email when a user is added as an unapproved/pending co-creator
-  def creatorship_invitation(creatorship_id, inviting_user_id)
+  def creatorship_request(creatorship_id, inviting_user_id)
     @creatorship = Creatorship.find(creatorship_id)
     @inviting_user = User.find(inviting_user_id)
     @user = @creatorship.pseud.user
     @creation = @creatorship.creation
-    I18n.with_locale(Locale.find(@user.preference.preferred_locale).iso) do
-      mail(
-        to: @user.email,
-        subject: t("user_mailer.creatorship_invitation.subject",
-                   app_name: ArchiveConfig.APP_SHORT_NAME)
-      )
-    end
-  ensure
-    I18n.locale = I18n.default_locale
+    mail(
+      to: @user.email,
+      subject: t("user_mailer.creatorship_request.subject",
+                 app_name: ArchiveConfig.APP_SHORT_NAME)
+    )
   end
 
-  # Sends emails to authors whose stories were listed as the inspiration of another work
+  # Sends emails to creators whose stories were listed as the inspiration of another work
   def related_work_notification(user_id, related_work_id)
     @user = User.find(user_id)
     @related_work = RelatedWork.find(related_work_id)
@@ -328,23 +298,27 @@ class UserMailer < BulletproofMailer::Base
         subject: "[#{ArchiveConfig.APP_SHORT_NAME}] Related work notification"
       )
     end
-    ensure
-      I18n.locale = I18n.default_locale
   end
 
   # Emails a recipient to say that a gift has been posted for them
-  def recipient_notification(user_id, work_id, collection_id=nil)
+  def recipient_notification(user_id, work_id, collection_id = nil)
     @user = User.find(user_id)
     @work = Work.find(work_id)
     @collection = Collection.find(collection_id) if collection_id
     I18n.with_locale(Locale.find(@user.preference.preferred_locale).iso) do
+      subject = if @collection
+                  t("user_mailer.recipient_notification.subject.collection",
+                    app_name: ArchiveConfig.APP_SHORT_NAME,
+                    collection_title: @collection.title)
+                else
+                  t("user_mailer.recipient_notification.subject.no_collection",
+                    app_name: ArchiveConfig.APP_SHORT_NAME)
+                end
       mail(
         to: @user.email,
-        subject: "[#{ArchiveConfig.APP_SHORT_NAME}]#{@collection ? '[' + @collection.title + ']' : ''} A Gift Work For You #{@collection ? 'From ' + @collection.title : ''}"
+        subject: subject
       )
     end
-    ensure
-      I18n.locale = I18n.default_locale
   end
 
   # Emails a prompter to say that a response has been posted to their prompt
@@ -356,65 +330,63 @@ class UserMailer < BulletproofMailer::Base
       I18n.with_locale(Locale.find(user.preference.preferred_locale).iso) do
         mail(
           to: user.email,
-          subject: "[#{ArchiveConfig.APP_SHORT_NAME}] A Response to your Prompt"
+          subject: "[#{ArchiveConfig.APP_SHORT_NAME}] A response to your prompt"
         )
       end
     end
-    ensure
-      I18n.locale = I18n.default_locale
   end
 
-  # Sends email to authors when a creation is deleted
+  # Sends email to creators when a creation is deleted
   # NOTE: this must be sent synchronously! otherwise the work will no longer be there to send
   # TODO refactor to make it asynchronous by passing the content in the method
   def delete_work_notification(user, work)
     @user = user
     @work = work
-    work_copy = generate_attachment_content_from_work(work)
-    work_copy = ::Mail::Encodings::Base64.encode(work_copy)
-    filename = work.title.gsub(/[*:?<>|\/\\\"]/,'')
-    attachments["#{filename}.txt"] = { content: work_copy, encoding: "base64" }
-    attachments["#{filename}.html"] = { content: work_copy, encoding: "base64" }
+    download = Download.new(@work, mime_type: "text/html", include_draft_chapters: true)
+    html = DownloadWriter.new(download).generate_html
+    html = ::Mail::Encodings::Base64.encode(html)
+    attachments["#{download.file_name}.html"] = { content: html, encoding: "base64" }
+    attachments["#{download.file_name}.txt"] = { content: html, encoding: "base64" }
+
     I18n.with_locale(Locale.find(@user.preference.preferred_locale).iso) do
       mail(
         to: user.email,
         subject: t('user_mailer.delete_work_notification.subject', app_name: ArchiveConfig.APP_SHORT_NAME)
       )
     end
-    ensure
-      I18n.locale = I18n.default_locale
   end
 
-  # Sends email to authors when a creation is deleted by an Admin
+  # Sends email to creators when a creation is deleted by an admin
   # NOTE: this must be sent synchronously! otherwise the work will no longer be there to send
   # TODO refactor to make it asynchronous by passing the content in the method
   def admin_deleted_work_notification(user, work)
     @user = user
     @work = work
-    work_copy = generate_attachment_content_from_work(work)
-    work_copy = ::Mail::Encodings::Base64.encode(work_copy)
-    filename = work.title.gsub(/[*:?<>|\/\\\"]/,'')
-    attachments["#{filename}.txt"] = { content: work_copy, encoding: "base64" }
-    attachments["#{filename}.html"] = { content: work_copy, encoding: "base64" }
+    download = Download.new(@work, mime_type: "text/html", include_draft_chapters: true)
+    html = DownloadWriter.new(download).generate_html
+    html = ::Mail::Encodings::Base64.encode(html)
+    attachments["#{download.file_name}.html"] = { content: html, encoding: "base64" }
+    attachments["#{download.file_name}.txt"] = { content: html, encoding: "base64" }
+
     I18n.with_locale(Locale.find(@user.preference.preferred_locale).iso) do
       mail(
         to: user.email,
         subject: t('user_mailer.admin_deleted_work_notification.subject', app_name: ArchiveConfig.APP_SHORT_NAME)
       )
     end
-    ensure
-      I18n.locale = I18n.default_locale
   end
 
-  # Sends email to authors when a creation is hidden by an Admin
+  # Sends email to creators when a creation is hidden by an admin
   def admin_hidden_work_notification(creation_id, user_id)
     @user = User.find_by(id: user_id)
     @work = Work.find_by(id: creation_id)
 
-    mail(
+    I18n.with_locale(Locale.find(@user.preference.preferred_locale).iso) do
+      mail(
         to: @user.email,
-        subject: "[#{ArchiveConfig.APP_SHORT_NAME}] Your work has been hidden by the Abuse Team"
-    )
+        subject: default_i18n_subject(app_name: ArchiveConfig.APP_SHORT_NAME)
+      )
+    end
   end
 
   def admin_spam_work_notification(creation_id, user_id)
@@ -452,27 +424,6 @@ class UserMailer < BulletproofMailer::Base
       to: abuse_report.email,
       subject: "#{t 'user_mailer.abuse_report.subject', app_name: ArchiveConfig.APP_SHORT_NAME}"
     )
-  end
-
-  def generate_attachment_content_from_work(work)
-    attachment_string =  "Title: " + work.title + "<br />" + "by " + work.pseuds.collect(&:name).join(", ") + "<br />\n"
-    attachment_string += "<br/>Tags: " + work.tags.collect(&:name).join(", ") + "<br/>\n" unless work.tags.blank?
-    attachment_string += "<br/>Summary: " + work.summary + "<br/>\n" unless work.summary.blank?
-    attachment_string += "<br/>Notes: " + work.notes + "<br/>\n" unless work.notes.blank?
-    attachment_string += "<br/>End Notes: " + work.endnotes + "<br/>\n" unless work.endnotes.blank?
-    attachment_string += "<br/>Published at: " + work.first_chapter.published_at.to_s + "<br/>\n" unless work.first_chapter.published_at.blank?
-    attachment_string += "Revised at: " + work.revised_at.to_s + "<br/>\n" unless work.revised_at.blank?
-
-    work.chapters.each do |chapter|
-      attachment_string += "<br/>Chapter " + chapter.position.to_s unless !work.chaptered?
-      attachment_string += ": " + chapter.title unless chapter.title.blank?
-      attachment_string += "\n<br/>by: " + chapter.pseuds.collect(&:name).join(", ") + "<br />\n" unless chapter.pseuds.sort == work.pseuds.sort
-      attachment_string += "<br/>Summary: " + chapter.summary + "<br/>\n" unless chapter.summary.blank?
-      attachment_string += "<br/>Notes: " + chapter.notes + "<br/>\n" unless chapter.notes.blank?
-      attachment_string += "<br/>End Notes: " + chapter.endnotes + "<br/>\n" unless chapter.endnotes.blank?
-      attachment_string += "<br/>" + chapter.content + "<br />\n"
-    end
-    return attachment_string
   end
 
   protected

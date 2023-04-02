@@ -9,8 +9,8 @@ Feature: Create and Edit Series
       And I set up the draft "Sweetie Belle"
     When I fill in "Or create and use a new one:" with "Ponies"
     When I press "Post"
-    Then I should see "Part 1 of the Ponies series" within "div#series"
-      And I should see "Part 1 of the Ponies series" within "dd.series"
+    Then I should see "Part 1 of Ponies" within "div#series"
+      And I should see "Part 1 of Ponies" within "dd.series"
     When I view the series "Ponies"
     Then I should see "Sweetie Belle"
 
@@ -20,8 +20,8 @@ Feature: Create and Edit Series
       And I set up the draft "Starsong"
     When I select "Ponies" from "Choose one of your existing series:"
       And I press "Post"
-    Then I should see "Part 2 of the Ponies series" within "div#series"
-      And I should see "Part 2 of the Ponies series" within "dd.series"
+    Then I should see "Part 2 of Ponies" within "div#series"
+      And I should see "Part 2 of Ponies" within "dd.series"
     When I view the series "Ponies"
     Then I should see "Sweetie Belle"
       And I should see "Starsong"
@@ -35,8 +35,8 @@ Feature: Create and Edit Series
     When I edit the work "Rainbow Dash"
       And I select "Ponies" from "Choose one of your existing series:"
       And I press "Post"
-    Then I should see "Part 2 of the Ponies series" within "div#series"
-      And I should see "Part 2 of the Ponies series" within "dd.series"
+    Then I should see "Part 2 of Ponies" within "div#series"
+      And I should see "Part 2 of Ponies" within "dd.series"
     When I view the series "Ponies"
     Then I should see "Sweetie Belle"
       And I should see "Rainbow Dash"
@@ -48,7 +48,7 @@ Feature: Create and Edit Series
       And I post the work "Rainbow Dash" as part of a series "Ponies"
     When I view the series "Ponies"
       And I follow "Rainbow Dash"
-    Then I should see "Part 3 of the Ponies series"
+    Then I should see "Part 3 of Ponies"
     When I follow "← Previous Work"
     Then I should see "Starsong"
     When I follow "← Previous Work"
@@ -82,14 +82,14 @@ Feature: Create and Edit Series
       And "Ponies" should be an option within "Choose one of your existing series:"
     When I fill in "Or create and use a new one:" with "Black Beauty"
       And I press "Preview"
-    Then I should see "Part 2 of the Ponies series" within "dd.series"
-      And I should see "Part 1 of the Black Beauty series" within "dd.series"
+    Then I should see "Part 2 of Ponies" within "dd.series"
+      And I should see "Part 1 of Black Beauty" within "dd.series"
     When I press "Update"
       And all indexing jobs have been run
-    Then I should see "Part 1 of the Black Beauty series" within "dd.series"
-      And I should see "Part 2 of the Ponies series" within "dd.series"
-      And I should see "Part 1 of the Black Beauty series" within "div#series"
-      And I should see "Part 2 of the Ponies series" within "div#series"
+    Then I should see "Part 1 of Black Beauty" within "dd.series"
+      And I should see "Part 2 of Ponies" within "dd.series"
+      And I should see "Part 1 of Black Beauty" within "div#series"
+      And I should see "Part 2 of Ponies" within "div#series"
 
   Scenario: Creator with multiple pseuds adds a work to a new series when the work is first posted
     Given I am logged in as "author"
@@ -98,8 +98,8 @@ Feature: Create and Edit Series
     When I fill in "Or create and use a new one:" with "Ponies"
       And I press "Post"
     Then I should see "Pointless Pseud"
-      And I should see "Part 1 of the Ponies series" within "div#series"
-      And I should see "Part 1 of the Ponies series" within "dd.series"
+      And I should see "Part 1 of Ponies" within "div#series"
+      And I should see "Part 1 of Ponies" within "dd.series"
     When I view the series "Ponies"
     Then I should see "Sweetie Belle"
 
@@ -110,7 +110,7 @@ Feature: Create and Edit Series
     When I set up the draft "Starsong" as part of a series "Ponies" using the pseud "Pointless Pseud"
       And I press "Post"
     Then I should see "Pointless Pseud"
-      And I should see "Part 2 of the Ponies series"
+      And I should see "Part 2 of Ponies"
     When I view the series "Ponies"
     Then I should see "Sweetie Belle"
       And I should see "Starsong"
@@ -125,8 +125,8 @@ Feature: Create and Edit Series
     When I edit the work "Rainbow Dash"
       And I select "Ponies" from "Choose one of your existing series:"
       And I press "Post"
-    Then I should see "Part 2 of the Ponies series" within "div#series"
-      And I should see "Part 2 of the Ponies series" within "dd.series"
+    Then I should see "Part 2 of Ponies" within "div#series"
+      And I should see "Part 2 of Ponies" within "dd.series"
     When I view the series "Ponies"
     Then I should see "Sweetie Belle"
       And I should see "Rainbow Dash"
@@ -142,8 +142,8 @@ Feature: Create and Edit Series
   Scenario: Rename a series
     Given I am logged in as a random user
     When I add the work "WALL-E" to series "Robots"
-    Then I should see "Part 1 of the Robots series" within "div#series"
-      And I should see "Part 1 of the Robots series" within "dd.series"
+    Then I should see "Part 1 of Robots" within "div#series"
+      And I should see "Part 1 of Robots" within "dd.series"
     When I view the series "Robots"
       And I follow "Edit Series"
       And I fill in "Series Title" with "Many a Robot"
@@ -156,8 +156,8 @@ Feature: Create and Edit Series
     Then I should see "Part 1 of Many a Robot" within "#user-works"
     # Work metas should be updated.
     When I view the work "WALL-E"
-    Then I should see "Part 1 of the Many a Robot series" within "div#series"
-      And I should see "Part 1 of the Many a Robot series" within "dd.series"
+    Then I should see "Part 1 of Many a Robot" within "div#series"
+      And I should see "Part 1 of Many a Robot" within "dd.series"
 
   Scenario: Post
     Given I am logged in as "whoever" with password "whatever"
@@ -169,7 +169,7 @@ Feature: Create and Edit Series
     Given I am logged in as "whoever" with password "whatever"
       And I add the work "grumble" to series "polarbears"
     When I go to whoever's series page
-    Then I should see "whoever's Series"
+    Then I should see "1 Series by whoever"
       And I should see "polarbears"
 
   Scenario: Series index for maaany series
@@ -190,7 +190,7 @@ Feature: Create and Edit Series
       And I press "Update"
     Then I should see "Series was successfully updated."
       But I should not see "moon"
-    When the user "moon" accepts all co-creator invites
+    When the user "moon" accepts all co-creator requests
     Then "moon" should be a creator of the series "Ponies"
     When I view the series "Ponies"
       And I follow "Remove Me As Co-Creator"
@@ -227,18 +227,27 @@ Feature: Create and Edit Series
       And I add the pseud "Pointless Pseud"
       And I set up the draft "Sweetie Belle" as part of a series "Ponies"
     When I press "Preview"
-    Then I should see "Part 1 of the Ponies series"
+    Then I should see "Part 1 of Ponies"
     When I press "Post"
       And I set up the draft "Rainbow Dash" as part of a series "Ponies" using the pseud "Pointless Pseud"
       And I press "Preview"
     Then I should see "Pointless Pseud"
-      And I should see "Part 2 of the Ponies series"
+      And I should see "Part 2 of Ponies"
     When I edit the work "Rainbow Dash"
       And I fill in "Or create and use a new one:" with "Black Beauty"
       And I wait 2 seconds
       And I press "Preview"
-    Then I should see "Part 2 of the Ponies series" within "dd.series"
-      And I should see "Part 1 of the Black Beauty series" within "dd.series"
+    Then I should see "Part 2 of Ponies" within "dd.series"
+      And I should see "Part 1 of Black Beauty" within "dd.series"
+
+  Scenario: A series's metadata is visible when viewing the series
+    Given I am logged in as a random user
+      And I post the work "Story" as part of a series "Excellent Series"
+      And I bookmark the series "Excellent Series"
+    When I view the series "Excellent Series"
+    Then I should see "Words: 6" within ".series.meta"
+      And I should see "Bookmarks: 1" within ".series.meta"
+      And I should see "Works: 1" within ".series.meta"
 
   Scenario: When editing a series, the title field should not escape HTML
     Given I am logged in as "whoever"
@@ -264,7 +273,7 @@ Feature: Create and Edit Series
     When I am logged in as "barbaz"
       And I follow "Gentleman Jack" in the email
     Then I should not see "Edit Series"
-    When I follow "Creator Invitations page"
+    When I follow "Co-Creator Requests page"
       And I check "selected[]"
       And I wait 2 seconds
       And I press "Accept"
@@ -305,7 +314,7 @@ Feature: Create and Edit Series
       And I should not see "Me (myself)"
       And 1 email should be delivered to "myself"
       And the email should contain "The user testuser has invited your pseud Me to be listed as a co-creator on the following series"
-    When the user "myself" accepts all co-creator invites
+    When the user "myself" accepts all co-creator requests
       And I view the series "Gentleman Jack"
     Then "testuser" should be the creator of the series "Gentleman Jack"
       And "Me (myself)" should be the creator of the series "Gentleman Jack"

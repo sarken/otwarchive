@@ -73,10 +73,12 @@ Feature: Invite requests
       And I fill in "Email address" with "test@archiveofourown.org"
       And I press "Send Invitation"
     Then 1 email should be delivered to test@archiveofourown.org
-      And the email should contain "has invited you to join our beta!"
+      And the email should contain "has invited you to join the Archive of Our Own!"
+      And the email should contain "If you do not receive this email after 48 hours"
+      And the email should contain "With an account, you can post fanworks"
 
     Given I am a visitor
-    When I click the first link in the email
+    When I follow "follow this link to sign up" in the email
       And I fill in the sign up form with valid data
       And I fill in the following:
         | user_registration_login                  | user2     |
@@ -111,21 +113,21 @@ Feature: Invite requests
     Then I should see "Invitation was successfully sent."
 
   Scenario: An admin can get to a user's invitations page
-    Given I am logged in as an admin
+    Given I am logged in as a "support" admin
       And the user "steven" exists and is activated
     When I go to the abuse administration page for "steven"
       And I follow "Add User Invitations"
     Then I should be on steven's invitations page
 
   Scenario: An admin can get to a user's manage invitations page
-    Given I am logged in as an admin
+    Given I am logged in as a "support" admin
       And the user "steven" exists and is activated
     When I go to the abuse administration page for "steven"
       And I follow "Manage User Invitations"
     Then I should be on steven's manage invitations page
 
   Scenario: An admin can create a user's invitations
-    Given I am logged in as an admin
+    Given I am logged in as a "support" admin
       And the user "steven" exists and is activated
     When I go to steven's invitations page
     Then I should see "Create more invitations for this user"
@@ -136,7 +138,7 @@ Feature: Invite requests
   Scenario: An admin can delete a user's invitations
     Given the user "user1" exists and is activated
       And "user1" has "5" invitations
-      And I am logged in as an admin
+      And I am logged in as a "support" admin
     When I follow "Invite New Users"
       And I fill in "invitation[user_name]" with "user1"
       And I press "Go"

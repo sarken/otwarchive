@@ -1,15 +1,9 @@
 class Prompt < ApplicationRecord
-  include ActiveModel::ForbiddenAttributesProtection
+  include UrlHelpers
   include TagTypeHelper
 
   # -1 represents all matching
   ALL = -1
-
-  # number of checkbox options to keep visible by default in form
-  OPTIONS_TO_SHOW = 3
-
-  # maximum number of options to allow to be shown via checkboxes
-  MAX_OPTIONS_FOR_CHECKBOXES = 10
 
   # ASSOCIATIONS
 
@@ -27,7 +21,7 @@ class Prompt < ApplicationRecord
   accepts_nested_attributes_for :optional_tag_set
   has_many :optional_tags, through: :optional_tag_set, source: :tag
 
-  has_many :request_claims, class_name: "ChallengeClaim", foreign_key: 'request_prompt_id'
+  has_many :request_claims, class_name: "ChallengeClaim", foreign_key: "request_prompt_id", inverse_of: :request_prompt, dependent: :destroy
 
   # SCOPES
 
@@ -35,50 +29,34 @@ class Prompt < ApplicationRecord
 
   scope :in_collection, lambda {|collection| where(collection_id: collection.id) }
 
-  scope :unused, -> { where(used_up: false) }
-
   scope :with_tag, lambda { |tag|
     joins("JOIN set_taggings ON set_taggings.tag_set_id = prompts.tag_set_id").
     where("set_taggings.tag_id = ?", tag.id)
   }
 
-  # CALLBACKS
-
-  before_destroy :clear_claims
-  def clear_claims
-    # remove this prompt reference from any existing assignments
-    request_claims.each {|claim| claim.destroy}
-  end
-
   # VALIDATIONS
+
+  before_validation :inherit_from_signup, on: :create, if: :challenge_signup
+  def inherit_from_signup
+    self.pseud = challenge_signup.pseud
+    self.collection = challenge_signup.collection
+  end
 
   validates_presence_of :collection_id
 
   validates_presence_of :challenge_signup
-  before_save :set_pseud
-  def set_pseud
-    unless self.pseud
-      self.pseud = self.challenge_signup.pseud
-    end
-    true
-  end
 
   # based on the prompt restriction
   validates_presence_of :url, if: :url_required?
   validates_presence_of :description, if: :description_required?
   validates_presence_of :title, if: :title_required?
-  def url_required?
-    (restriction = get_prompt_restriction) && restriction.url_required
-  end
-  def description_required?
-    (restriction = get_prompt_restriction) && restriction.description_required
-  end
+
+  delegate :url_required?, :description_required?, :title_required?,
+           to: :prompt_restriction, allow_nil: true
+
   validates_length_of :description,
     maximum: ArchiveConfig.NOTES_MAX,
     too_long: ts("must be less than %{max} letters long.", max: ArchiveConfig.NOTES_MAX)
-  def title_required?
-    (restriction = get_prompt_restriction) && restriction.title_required
-  end
   validates_length_of :title,
     maximum: ArchiveConfig.TITLE_MAX,
     too_long: ts("must be less than %{max} letters long.", max: ArchiveConfig.TITLE_MAX)
@@ -93,7 +71,7 @@ class Prompt < ApplicationRecord
   validate :correct_number_of_tags
   def correct_number_of_tags
     prompt_type = self.class.name
-    restriction = get_prompt_restriction
+    restriction = prompt_restriction
     if restriction
       # make sure tagset has no more/less than the required/allowed number of tags of each type
       TagSet::TAG_TYPES.each do |tag_type|
@@ -137,7 +115,7 @@ class Prompt < ApplicationRecord
   # are within that set, or otherwise canonical
   validate :allowed_tags
   def allowed_tags
-    restriction = get_prompt_restriction
+    restriction = prompt_restriction
     if restriction && tag_set
       TagSet::TAG_TYPES.each do |tag_type|
         # if we have a specified set of tags of this type, make sure that all the
@@ -169,7 +147,7 @@ class Prompt < ApplicationRecord
   # actually in the fandom they have chosen.
   validate :restricted_tags
   def restricted_tags
-    restriction = get_prompt_restriction
+    restriction = prompt_restriction
     if restriction
       TagSet::TAG_TYPES_RESTRICTED_TO_FANDOM.each do |tag_type|
         if restriction.send("#{tag_type}_restrict_to_fandom")
@@ -191,19 +169,6 @@ class Prompt < ApplicationRecord
 
   # INSTANCE METHODS
 
-  # make sure we are not blank
-  def blank?
-    return false if (url || description)
-    tagcount = 0
-    [tag_set, optional_tag_set].each do |set|
-      if set
-        tagcount += set.taglist.size + (TagSet::TAG_TYPES.collect {|type| eval("set.#{type}_taglist.size")}.sum)
-      end
-    end
-    return false if tagcount > 0
-    true # everything empty
-  end
-
   def can_delete?
     if challenge_signup && !challenge_signup.can_delete?(self)
       false
@@ -218,17 +183,6 @@ class Prompt < ApplicationRecord
 
   def fulfilled_claims
     self.request_claims.fulfilled
-  end
-
-  # We want to have all the matching methods defined on
-  # TagSet available here, too, without rewriting them,
-  # so we just pass them through method_missing
-  def method_missing(method, *args, &block)
-    super || (tag_set && tag_set.respond_to?(method) ? tag_set.send(method) : super)
-  end
-
-  def respond_to?(method, include_private = false)
-    super || tag_set.respond_to?(method, include_private)
   end
 
   # Computes the "full" tag set (tag_set + optional_tag_set), and stores the
@@ -288,52 +242,13 @@ class Prompt < ApplicationRecord
     send("any_#{type.downcase}")
   end
 
-  def get_prompt_restriction
-    if collection && collection.challenge
-      collection.challenge.prompt_restriction
-    else
-      nil
-    end
-  end
-
-  def self.reset_positions_in_collection!(collection)
-    minpos = collection.prompts.minimum(:position) - 1
-    collection.prompts.by_position.each do |prompt|
-      prompt.position = prompt.position - minpos
-      prompt.save
-    end
+  def prompt_restriction
+    raise "Base-type Prompt objects cannot have prompt restrictions. Try creating a Request or an Offer."
   end
 
   # tag groups
   def tag_groups
     self.tag_set ? self.tag_set.tags.group_by { |t| t.type.to_s } : {}
-  end
-
-  # Takes an array of tags and returns a comma-separated list, without the markup
-  def tag_list(tags)
-    tags = tags.uniq.compact
-    if !tags.blank? && tags.respond_to?(:collect)
-      last_tag = tags.pop
-      tag_list = tags.collect{|tag|  tag.name + ", "}.join
-      tag_list += last_tag.name
-      tag_list.html_safe
-    else
-      ""
-    end
-  end
-
-  # gets the list of tags for this prompt
-  def tag_unlinked_list
-    list = ""
-    TagSet::TAG_TYPES.each do |type|
-      eval("@show_request_#{type}_tags = (self.collection.challenge.request_restriction.#{type}_num_allowed > 0)")
-      if eval("@show_request_#{type}_tags")
-          if self && self.tag_set && !self.tag_set.with_type(type).empty?
-              list += " - " + tag_list(self.tag_set.with_type(type))
-          end
-      end
-    end
-    return list
   end
 
   def claim_by(user)

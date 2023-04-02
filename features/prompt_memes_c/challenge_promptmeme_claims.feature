@@ -380,21 +380,22 @@ Feature: Prompt Meme Challenge
     And I should see "Work was successfully posted."
   Then I should see "Fulfilled Story"
 
-  Scenario: Download prompt CSV from signups page
+  Scenario: Maintainers can download CSV from requests or sign-ups page
 
   Given I am logged in as "mod1"
     And I have standard challenge tags setup
     And I create Battle 12 promptmeme
   When I go to the "Battle 12" signups page
+  Then I should see "Download (CSV)"
+  When I go to the "Battle 12" requests page
     And I follow "Download (CSV)"
-  Then I should download a csv file with the header row "Pseud Email Sign-up URL Tags Description"
+  Then I should download a csv file with the header row "Pseud Sign-up URL Tags Title Description"
 
-  Scenario: Can't download prompt CSV from requests page
-  # it's aimed at users, not mods
+  Scenario: Users can't download prompt CSV from requests page
 
   Given I have Battle 12 prompt meme fully set up
     And everyone has signed up for Battle 12
-    And I am logged in as "mod1"
+    And I am logged in
   When I go to the "Battle 12" requests page
   Then I should not see "Download (CSV)"
 
@@ -410,7 +411,8 @@ Feature: Prompt Meme Challenge
     And the "Semi-anonymous Prompt" checkbox should be checked
 
   Scenario: Dates should be correctly set on PromptMemes
-    Given I am logged in as "mod1"
+    Given it is currently 2015-09-21 12:40 AM
+      And I am logged in as "mod1"
       And I have standard challenge tags set up
       And I have no prompts
     When I set up Battle 12 promptmeme collection
@@ -431,3 +433,16 @@ Feature: Prompt Meme Challenge
       And I use tomorrow as the "Sign-up closes" date
       And I submit
     Then I should see "Challenge was successfully created."
+
+  Scenario: A user who disallows gift works is cautioned about signing up for
+  a prompt meme, and a user who allows them is not.
+    Given I have Battle 12 prompt meme fully set up
+      And I am logged in as "participant"
+      And the user "participant" disallows gifts
+    When I go to "Battle 12" collection's page
+      And I follow "Prompt Form"
+    Then I should see "any user who claims your prompt to gift you a work in response to your prompt regardless of your preference settings"
+    When the user "participant" allows gifts
+      And I go to "Battle 12" collection's page
+      And I follow "Prompt Form"
+    Then I should not see "any user who claims your prompt to gift you a work in response to your prompt regardless of your preference settings"

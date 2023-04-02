@@ -1,5 +1,4 @@
 class Series < ApplicationRecord
-  include ActiveModel::ForbiddenAttributesProtection
   include Bookmarkable
   include Searchable
   include Creatable
@@ -57,8 +56,14 @@ class Series < ApplicationRecord
     where("creatorships.pseud_id IN (?)", pseuds.collect(&:id))
   }
 
+  scope :for_blurb, -> { includes(:work_tags, :pseuds) }
+
   def posted_works
     self.works.posted
+  end
+
+  def works_in_order
+    works.order("serial_works.position")
   end
 
   # Get the filters for the works in this series
@@ -221,12 +226,14 @@ class Series < ApplicationRecord
       methods: [
         :revised_at, :posted, :tag, :filter_ids, :rating_ids,
         :archive_warning_ids, :category_ids, :fandom_ids, :character_ids,
-        :relationship_ids, :freeform_ids, :pseud_ids, :creators,
+        :relationship_ids, :freeform_ids, :creators,
         :word_count, :work_types]
     ).merge(
       language_id: language&.short,
       anonymous: anonymous?,
       unrevealed: unrevealed?,
+      pseud_ids: anonymous? || unrevealed? ? nil : pseud_ids,
+      user_ids: anonymous? || unrevealed? ? nil : user_ids,
       bookmarkable_type: 'Series',
       bookmarkable_join: { name: "bookmarkable" }
     )

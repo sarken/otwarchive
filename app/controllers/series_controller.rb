@@ -16,21 +16,17 @@ class SeriesController < ApplicationController
   # GET /series
   # GET /series.xml
   def index
-    if params[:user_id]
-      @user = User.find_by(login: params[:user_id])
-      unless @user
-        raise ActiveRecord::RecordNotFound, "Couldn't find user '#{params[:user_id]}'"
-      end
-      @page_subtitle = ts("%{username} - Series", username: @user.login)
-      pseuds = @user.pseuds
-      if params[:pseud_id]
-        @pseud = @user.pseuds.find_by(name: params[:pseud_id])
-        unless @pseud
-          raise ActiveRecord::RecordNotFound, "Couldn't find pseud '#{params[:pseud_id]}'"
-        end
-        @page_subtitle = ts("by ") + @pseud.byline
-        pseuds = [@pseud]
-      end
+    unless params[:user_id]
+      flash[:error] = ts("Whose series did you want to see?")
+      redirect_to(root_path) and return
+    end
+    @user = User.find_by!(login: params[:user_id])
+    @page_subtitle = ts("%{username} - Series", username: @user.login)
+    pseuds = @user.pseuds
+    if params[:pseud_id]
+      @pseud = @user.pseuds.find_by!(name: params[:pseud_id])   
+      @page_subtitle = ts("by ") + @pseud.byline
+      pseuds = [@pseud]
     end
 
     if current_user.nil?
@@ -47,10 +43,8 @@ class SeriesController < ApplicationController
   # GET /series/1
   # GET /series/1.xml
   def show
-    @serial_works = \
-      @series.serial_works.includes(:work).references(:works).
-      where(works: { posted: true }).order(:position).
-      select { |sw| sw.work.visible? }
+    @works = @series.works_in_order.posted.select(&:visible?)
+
     # sets the page title with the data for the series
     @page_title = @series.unrevealed? ? ts("Mystery Series") : get_page_title(@series.allfandoms.collect(&:name).join(', '), @series.anonymous? ? ts("Anonymous") : @series.allpseuds.collect(&:byline).join(', '), @series.title)
     if current_user.respond_to?(:subscriptions)

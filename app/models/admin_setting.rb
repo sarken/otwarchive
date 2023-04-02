@@ -1,6 +1,4 @@
 class AdminSetting < ApplicationRecord
-  include ActiveModel::ForbiddenAttributesProtection
-
   belongs_to :last_updated, class_name: 'Admin', foreign_key: :last_updated_by
   validates_presence_of :last_updated_by
   validates :invite_from_queue_number, numericality: { greater_than_or_equal_to: 1,
@@ -25,9 +23,25 @@ class AdminSetting < ApplicationRecord
     cache_expiration: 10,
     tag_wrangling_off?: false,
     downloads_enabled?: true,
-    stats_updated_at: nil,
-    disable_support_form?: false
+    disable_support_form?: false,
+    default_skin_id: nil
   }.freeze
+
+  # Create AdminSetting.first on a blank database. We call this only in an initializer
+  # or a testing setup, not as part of any heavily used methods (e.g. AdminSetting.current).
+  def self.default
+    return AdminSetting.first if AdminSetting.first
+
+    settings = AdminSetting.new(
+      invite_from_queue_enabled: ArchiveConfig.INVITE_FROM_QUEUE_ENABLED,
+      invite_from_queue_number: ArchiveConfig.INVITE_FROM_QUEUE_NUMBER,
+      invite_from_queue_frequency: ArchiveConfig.INVITE_FROM_QUEUE_FREQUENCY,
+      account_creation_enabled: ArchiveConfig.ACCOUNT_CREATION_ENABLED,
+      days_to_purge_unactivated: ArchiveConfig.DAYS_TO_PURGE_UNACTIVATED
+    )
+    settings.save(validate: false)
+    settings
+  end
 
   def self.current
     Rails.cache.fetch("admin_settings", race_condition_ttl: 10.seconds) { AdminSetting.first } || OpenStruct.new(DEFAULT_SETTINGS)
@@ -35,15 +49,7 @@ class AdminSetting < ApplicationRecord
 
   class << self
     delegate *DEFAULT_SETTINGS.keys, :to => :current
-  end
-
-  def self.default_skin
-    settings = current
-    if settings.default_skin_id.present?
-      Rails.cache.fetch("admin_default_skin") { settings.default_skin }
-    else
-      Skin.default
-    end
+    delegate :default_skin, to: :current
   end
 
   # run once a day from cron
@@ -52,7 +58,7 @@ class AdminSetting < ApplicationRecord
       if Date.today >= self.invite_from_queue_at.to_date
         new_date = Time.now + self.invite_from_queue_frequency.days
         self.first.update_attribute(:invite_from_queue_at, new_date)
-        InviteRequest.invite
+        InviteFromQueueJob.perform_now(count: invite_from_queue_number)
       end
     end
   end
@@ -63,19 +69,10 @@ class AdminSetting < ApplicationRecord
     self.send(method, *args)
   end
 
-  def self.set_stats_updated_at(time)
-    if self.first
-      self.first.stats_updated_at = time
-      self.first.save
-    end
-  end
-
   private
 
   def expire_cached_settings
-    unless Rails.env.development?
-      Rails.cache.delete("admin_settings")
-    end
+    Rails.cache.delete("admin_settings")
   end
 
   def check_filter_status
@@ -93,5 +90,4 @@ class AdminSetting < ApplicationRecord
       self.invite_from_queue_at = Time.now + self.invite_from_queue_frequency.days
     end
   end
-
 end

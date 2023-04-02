@@ -10,12 +10,12 @@ describe OrphansController do
   let!(:user) { create(:user) }
 
   let!(:pseud) { create(:pseud, user: user) }
-  let!(:work) { create(:posted_work, authors: [pseud]) }
-  let(:second_work) { create(:posted_work, authors: user.pseuds) }
+  let!(:work) { create(:work, authors: [pseud]) }
+  let(:second_work) { create(:work, authors: user.pseuds) }
   let(:series) { create(:series, works: [work], authors: [pseud]) }
 
   let(:other_user) { create(:user) }
-  let(:other_work) { create(:posted_work, authors: [other_user.default_pseud]) }
+  let(:other_work) { create(:work, authors: [other_user.default_pseud]) }
 
   describe "GET #new" do
     render_views
@@ -87,6 +87,8 @@ describe OrphansController do
         post :create, params: { work_ids: [work], use_default: "true" }
         expect(work.reload.users).not_to include(user)
         it_redirects_to_with_notice(user_path(user), "Orphaning was successful.")
+
+        expect(work.original_creators.map(&:user_id)).to contain_exactly(user.id)
       end
 
       it "successfully orphans multiple works and redirects" do
@@ -94,6 +96,21 @@ describe OrphansController do
         expect(work.reload.users).not_to include(user)
         expect(second_work.reload.users).not_to include(user)
         it_redirects_to_with_notice(user_path(user), "Orphaning was successful.")
+
+        expect(work.original_creators.map(&:user_id)).to contain_exactly(user.id)
+        expect(second_work.original_creators.map(&:user_id)).to contain_exactly(user.id)
+      end
+
+      context "when a work has multiple pseuds for the same user" do
+        let(:second_pseud) { create(:pseud, user: user) }
+        let(:work) { create(:work, authors: [pseud, second_pseud]) }
+
+        it "only saves the original creator once" do
+          post :create, params: { work_ids: [work], use_default: "true" }
+          expect(work.reload.users).not_to include(user)
+
+          expect(work.original_creators.map(&:user_id)).to contain_exactly(user.id)
+        end
       end
 
       it "successfully orphans a series and redirects" do

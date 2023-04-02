@@ -1,6 +1,6 @@
 # Class which holds feedback sent to the archive administrators about the archive as a whole
 class Feedback < ApplicationRecord
-  include ActiveModel::ForbiddenAttributesProtection
+  attr_accessor :ip_address
 
   # note -- this has NOTHING to do with the Comment class!
   # This is just the name of the text field in the Feedback
@@ -14,7 +14,12 @@ class Feedback < ApplicationRecord
 
   validate :check_for_spam
   def check_for_spam
-    errors.add(:base, ts("^This comment looks like spam to our system, sorry! Please try again, or create an account to comment.")) unless check_for_spam?
+    approved = logged_in_with_matching_email? || !Akismetor.spam?(akismet_attributes)
+    errors.add(:base, ts("This report looks like spam to our system!")) unless approved
+  end
+
+  def logged_in_with_matching_email?
+    User.current_user.present? && User.current_user.email == email
   end
 
   def akismet_attributes
@@ -28,11 +33,6 @@ class Feedback < ApplicationRecord
     }
   end
 
-  def check_for_spam?
-    # don't check for spam while running tests
-    Rails.env.test? || !Akismetor.spam?(akismet_attributes)
-  end
-
   def mark_as_spam!
     # don't submit spam reports unless in production mode
     Rails.env.production? && Akismetor.submit_spam(akismet_attributes)
@@ -44,8 +44,7 @@ class Feedback < ApplicationRecord
   end
 
   def email_and_send
-    AdminMailer.feedback(id).deliver
-    UserMailer.feedback(id).deliver
+    UserMailer.feedback(id).deliver_later
     send_report
   end
 

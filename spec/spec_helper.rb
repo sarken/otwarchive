@@ -1,28 +1,21 @@
-ENV["RAILS_ENV"] ||= 'test'
+ENV["RAILS_ENV"] ||= "test"
 
-require File.expand_path("../../config/environment", __FILE__)
-require 'simplecov'
-SimpleCov.command_name "rspec-" + (ENV['TEST_RUN'] || '')
-if ENV["CI"] == "true" && ENV["TRAVIS"] == "true"
-  # Only on Travis...
-  require "codecov"
-  SimpleCov.formatter = SimpleCov::Formatter::Codecov
-end
+require File.expand_path("../config/environment", __dir__)
+require "simplecov"
 
-require 'rspec/rails'
-require 'factory_bot'
-require 'database_cleaner'
-require 'email_spec'
+require "rspec/rails"
+require "factory_bot"
+require "database_cleaner"
+require "email_spec"
+require "webmock/rspec"
+require "n_plus_one_control/rspec"
 
 DatabaseCleaner.start
 DatabaseCleaner.clean
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
-Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
-
-FactoryBot.find_definitions
-FactoryBot.definition_file_paths = %w(factories)
+Dir[Rails.root.join("spec/support/**/*.rb")].sort.each { |f| require f }
 
 RSpec.configure do |config|
   config.mock_with :rspec
@@ -31,11 +24,13 @@ RSpec.configure do |config|
     c.syntax = [:should, :expect]
   end
 
+  # TODO: Remove gems delorean and timecop now that Rails has time-travel helpers.
+  config.include ActiveSupport::Testing::TimeHelpers
   config.include FactoryBot::Syntax::Methods
   config.include EmailSpec::Helpers
   config.include EmailSpec::Matchers
   config.include Devise::Test::ControllerHelpers, type: :controller
-  config.include Capybara::DSL
+  config.include Devise::Test::IntegrationHelpers, type: :request
   config.include TaskExampleGroup, type: :task
 
   config.before :suite do
@@ -43,12 +38,39 @@ RSpec.configure do |config|
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean
     Indexer.all.map(&:prepare_for_testing)
+    ArchiveWarning.find_or_create_by!(name: ArchiveConfig.WARNING_CHAN_TAG_NAME, canonical: true)
+    ArchiveWarning.find_or_create_by!(name: ArchiveConfig.WARNING_NONE_TAG_NAME, canonical: true)
+    Category.find_or_create_by!(name: ArchiveConfig.CATEGORY_SLASH_TAG_NAME, canonical: true)
+
+    # TODO: The "Not Rated" tag ought to be marked as adult, but we want to
+    # keep the adult status of the tag consistent with the features, so for now
+    # we have a non-adult "Not Rated" tag:
+    Rating.find_or_create_by!(name: ArchiveConfig.RATING_DEFAULT_TAG_NAME, canonical: true)
+
+    Rating.find_or_create_by!(name: ArchiveConfig.RATING_EXPLICIT_TAG_NAME, canonical: true, adult: true)
+    # Needs these for the API tests.
+    ArchiveWarning.find_or_create_by!(name: ArchiveConfig.WARNING_DEFAULT_TAG_NAME, canonical: true)
+    ArchiveWarning.find_or_create_by!(name: ArchiveConfig.WARNING_NONCON_TAG_NAME, canonical: true)
+    Rating.find_or_create_by!(name: ArchiveConfig.RATING_GENERAL_TAG_NAME, canonical: true)
   end
 
   config.before :each do
     DatabaseCleaner.start
     User.current_user = nil
+    User.should_update_wrangling_activity = false
     clean_the_database
+
+    # Clears used values for all generators.
+    Faker::UniqueGenerator.clear
+
+    # Reset global locale setting.
+    I18n.locale = I18n.default_locale
+
+    # Assume all spam checks pass by default.
+    allow(Akismetor).to receive(:spam?).and_return(false)
+
+    # Stub all requests to example.org, the default external work URL:
+    WebMock.stub_request(:any, "www.example.org")
   end
 
   config.after :each do
@@ -58,6 +80,11 @@ RSpec.configure do |config|
   config.after :suite do
     DatabaseCleaner.clean_with :truncation
     Indexer.all.map(&:delete_index)
+  end
+
+  # Remove the folder where test images are saved.
+  config.after(:suite) do
+    FileUtils.rm_rf(Dir[Rails.root.join("public/system/test")])
   end
 
   config.before :each, bookmark_search: true do
@@ -92,6 +119,18 @@ RSpec.configure do |config|
     WorkIndexer.delete_index
   end
 
+  config.before :each, default_skin: true do
+    AdminSetting.current.update_attribute(:default_skin, Skin.default)
+  end
+
+  config.before :each, type: :controller do
+    @request.host = "www.example.com"
+  end
+
+  config.before :each, :frozen do
+    freeze_time
+  end
+
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
@@ -115,29 +154,28 @@ RSpec.configure do |config|
   #       # Equivalent to being in spec/controllers
   #     end
   config.infer_spec_type_from_file_location!
-  config.define_derived_metadata(file_path: %r{/spec/miscellaneous/lib/tasks/}) do |metadata|
+  config.define_derived_metadata(file_path: %r{/spec/lib/tasks/}) do |metadata|
     metadata[:type] = :task
   end
-  config.define_derived_metadata(file_path: %r{/spec/miscellaneous/helpers/}) do |metadata|
-    metadata[:type] = :helper
-  end
 
-  # Set default formatter to print out the description of each test as it runs
-  config.color = true
   config.formatter = :documentation
 
   config.file_fixture_path = "spec/support/fixtures"
 end
 
+RSpec::Matchers.define_negated_matcher :avoid_changing, :change
+
 def clean_the_database
   # Now clear memcached
   Rails.cache.clear
-  # Now reset redis ...
+
+  # Clear Redis
+  REDIS_AUTOCOMPLETE.flushall
   REDIS_GENERAL.flushall
+  REDIS_HITS.flushall
   REDIS_KUDOS.flushall
   REDIS_RESQUE.flushall
   REDIS_ROLLOUT.flushall
-  REDIS_AUTOCOMPLETE.flushall
 end
 
 def run_all_indexing_jobs
@@ -145,4 +183,10 @@ def run_all_indexing_jobs
     ScheduledReindexJob.perform reindex_type
   end
   Indexer.all.map(&:refresh_index)
+end
+
+def create_invalid(*args, **kwargs)
+  build(*args, **kwargs).tap do |object|
+    object.save!(validate: false)
+  end
 end

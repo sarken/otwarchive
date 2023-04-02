@@ -1,18 +1,26 @@
 class Pseud < ApplicationRecord
-  include ActiveModel::ForbiddenAttributesProtection
   include Searchable
   include WorksOwner
 
   has_attached_file :icon,
     styles: { standard: "100x100>" },
-    path: %w(staging production).include?(Rails.env) ? ":attachment/:id/:style.:extension" : ":rails_root/public:url",
+    path: if Rails.env.production?
+            ":attachment/:id/:style.:extension"
+          elsif Rails.env.staging?
+            ":rails_env/:attachment/:id/:style.:extension"
+          else
+            ":rails_root/public/system/:rails_env/:class/:attachment/:id_partition/:style/:filename"
+          end,
     storage: %w(staging production).include?(Rails.env) ? :s3 : :filesystem,
     s3_protocol: "https",
     s3_credentials: "#{Rails.root}/config/s3.yml",
     bucket: %w(staging production).include?(Rails.env) ? YAML.load_file("#{Rails.root}/config/s3.yml")['bucket'] : "",
     default_url: "/images/skins/iconsets/default/icon_user.png"
 
-  validates_attachment_content_type :icon, content_type: /image\/\S+/, allow_nil: true
+  validates_attachment_content_type :icon,
+                                    content_type: %w[image/gif image/jpeg image/png],
+                                    allow_nil: true
+
   validates_attachment_size :icon, less_than: 500.kilobytes, allow_nil: true
 
   NAME_LENGTH_MIN = 1
@@ -20,8 +28,10 @@ class Pseud < ApplicationRecord
   DESCRIPTION_MAX = 500
 
   belongs_to :user
-  delegate :login, to: :user, prefix: true
-  has_many :kudos
+
+  delegate :login, to: :user, prefix: true, allow_nil: true
+  alias user_name user_login
+
   has_many :bookmarks, dependent: :destroy
   has_many :recs, -> { where(rec: true) }, class_name: 'Bookmark'
   has_many :comments
@@ -58,7 +68,7 @@ class Pseud < ApplicationRecord
     within: NAME_LENGTH_MIN..NAME_LENGTH_MAX,
     too_short: ts("is too short (minimum is %{min} characters)", min: NAME_LENGTH_MIN),
     too_long: ts("is too long (maximum is %{max} characters)", max: NAME_LENGTH_MAX)
-  validates_uniqueness_of :name, scope: :user_id, case_sensitive: false
+  validates :name, uniqueness: { scope: :user_id }
   validates_format_of :name,
     message: ts('can contain letters, numbers, spaces, underscores, and dashes.'),
     with: /\A[\p{Word} -]+\Z/u
@@ -74,45 +84,7 @@ class Pseud < ApplicationRecord
 
   after_update :check_default_pseud
   after_update :expire_caches
-  after_commit :reindex_creations
-
-  scope :on_works, lambda {|owned_works|
-    select("DISTINCT pseuds.*").
-    joins(:works).
-    where(works: {id: owned_works.collect(&:id)}).
-    order(:name)
-  }
-
-  scope :with_works, -> {
-    select("pseuds.*, count(pseuds.id) AS work_count").
-    joins(:works).
-    group(:id).
-    order(:name)
-  }
-
-  scope :with_posted_works, -> { with_works.merge(Work.visible_to_registered_user) }
-  scope :with_public_works, -> { with_works.merge(Work.visible_to_all) }
-
-  scope :with_bookmarks, -> {
-    select("pseuds.*, count(pseuds.id) AS bookmark_count").
-    joins(:bookmarks).
-    group(:id).
-    order(:name)
-  }
-
-  # conditions: {bookmarks: {private: false, hidden_by_admin: false}},
-  scope :with_public_bookmarks, -> { with_bookmarks.merge(Bookmark.is_public) }
-
-  scope :with_public_recs, -> {
-    select("pseuds.*, count(pseuds.id) AS rec_count").
-    joins(:bookmarks).
-    group(:id).
-    order(:name).
-    merge(Bookmark.is_public.recs)
-  }
-
-  scope :alphabetical, -> { order(:name) }
-  scope :starting_with, lambda {|letter| where('SUBSTR(name,1,1) = ?', letter)}
+  after_commit :reindex_creations, :touch_comments
 
   def self.not_orphaned
     where("user_id != ?", User.orphan_account)
@@ -124,27 +96,8 @@ class Pseud < ApplicationRecord
     (self.name.downcase <=> other.name.downcase) == 0 ? (self.user_name.downcase <=> other.user_name.downcase) : (self.name.downcase <=> other.name.downcase)
   end
 
-  # For use with the work and chapter forms
-  def user_name
-     self.user.login
-  end
-
   def to_param
     name
-  end
-
-  # Gets the number of works by this user that the current user can see
-  def visible_works_count
-    if User.current_user.nil?
-      self.works.posted.unhidden.unrestricted.count
-    else
-      self.works.posted.unhidden.count
-    end
-  end
-
-  # Gets the number of recs by this user
-  def visible_recs_count
-    self.recs.is_public.size
   end
 
   scope :public_work_count_for, -> (pseud_ids) {
@@ -215,7 +168,7 @@ class Pseud < ApplicationRecord
 
   # Produces a byline that indicates the user's name if pseud is not unique
   def byline
-    (name != user_name) ? name + " (" + user_name + ")" : name
+    (name != user_name) ? "#{name} (#{user_name})" : name
   end
 
   # get the former byline
@@ -350,8 +303,6 @@ class Pseud < ApplicationRecord
     # the cache is invalidated and the pseud change will be visible.
     Comment.where(pseud_id: self.id).update_all(pseud_id: replacement.id,
                                                 updated_at: Time.now)
-    # TODO: AO3-5054 Expire kudos cache when changing default pseuds.
-    Kudo.where(pseud_id: self.id).update_all(pseud_id: replacement.id)
     change_collections_membership
     change_gift_recipients
     change_challenge_participation
@@ -399,6 +350,7 @@ class Pseud < ApplicationRecord
           comment.update_attribute(:pseud_id, pseud.id)
         end
       end
+
       # make sure changes affect caching/search/author fields
       creation.save
     end
@@ -450,6 +402,10 @@ class Pseud < ApplicationRecord
     if saved_change_to_name?
       self.works.each{ |work| work.touch }
     end
+  end
+
+  def touch_comments
+    comments.touch_all
   end
 
   # Delete current icon (thus reverting to archive default icon)

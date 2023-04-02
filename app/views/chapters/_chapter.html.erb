@@ -8,8 +8,8 @@
   <% end %>
   <% if chapter.user_has_creator_invite?(current_user) %>
     <p class="notice">
-      <%= ts("You've been invited to become a co-creator of this chapter. To accept or reject the invitation, visit your %{creator_invitations_page}.",
-             creator_invitations_page: link_to(ts("Creator Invitations page"), user_creatorships_path(current_user))).html_safe %>
+      <%= ts("You've been invited to become a co-creator of this chapter. To accept or reject the request, visit your %{creator_requests_page}.",
+             creator_requests_page: link_to(ts("Co-Creator Requests page"), user_creatorships_path(current_user))).html_safe %>
     </p>
   <% end %>
   <!-- chapter management -->
@@ -17,7 +17,7 @@
     <%= render "chapters/chapter_management", chapter: chapter, work: @work %>
   <% end %>
 
-<% cache_if(!@preview_mode, "#{@work.cache_key}/#{chapter.cache_key}-show-v3", skip_digest: true) do %>
+<% cache_if(!@preview_mode, "#{@work.cache_key}/#{chapter.cache_key}-show-v4", skip_digest: true) do %>
 
   <div class="chapter<%= ' preface' unless @preview_mode %> group" role="complementary">
     <h3 class="title">
@@ -46,13 +46,13 @@
         <h3 class="heading"><%=h ts('Notes:') %></h3>
         <% if chapter.notes.blank? %>
           <p>
-          (<%= ts("See the end of the chapter for ") %> <%= link_to(h(ts("notes")), :anchor => "chapter_#{chapter.position.to_s}_endnotes") %>.)
+          (<%= ts("See the end of the chapter for ") %> <%= link_to(h(ts("notes")), "#chapter_#{chapter.position.to_s}_endnotes") %>.)
           </p>
         <% else %>
           <blockquote class="userstuff"><%=raw sanitize_field(chapter, :notes) %></blockquote>
           <% unless chapter.endnotes.blank? %>
             <p>
-            (<%= ts("See the end of the chapter for ") %> <%= link_to(h(ts("more notes")), :anchor => "chapter_#{chapter.position.to_s}_endnotes") %>.)
+            (<%= ts("See the end of the chapter for ") %> <%= link_to(h(ts("more notes")), "#chapter_#{chapter.position.to_s}_endnotes") %>.)
             </p>
           <% end %>
         <% end %>
