@@ -1,6 +1,7 @@
 class CollectionItemsController < ApplicationController
   before_action :load_collection
   before_action :load_user, only: [:update_multiple]
+  before_action :load_work, only: [:update_multiple]
   before_action :load_collectible_item, only: [:new, :create]
 
   cache_sweeper :collection_sweeper
@@ -29,6 +30,8 @@ class CollectionItemsController < ApplicationController
                           else
                             @collection_items.unreviewed_by_user
                           end
+    elsif params[:work_id] && (@work = Work.find_by(id: params[:work_id])) && (current_user.is_author_of?(@work) || logged_in_as_admin?)
+      @collection_items = @work.collection_items
     else
       flash[:error] = ts("You don't have permission to see that, sorry!")
       redirect_to collections_path and return
@@ -50,6 +53,10 @@ class CollectionItemsController < ApplicationController
     unless @collection
       @user = User.find_by(login: params[:user_id])
     end
+  end
+
+  def load_work
+    @work = Work.find_by(id: params[:work_id])
   end
 
   def new
@@ -154,6 +161,12 @@ class CollectionItemsController < ApplicationController
         update_params: user_update_multiple_params,
         success_path: user_collection_items_path(@user)
       )
+    elsif @work && current_user.is_author_of?(@work)
+      update_multiple_with_params(
+        allowed_items: @work.collection_items,
+        update_params: work_update_multiple_params,
+        success_path: work_collection_items_path(@work)
+      )
     else
       flash[:error] = ts("You don't have permission to do that, sorry!")
       redirect_to(@collection || @user)
@@ -194,6 +207,12 @@ class CollectionItemsController < ApplicationController
   end
 
   private
+
+  def work_update_multiple_params
+    allowed = %i[user_approval_status remove]
+    params.slice(:collection_items).permit(collection_items: allowed).
+      require(:collection_items)
+  end
 
   def user_update_multiple_params
     allowed = %i[user_approval_status remove]

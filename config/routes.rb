@@ -366,7 +366,11 @@ Otwarchive::Application.routes.draw do
       resources :comments
     end
     resources :collections
-    resources :collection_items
+    resources :collection_items, only: [:index, :update] do
+      collection do
+        patch :update_multiple
+      end
+     end
     resources :comments do
       member do
         put :approve

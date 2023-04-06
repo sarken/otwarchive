@@ -7,6 +7,6 @@
   <p>You are receiving this notification because you have previously elected to allow
   automatic inclusion of your works into collections on the Archive of Our Own.</p>
 
-  <p>If you would like to remove your work from this collection, please visit your
-   <%= style_link("Approved Collection Items page", user_collection_items_url(@user) + "?approved=true") %>.</p>
+  <p>If you would like to remove your work from this collection, please visit its
+   <%= style_link("Collection Items page", work_collection_items_url(@work)) %>.</p>
 <% end %>

@@ -529,3 +529,10 @@ en:
       add_bookmark_header: "Add Bookmark to collections"
       invite: "Invite"
       add: "Add"
+    index:
+      collection:
+        page_heading_html: "Items in %{collection_link}"
+      user:
+        page_heading: "Items by %{username} in Collections"
+      work:
+        page_heading_html: "Collection Items for %{work_link}"
