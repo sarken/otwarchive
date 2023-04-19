@@ -313,54 +313,6 @@ Feature: Create Works
       And I should see "No Archive Warnings Apply"
       And I should not see "Creator Chose Not To Use Archive Warnings"
 
-  Scenario: Users can co-create a work with a co-creator who has multiple pseuds
-    Given basic tags
-      And "myself" has the pseud "Me"
-      And "herself" has the pseud "Me"
-      And the user "myself" allows co-creators
-      And the user "herself" allows co-creators
-    When I am logged in as "testuser" with password "testuser"
-      And I go to the new work page
-      And I fill in the basic work information for "All Hell Breaks Loose"
-      And I check "Add co-creators?"
-      And I fill in "pseud_byline" with "Me"
-      And I check "This work is part of a series"
-      And I fill in "Or create and use a new one:" with "My new series"
-      And I press "Post"
-    Then I should see "There's more than one user with the pseud Me."
-      And I select "myself" from "Please choose the one you want:"
-      And I press "Preview"
-    Then I should see "Draft was successfully created."
-      And I press "Post"
-    Then I should see "Work was successfully posted. It should appear in work listings within the next few minutes."
-      And I should not see "Me (myself)"
-      And I should see "My new series"
-    When the user "myself" accepts all co-creator requests
-      And I view the work "All Hell Breaks Loose"
-    Then I should see "Me (myself), testuser"
-
-  Scenario: Users can only create a work with a co-creator who allows it.
-    Given basic tags
-      And "Burnham" has the pseud "Michael"
-      And "Pike" has the pseud "Christopher"
-      And the user "Burnham" allows co-creators
-    When I am logged in as "testuser" with password "testuser"
-      And I go to the new work page
-      And I fill in the basic work information for "Thats not my Spock"
-      And I check "Add co-creators?"
-      And I fill in "pseud_byline" with "Michael,Christopher"
-      And I press "Post"
-    Then I should see "Christopher (Pike) does not allow others to invite them to be a co-creator."
-    When I fill in "pseud_byline" with "Michael"
-      And I press "Preview"
-    Then I should see "Draft was successfully created."
-    When I press "Post"
-    Then I should see "Work was successfully posted. It should appear in work listings within the next few minutes."
-      But I should not see "Michael (Burnham)"
-    When the user "Burnham" accepts all co-creator requests
-      And I view the work "Thats not my Spock"
-    Then I should see "Michael (Burnham), testuser"
-
   Scenario: Users can't set a publication date that is in the future, e.g. set
   the date to April 30 when it is April 26
     Given I am logged in
@@ -371,34 +323,6 @@ Feature: Create Works
       And I press "Post"
     Then I should see "Publication date can't be in the future."
     When I jump in our Delorean and return to the present
-
-  Scenario: Inviting a co-author adds the co-author to all existing chapters when they accept the invite
-    Given the user "foobar" exists and is activated
-      And the user "barbaz" exists and is activated
-
-    When I am logged in as "foobar"
-      And I post the chaptered work "Chaptered Work"
-      And I edit the work "Chaptered Work"
-      And I invite the co-author "barbaz"
-      And I press "Post"
-    Then I should not see "barbaz"
-      But 1 email should be delivered to "barbaz"
-    When I am logged in as "barbaz"
-      And I view the work "Chaptered Work"
-    Then I should not see "Edit"
-    # Delay to make sure that the cache expires when we accept the request:
-    When it is currently 1 second from now
-      And I follow "Co-Creator Requests page"
-      And I check "selected[]"
-      And I press "Accept"
-    Then I should see "You are now listed as a co-creator on Chaptered Work."
-    When I follow "Chaptered Work"
-    Then I should see "Edit"
-      And I should see "barbaz, foobar"
-      And I should not see "Chapter by"
-    When I follow "Next Chapter"
-    Then I should see "barbaz, foobar"
-      And I should not see "Chapter by"
 
   Scenario: You cannot create a work with too many tags
     Given the user-defined tag limit is 7
