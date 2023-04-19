@@ -296,7 +296,7 @@ Feature: Create Works
   When I go to the works page
   Then "This One Stays On Top" should appear before "Backdated"
 
-  Scenario: Users must set something as a warning and Author Chose Not To Use Archive Warnings should not be added automatically
+  Scenario: Users must set something as a warning and Creator Chose Not To Use Archive Warnings should not be added automatically
     Given basic tags
       And I am logged in
     When I go to the new work page
@@ -311,8 +311,7 @@ Feature: Create Works
       And I press "Post"
     Then I should see "Work was successfully posted."
       And I should see "No Archive Warnings Apply"
-      And I should not see "Author Chose Not To Use Archive Warnings"
-      And I should see "It wasn't my fault, you know."
+      And I should not see "Creator Chose Not To Use Archive Warnings"
 
   Scenario: Users can co-create a work with a co-creator who has multiple pseuds
     Given basic tags
