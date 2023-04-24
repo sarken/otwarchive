@@ -10,7 +10,37 @@ end
 
 Given "the maximum number of accounts users can mute is {int}" do |count| 
   allow(ArchiveConfig).to receive(:MAX_MUTED_USERS).and_return(count) 
-end 
+end
+
+When "I expand the muted comment by {string}" do |user|
+  user_id = User.find_by(login: user).id
+  find(".comment.user-#{user_id}.muted").click
+end
+
+When "I collapse the muted comment by {string}" do |user|
+  user_id = User.find_by(login: user).id
+  find(".comment.user-#{user_id}.muted").click
+end
+
+When "I expand the muted work co-created with {string}" do |user|
+  user_id = User.find_by(login: user).id
+  find(".work.user-#{user_id}.muted").click
+end
+
+When "I collapse the muted work co-created with {string}" do |user|
+  user_id = User.find_by(login: user).id
+  find(".work.user-#{user_id}.muted").click
+end
+
+When "I expand the muted series co-created with {string}" do |user|
+  user_id = User.find_by(login: user).id
+  find(".series.user-#{user_id}.muted").click
+end
+
+When "I collapse the muted series co-created with {string}" do |user|
+  user_id = User.find_by(login: user).id
+  find(".series.user-#{user_id}.muted").click
+end
 
 Then "the user {string} should have a mute for {string}" do |muter, muted|
   muter = User.find_by(login: muter)

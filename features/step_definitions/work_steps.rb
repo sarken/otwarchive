@@ -220,6 +220,13 @@ Given "the work {string} by {string} and {string}" do |title, login1, login2|
   FactoryBot.create(:work, title: title, authors: [user1.default_pseud, user2.default_pseud])
 end
 
+Given "the work {string} by {string} and {string} in the series {string}" do |work_title, login1, login2, series_title|
+  user1 = ensure_user(login1)
+  user2 = ensure_user(login2)
+  series = FactoryBot.create(:series, title: series_title)
+  FactoryBot.create(:work, title: work_title, authors: [user1.default_pseud, user2.default_pseud], series: [series])
+end
+
 Given /^the work "([^\"]*)" by "([^\"]*)" with chapter two co-authored with "([^\"]*)"$/ do |work, author, coauthor|
   step %{I am logged in as "#{author}"}
   step %{I post the work "#{work}"}

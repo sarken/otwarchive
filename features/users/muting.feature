@@ -139,16 +139,37 @@ Feature: Muting
     Then I should see "Good Work"
 
   @javascript
-  Scenario: Users see placeholders instead of comments by a muted user
+  Scenario: Users see expandable placeholders instead of comments by a muted user
     Given the user "muter" has muted the user "pest"
       And the work "Good Work" by "muter"
       And I am logged in as "pest"
       And I post the comment "fxxk you" on the work "Good Work"
     When I am logged in as "muter"
       And I view the work "Good Work" with comments
-    Then show me the page
-      And I should not see "fxxk you"
+    Then I should not see "fxxk you"
       But I should see "This comment is from a user you've muted."
+    When I expand the muted comment by "pest"
+    Then I should see "fxxk you"
+    When I collapse the muted comment by "pest"
+    Then I should not see "fxxk you"
     When I am logged out
       And I view the work "Good Work" with comments
     Then I should see "fxxk you"
+
+  @javascript
+  Scenario: Users see expandable placeholders for works and series they've co-created with a muted user
+    Given the user "muter" has muted the user "pest"
+      And the work "Our Work" by "muter" and "pest" in the series "Our Series"
+    When I am logged in as "muter"
+      And I go to my user page
+    Then I should not see "Our Work"
+      And I should not see "Our Series"
+      But I should see "You co-created this with a user you've muted."
+    When I expand the muted work co-created with "pest"
+      Then I should see "Our Work"
+    When I collapse the muted work co-created with "pest"
+      Then I should not see "Our Work"
+    When I expand the muted series co-created with "pest"
+      Then I should see "Our Series"
+    When I collapse the muted series co-created with "pest"
+      Then I should not see "Our Series"
