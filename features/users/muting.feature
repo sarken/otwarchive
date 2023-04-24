@@ -139,14 +139,16 @@ Feature: Muting
     Then I should see "Good Work"
 
   @javascript
-  Scenario: Users cannot see comments by a muted user
+  Scenario: Users see placeholders instead of comments by a muted user
     Given the user "muter" has muted the user "pest"
       And the work "Good Work" by "muter"
       And I am logged in as "pest"
       And I post the comment "fxxk you" on the work "Good Work"
     When I am logged in as "muter"
-      And I view the work "Good Work"
-    Then I should not see "fxxk you"
+      And I view the work "Good Work" with comments
+    Then show me the page
+      And I should not see "fxxk you"
+      But I should see "This comment is from a user you've muted."
     When I am logged out
-      And I view the work "Good Work"
-    Then I should see "Good Work"
+      And I view the work "Good Work" with comments
+    Then I should see "fxxk you"
