@@ -45,13 +45,16 @@ module MuteHelper
 
     return if user.muted_users.empty?
 
-    comment_selectors = user.muted_users.map { |muted_user| ".comment.user-#{muted_user.id}" }.join(", ").to_s
-    cocreation_selectors = user.muted_users.map { |muted_user| ".user-#{user.id}.user-#{muted_user.id}" }.join(", ").to_s
+    comment_selectors = user.muted_users.map { |muted_user| ".comment.user-#{muted_user.id}" }.join(", ")
+    comment_placeholder = I18n.translate("muted.placeholder.comment")
+
+    cocreation_selectors = user.muted_users.map { |muted_user| ".user-#{user.id}.user-#{muted_user.id}" }.join(", ")
+    cocreation_placeholder = I18n.translate("muted.placeholder.cocreation")
 
     script = <<-SCRIPT
       <script>
-        makeMutedItemsExpandable("#{comment_selectors}", "This comment is from a user you've muted.");
-        makeMutedItemsExpandable("#{cocreation_selectors}", "You co-created this with a user you've muted.");
+        makeMutedItemsExpandable("#{comment_selectors}", "#{comment_placeholder}");
+        makeMutedItemsExpandable("#{cocreation_selectors}", "#{cocreation_placeholder}");
 
         function makeMutedItemsExpandable(css_selectors, expander_text) {
           let items = document.querySelectorAll(css_selectors);
