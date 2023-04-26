@@ -88,9 +88,10 @@ module BookmarksHelper
 
     creation = bookmark.bookmarkable
     if creation.nil?
-      "bookmark blurb group #{bookmarker_id_for_css_classes(bookmark)}"
+      bookmarker_classes = bookmarker_id_for_css_classes(bookmark).join(" ")
+      "bookmark blurb group #{bookmarker_classes}"
     else
-      Rails.cache.fetch("#{creation.cache_key_with_version}_#{bookmark.cache_key}/blurb_css_classes") do
+      Rails.cache.fetch("#{creation.cache_key_with_version}_#{bookmark.cache_key}/blurb_css_classes-v2") do
         creation_id = creation_id_for_css_classes(creation)
         user_ids = user_ids_for_bookmark_blurb(bookmark).join(" ")
         "bookmark blurb group #{creation_id} #{user_ids}".squish
@@ -113,23 +114,26 @@ module BookmarksHelper
     return if bookmark.nil?
 
     own = "own" if is_author_of?(bookmark)
-    bookmarker_id = bookmarker_id_for_css_classes(bookmark)
-    "#{own} user short blurb group #{bookmarker_id}".squish
+    bookmarker_classes = bookmarker_id_for_css_classes(bookmark).join(" ")
+    "#{own} user short blurb group #{bookmarker_classes}".squish
   end
 
   private
 
+  # We maintain user-123 classes for backwards compatiblity with user skins.
+  # Return an array so we can use .uniq when combining with creator classes.
   def bookmarker_id_for_css_classes(bookmark)
     return if bookmark.nil?
 
-    "user-#{bookmark.pseud.user_id}"
+    ["user-#{bookmark.pseud.user_id}", "bookmarker-#{bookmark.pseud.user_id}"]
   end
 
-  # Array of unique creator and bookmarker ids, formatted user-123, user-126.
+  # Array of unique creator and bookmarker ids, formatted with creators first
+  # followed by bookmarkers: user-123, creator-123, user-126, bookmarker-126.
   # If the user has bookmarked their own work, we don't need their id twice.
   def user_ids_for_bookmark_blurb(bookmark)
     user_ids = creator_ids_for_css_classes(bookmark.bookmarkable)
     user_ids << bookmarker_id_for_css_classes(bookmark)
-    user_ids.uniq
+    user_ids.flatten.uniq
   end
 end

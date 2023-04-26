@@ -18,26 +18,26 @@ describe BookmarksHelper do
       it "returns string with default classes and bookmarker info" do
         work.destroy!
         result = helper.css_classes_for_bookmark_blurb(work_bookmark.reload)
-        expect(result).to eq("#{default_classes} user-#{bookmarker.id}")
+        expect(result).to eq("#{default_classes} user-#{bookmarker.id} bookmarker-#{bookmarker.id}")
       end
     end
 
     context "when bookmarkable is ExternalWork" do
       it "returns string with default classes, creation info, and bookmarker info" do
         result = helper.css_classes_for_bookmark_blurb(external_work_bookmark)
-        expect(result).to eq("#{default_classes} external-work-#{external_work.id} user-#{bookmarker.id}")
+        expect(result).to eq("#{default_classes} external-work-#{external_work.id} user-#{bookmarker.id} bookmarker-#{bookmarker.id}")
       end
 
       context "when bookmark is updated" do
         it "returns same string with different cache key" do
-          original_cache_key = "#{external_work.cache_key_with_version}_#{external_work_bookmark.cache_key}/blurb_css_classes"
-          expected_classes = "#{default_classes} external-work-#{external_work.id} user-#{bookmarker.id}"
+          original_cache_key = "#{external_work.cache_key_with_version}_#{external_work_bookmark.cache_key}/blurb_css_classes-v2"
+          expected_classes = "#{default_classes} external-work-#{external_work.id} user-#{bookmarker.id} bookmarker-#{bookmarker.id}"
           expect(helper.css_classes_for_bookmark_blurb(external_work_bookmark)).to eq(expected_classes)
 
           travel(1.day)
           external_work_bookmark.update(bookmarker_notes: "New note")
           expect(helper.css_classes_for_bookmark_blurb(external_work_bookmark.reload)).to eq(expected_classes)
-          expect(original_cache_key).not_to eq("#{external_work.cache_key_with_version}_#{external_work_bookmark.cache_key}/blurb_css_classes")
+          expect(original_cache_key).not_to eq("#{external_work.cache_key_with_version}_#{external_work_bookmark.cache_key}/blurb_css_classes-v2")
           travel_back
         end
       end
@@ -46,7 +46,7 @@ describe BookmarksHelper do
     context "when bookmarkable is Series" do
       it "returns string with default classes, creation and creator info, and bookmarker info" do
         result = helper.css_classes_for_bookmark_blurb(series_bookmark)
-        expect(result).to eq("#{default_classes} series-#{series.id} user-#{series_creator.id} user-#{bookmarker.id}")
+        expect(result).to eq("#{default_classes} series-#{series.id} user-#{series_creator.id} creator-#{series_creator.id} user-#{bookmarker.id} bookmarker-#{bookmarker.id}")
       end
 
       context "when bookmarker is also series creator" do
@@ -54,9 +54,9 @@ describe BookmarksHelper do
           series.creatorships.first.update(pseud_id: bookmarker.default_pseud_id)
         end
 
-        it "only includes the user id once" do
+        it "only includes the user-id class once" do
           result = helper.css_classes_for_bookmark_blurb(series_bookmark)
-          expect(result).to eq("#{default_classes} series-#{series.id} user-#{bookmarker.id}")
+          expect(result).to eq("#{default_classes} series-#{series.id} user-#{bookmarker.id} creator-#{bookmarker.id} bookmarker-#{bookmarker.id}")
         end
       end
 
@@ -65,15 +65,15 @@ describe BookmarksHelper do
           let(:series_creator2) { create(:user) }
 
           it "returns updated string" do
-            original_cache_key = "#{series.cache_key_with_version}_#{series_bookmark.cache_key}/blurb_css_classes"
-            original_classes = "#{default_classes} series-#{series.id} user-#{series_creator.id} user-#{bookmarker.id}"
+            original_cache_key = "#{series.cache_key_with_version}_#{series_bookmark.cache_key}/blurb_css_classes-v2"
+            original_classes = "#{default_classes} series-#{series.id} user-#{series_creator.id} creator-#{series_creator.id} user-#{bookmarker.id} bookmarker-#{bookmarker.id}"
             expect(helper.css_classes_for_bookmark_blurb(series_bookmark)).to eq(original_classes)
 
             travel(1.day)
-            new_classes = "#{default_classes} series-#{series.id} user-#{series_creator.id} user-#{series_creator2.id} user-#{bookmarker.id}"
+            new_classes = "#{default_classes} series-#{series.id} user-#{series_creator.id} creator-#{series_creator.id} user-#{series_creator2.id} creator-#{series_creator2.id} user-#{bookmarker.id} bookmarker-#{bookmarker.id}"
             series.creatorships.find_or_create_by(pseud_id: series_creator2.default_pseud_id)
             expect(helper.css_classes_for_bookmark_blurb(series_bookmark.reload)).to eq(new_classes)
-            expect(original_cache_key).not_to eq("#{series.cache_key_with_version}_#{series_bookmark.cache_key}/blurb_css_classes")
+            expect(original_cache_key).not_to eq("#{series.cache_key_with_version}_#{series_bookmark.cache_key}/blurb_css_classes-v2")
             travel_back
           end
         end
@@ -81,14 +81,14 @@ describe BookmarksHelper do
 
       context "when bookmark is updated" do
         it "returns same string with different cache key" do
-          original_cache_key = "#{series.cache_key_with_version}_#{series_bookmark.cache_key}/blurb_css_classes"
-          expected_classes = "#{default_classes} series-#{series.id} user-#{series_creator.id} user-#{bookmarker.id}"
+          original_cache_key = "#{series.cache_key_with_version}_#{series_bookmark.cache_key}/blurb_css_classes-v2"
+          expected_classes = "#{default_classes} series-#{series.id} user-#{series_creator.id} creator-#{series_creator.id} user-#{bookmarker.id} bookmarker-#{bookmarker.id}"
           expect(helper.css_classes_for_bookmark_blurb(series_bookmark)).to eq(expected_classes)
 
           travel(1.day)
           series_bookmark.update(bookmarker_notes: "New note")
           expect(helper.css_classes_for_bookmark_blurb(series_bookmark.reload)).to eq(expected_classes)
-          expect(original_cache_key).not_to eq("#{series.cache_key_with_version}_#{series_bookmark.cache_key}/blurb_css_classes")
+          expect(original_cache_key).not_to eq("#{series.cache_key_with_version}_#{series_bookmark.cache_key}/blurb_css_classes-v2")
           travel_back
         end
       end
@@ -97,7 +97,7 @@ describe BookmarksHelper do
     context "when bookmarkable is Work" do
       it "returns string with default classes, creation and creator info, and bookmarker info" do
         result = helper.css_classes_for_bookmark_blurb(work_bookmark)
-        expect(result).to eq("#{default_classes} work-#{work.id} user-#{work_creator.id} user-#{bookmarker.id}")
+        expect(result).to eq("#{default_classes} work-#{work.id} user-#{work_creator.id} creator-#{work_creator.id} user-#{bookmarker.id} bookmarker-#{bookmarker.id}")
       end
 
       context "when bookmarker is also work creator" do
@@ -105,9 +105,9 @@ describe BookmarksHelper do
           work.creatorships.first.update(pseud_id: bookmarker.default_pseud_id)
         end
 
-        it "only includes the user id once" do
+        it "only includes the user-id class once" do
           result = helper.css_classes_for_bookmark_blurb(work_bookmark)
-          expect(result).to eq("#{default_classes} work-#{work.id} user-#{bookmarker.id}")
+          expect(result).to eq("#{default_classes} work-#{work.id} user-#{bookmarker.id} creator-#{work_creator.id} bookmarker-#{bookmarker.id}")
         end
       end
 
@@ -116,12 +116,12 @@ describe BookmarksHelper do
           let(:work_creator2) { create(:user) }
 
           it "returns updated string" do
-            original_cache_key = "#{work.cache_key_with_version}_#{work_bookmark.cache_key}/blurb_css_classes"
-            original_classes = "#{default_classes} work-#{work.id} user-#{work_creator.id} user-#{bookmarker.id}"
+            original_cache_key = "#{work.cache_key_with_version}_#{work_bookmark.cache_key}/blurb_css_classes-v2"
+            original_classes = "#{default_classes} work-#{work.id} user-#{work_creator.id} creator-#{work_creator.id} user-#{bookmarker.id} bookmarker-#{bookmarker.id}"
             expect(helper.css_classes_for_bookmark_blurb(work_bookmark)).to eq(original_classes)
 
             travel(1.day)
-            new_classes = "#{default_classes} work-#{work.id} user-#{work_creator.id} user-#{work_creator2.id} user-#{bookmarker.id}"
+            new_classes = "#{default_classes} work-#{work.id} user-#{work_creator.id} creator-#{work_creator.id} user-#{work_creator2.id} creator-#{work_creator2.id} user-#{bookmarker.id} bookmarker-#{bookmarker.id}"
             work.creatorships.find_or_create_by(pseud_id: work_creator2.default_pseud_id)
             expect(helper.css_classes_for_bookmark_blurb(work_bookmark.reload)).to eq(new_classes)
             expect(original_cache_key).not_to eq("#{work.cache_key_with_version}_#{work_bookmark.cache_key}/blurb_css_classes")
@@ -132,14 +132,14 @@ describe BookmarksHelper do
 
       context "when bookmark is updated" do
         it "returns same string with different cache key" do
-          original_cache_key = "#{work.cache_key_with_version}_#{work_bookmark.cache_key}/blurb_css_classes"
-          expected_classes = "#{default_classes} work-#{work.id} user-#{work_creator.id} user-#{bookmarker.id}"
+          original_cache_key = "#{work.cache_key_with_version}_#{work_bookmark.cache_key}/blurb_css_classes-v2"
+          expected_classes = "#{default_classes} work-#{work.id} user-#{work_creator.id} creator-#{work_creator.id} user-#{bookmarker.id} bookmarker-#{bookmarker.id}"
           expect(helper.css_classes_for_bookmark_blurb(work_bookmark)).to eq(expected_classes)
 
           travel(1.day)
           work_bookmark.update(bookmarker_notes: "New note")
           expect(helper.css_classes_for_bookmark_blurb(work_bookmark.reload)).to eq(expected_classes)
-          expect(original_cache_key).not_to eq("#{work.cache_key_with_version}_#{work_bookmark.cache_key}/blurb_css_classes")
+          expect(original_cache_key).not_to eq("#{work.cache_key_with_version}_#{work_bookmark.cache_key}/blurb_css_classes-v2")
           travel_back
         end
       end
@@ -166,14 +166,14 @@ describe BookmarksHelper do
     context "when bookmarkable is Series" do
       it "returns string with default classes and creation and creator info" do
         result = helper.css_classes_for_bookmarkable_blurb(series)
-        expect(result).to eq("#{default_classes} series-#{series.id} user-#{series_creator.id}")
+        expect(result).to eq("#{default_classes} series-#{series.id} user-#{series_creator.id} creator-#{series_creator.id}")
       end
     end
 
     context "when bookmarkable is Work" do
       it "returns string with default classes and creation and creator info" do
         result = helper.css_classes_for_bookmarkable_blurb(work)
-        expect(result).to eq("#{default_classes} work-#{work.id} user-#{work_creator.id}")
+        expect(result).to eq("#{default_classes} work-#{work.id} user-#{work_creator.id} creator-#{work_creator.id}")
       end
     end
   end
@@ -189,21 +189,21 @@ describe BookmarksHelper do
       context "when bookmarkable is ExternalWork" do
         it "returns string with default classes, bookmarker info, and ownership indicator" do
           result = helper.css_classes_for_bookmark_blurb_short(external_work_bookmark)
-          expect(result).to eq("own #{default_classes} user-#{bookmarker.id}")
+          expect(result).to eq("own #{default_classes} user-#{bookmarker.id} bookmarker-#{bookmarker.id}")
         end
       end
 
       context "when bookmarkable is Series" do
         it "returns string with default classes, bookmarker info, and ownership indicator" do
           result = helper.css_classes_for_bookmark_blurb_short(series_bookmark)
-          expect(result).to eq("own #{default_classes} user-#{bookmarker.id}")
+          expect(result).to eq("own #{default_classes} user-#{bookmarker.id} bookmarker-#{bookmarker.id}")
         end
       end
 
       context "when bookmarkable is Work" do
         it "returns string with default classes, bookmarker info, and ownership indicator" do
           result = helper.css_classes_for_bookmark_blurb_short(work_bookmark)
-          expect(result).to eq("own #{default_classes} user-#{bookmarker.id}")
+          expect(result).to eq("own #{default_classes} user-#{bookmarker.id} bookmarker-#{bookmarker.id}")
         end
       end
     end
@@ -216,21 +216,21 @@ describe BookmarksHelper do
       context "when bookmarkable is ExternalWork" do
         it "returns string with default classes and bookmarker info" do
           result = helper.css_classes_for_bookmark_blurb_short(external_work_bookmark)
-          expect(result).to eq("#{default_classes} user-#{bookmarker.id}")
+          expect(result).to eq("#{default_classes} user-#{bookmarker.id} bookmarker-#{bookmarker.id}")
         end
       end
 
       context "when bookmarkable is Series" do
         it "returns string with default classes and bookmarker info" do
           result = helper.css_classes_for_bookmark_blurb_short(series_bookmark)
-          expect(result).to eq("#{default_classes} user-#{bookmarker.id}")
+          expect(result).to eq("#{default_classes} user-#{bookmarker.id} bookmarker-#{bookmarker.id}")
         end
       end
 
       context "when bookmarkable is Work" do
         it "returns string with default classes and bookmarker info" do
           result = helper.css_classes_for_bookmark_blurb_short(work_bookmark)
-          expect(result).to eq("#{default_classes} user-#{bookmarker.id}")
+          expect(result).to eq("#{default_classes} user-#{bookmarker.id} bookmarker-#{bookmarker.id}")
         end
       end
     end

@@ -534,7 +534,8 @@ module ApplicationHelper
     "#{creation.class.name.underscore.dasherize}-#{creation.id}"
   end
 
-  # Array of creator ids, formatted user-123, user-126.
+  # Array of creator ids, formatted user-123, creator-123, user-5, creator-5.
+  # We maintain user-123 for backwards compatibility with user-created skins.
   # External works are not created by users, so we can skip this.
   def creator_ids_for_css_classes(creation)
     return [] unless %w[Series Work].include?(creation.class.name)
@@ -544,13 +545,15 @@ module ApplicationHelper
     # series.
     return [] if creation.is_a?(Work) && creation.unrevealed?
 
-    creation.users.pluck(:id).uniq.map { |id| "user-#{id}" }
+    creation.users.pluck(:id).uniq.map do |id|
+      ["user-#{id}", "creator-#{id}"]
+    end.flatten
   end
 
   def css_classes_for_creation_blurb(creation)
     return if creation.nil?
 
-    Rails.cache.fetch("#{creation.cache_key_with_version}/blurb_css_classes-v2") do
+    Rails.cache.fetch("#{creation.cache_key_with_version}/blurb_css_classes-v3") do
       creation_id = creation_id_for_css_classes(creation)
       creator_ids = creator_ids_for_css_classes(creation).join(" ")
       "blurb group #{creation_id} #{creator_ids}".strip

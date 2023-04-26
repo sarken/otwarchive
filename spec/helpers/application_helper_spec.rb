@@ -49,7 +49,7 @@ describe ApplicationHelper do
 
       it "returns array of strings for series" do
         result = helper.creator_ids_for_css_classes(series)
-        expect(result).to eq(["user-#{user1.id}"])
+        expect(result).to eq(["user-#{user1.id}", "creator-#{user1.id}"])
       end
 
       context "with multiple pseuds from same user" do
@@ -61,7 +61,7 @@ describe ApplicationHelper do
 
         it "returns array of strings with one user" do
           result = helper.creator_ids_for_css_classes(series)
-          expect(result).to eq(["user-#{user1.id}"])
+          expect(result).to eq(["user-#{user1.id}", "creator-#{user1.id}"])
         end
       end
 
@@ -74,7 +74,7 @@ describe ApplicationHelper do
 
         it "returns array of strings with all users" do
           result = helper.creator_ids_for_css_classes(series)
-          expect(result).to eq(["user-#{user1.id}", "user-#{user2.id}"])
+          expect(result).to eq(["user-#{user1.id}", "creator-#{user1.id}", "user-#{user2.id}", "creator-#{user2.id}"])
         end
       end
 
@@ -96,7 +96,7 @@ describe ApplicationHelper do
 
         it "returns array of strings" do
           result = helper.creator_ids_for_css_classes(series)
-          expect(result).to eq(["user-#{user1.id}"])
+          expect(result).to eq(["user-#{user1.id}", "creator-#{user1.id}"])
         end
       end
     end
@@ -107,7 +107,7 @@ describe ApplicationHelper do
 
       it "returns array of strings for work" do
         result = helper.creator_ids_for_css_classes(work)
-        expect(result).to eq(["user-#{user1.id}"])
+        expect(result).to eq(["user-#{user1.id}", "creator-#{user1.id}"])
       end
 
       context "with multiple pseuds from same user" do
@@ -119,7 +119,7 @@ describe ApplicationHelper do
 
         it "returns array of strings with one user" do
           result = helper.creator_ids_for_css_classes(work)
-          expect(result).to eq(["user-#{user1.id}"])
+          expect(result).to eq(["user-#{user1.id}", "creator-#{user1.id}"])
         end
       end
 
@@ -132,7 +132,7 @@ describe ApplicationHelper do
 
         it "returns array of strings with all users" do
           result = helper.creator_ids_for_css_classes(work)
-          expect(result).to eq(["user-#{user1.id}", "user-#{user2.id}"])
+          expect(result).to eq(["user-#{user1.id}", "creator-#{user1.id}", "user-#{user2.id}", "creator-#{user2.id}"])
         end
       end
 
@@ -163,7 +163,7 @@ describe ApplicationHelper do
 
         it "returns array of strings with user" do
           result = helper.creator_ids_for_css_classes(work)
-          expect(result).to eq(["user-#{user1.id}"])
+          expect(result).to eq(["user-#{user1.id}", "creator-#{user1.id}"])
         end
       end
 
@@ -198,19 +198,19 @@ describe ApplicationHelper do
 
       it "returns string with default classes and creation and creator info" do
         result = helper.css_classes_for_creation_blurb(series)
-        expect(result).to eq("#{default_classes} series-#{series.id} user-#{user1.id}")
+        expect(result).to eq("#{default_classes} series-#{series.id} user-#{user1.id} creator-#{user1.id}")
       end
 
       context "when series is updated" do
         context "when new user is added" do
           it "returns updated string" do
-            original_cache_key = "#{series.cache_key_with_version}/blurb_css_classes-v2"
-            expect(helper.css_classes_for_creation_blurb(series)).to eq("#{default_classes} series-#{series.id} user-#{user1.id}")
+            original_cache_key = "#{series.cache_key_with_version}/blurb_css_classes-v3"
+            expect(helper.css_classes_for_creation_blurb(series)).to eq("#{default_classes} series-#{series.id} user-#{user1.id} creator-#{user1.id}")
 
             travel(1.day)
             series.creatorships.find_or_create_by(pseud_id: user2.default_pseud_id)
-            expect(helper.css_classes_for_creation_blurb(series.reload)).to eq("#{default_classes} series-#{series.id} user-#{user1.id} user-#{user2.id}")
-            expect(original_cache_key).not_to eq("#{series.cache_key_with_version}/blurb_css_classes-v2")
+            expect(helper.css_classes_for_creation_blurb(series.reload)).to eq("#{default_classes} series-#{series.id} user-#{user1.id} creator-#{user1.id} user-#{user2.id} creator-#{user2.id}")
+            expect(original_cache_key).not_to eq("#{series.cache_key_with_version}/blurb_css_classes-v3")
             travel_back
           end
         end
@@ -219,13 +219,13 @@ describe ApplicationHelper do
           before { series.creatorships.find_or_create_by(pseud_id: user2.default_pseud_id) }
 
           it "returns updated string" do
-            original_cache_key = "#{series.cache_key_with_version}/blurb_css_classes-v2"
-            expect(helper.css_classes_for_creation_blurb(series)).to eq("#{default_classes} series-#{series.id} user-#{user1.id} user-#{user2.id}")
+            original_cache_key = "#{series.cache_key_with_version}/blurb_css_classes-v3"
+            expect(helper.css_classes_for_creation_blurb(series)).to eq("#{default_classes} series-#{series.id} user-#{user1.id} creator-#{user1.id} user-#{user2.id} creator-#{user2.id}")
 
             travel(1.day)
             series.creatorships.find_by(pseud_id: user2.default_pseud_id).destroy
-            expect(helper.css_classes_for_creation_blurb(series.reload)).to eq("#{default_classes} series-#{series.id} user-#{user1.id}")
-            expect(original_cache_key).not_to eq("#{series.cache_key_with_version}/blurb_css_classes-v2")
+            expect(helper.css_classes_for_creation_blurb(series.reload)).to eq("#{default_classes} series-#{series.id} user-#{user1.id} creator-#{user1.id}")
+            expect(original_cache_key).not_to eq("#{series.cache_key_with_version}/blurb_css_classes-v3")
             travel_back
           end
         end
@@ -234,13 +234,13 @@ describe ApplicationHelper do
       context "when series' work is updated" do
         context "when new user is added to series' work" do
           it "returns updated string" do
-            original_cache_key = "#{series.cache_key_with_version}/blurb_css_classes-v2"
-            expect(helper.css_classes_for_creation_blurb(series)).to eq("#{default_classes} series-#{series.id} user-#{user1.id}")
+            original_cache_key = "#{series.cache_key_with_version}/blurb_css_classes-v3"
+            expect(helper.css_classes_for_creation_blurb(series)).to eq("#{default_classes} series-#{series.id} user-#{user1.id} creator-#{user1.id}")
 
             travel(1.day)
             work.creatorships.find_or_create_by(pseud_id: user2.default_pseud_id)
-            expect(helper.css_classes_for_creation_blurb(series.reload)).to eq("#{default_classes} series-#{series.id} user-#{user1.id} user-#{user2.id}")
-            expect(original_cache_key).not_to eq("#{series.cache_key_with_version}/blurb_css_classes-v2")
+            expect(helper.css_classes_for_creation_blurb(series.reload)).to eq("#{default_classes} series-#{series.id} user-#{user1.id} creator-#{user1.id} user-#{user2.id} creator-#{user2.id}")
+            expect(original_cache_key).not_to eq("#{series.cache_key_with_version}/blurb_css_classes-v3")
             travel_back
           end
         end
@@ -253,13 +253,13 @@ describe ApplicationHelper do
 
           # TODO: AO3-5739 Co-creators removed from all works in a series are not removed from series
           it "returns same string" do
-            original_cache_key = "#{series.cache_key_with_version}/blurb_css_classes-v2"
-            expect(helper.css_classes_for_creation_blurb(series)).to eq("#{default_classes} series-#{series.id} user-#{user1.id} user-#{user2.id}")
+            original_cache_key = "#{series.cache_key_with_version}/blurb_css_classes-v3"
+            expect(helper.css_classes_for_creation_blurb(series)).to eq("#{default_classes} series-#{series.id} user-#{user1.id} creator-#{user1.id} user-#{user2.id} creator-#{user2.id}")
 
             travel(1.day)
             work.creatorships.find_by(pseud_id: user2.default_pseud_id).destroy
-            expect(helper.css_classes_for_creation_blurb(series.reload)).to eq("#{default_classes} series-#{series.id} user-#{user1.id} user-#{user2.id}")
-            expect(original_cache_key).to eq("#{series.cache_key_with_version}/blurb_css_classes-v2")
+            expect(helper.css_classes_for_creation_blurb(series.reload)).to eq("#{default_classes} series-#{series.id} user-#{user1.id} creator-#{user1.id} user-#{user2.id} creator-#{user2.id}")
+            expect(original_cache_key).to eq("#{series.cache_key_with_version}/blurb_css_classes-v3")
             travel_back
           end
         end
@@ -268,13 +268,13 @@ describe ApplicationHelper do
           let(:collection) { create(:anonymous_collection) }
 
           it "returns updated string" do
-            original_cache_key = "#{series.cache_key_with_version}/blurb_css_classes-v2"
-            expect(helper.css_classes_for_creation_blurb(series)).to eq("#{default_classes} series-#{series.id} user-#{user1.id}")
+            original_cache_key = "#{series.cache_key_with_version}/blurb_css_classes-v3"
+            expect(helper.css_classes_for_creation_blurb(series)).to eq("#{default_classes} series-#{series.id} user-#{user1.id} creator-#{user1.id}")
 
             travel(1.day)
             work.collections << collection
             expect(helper.css_classes_for_creation_blurb(series.reload)).to eq("#{default_classes} series-#{series.id}")
-            expect(original_cache_key).not_to eq("#{series.cache_key_with_version}/blurb_css_classes-v2")
+            expect(original_cache_key).not_to eq("#{series.cache_key_with_version}/blurb_css_classes-v3")
             travel_back
           end
         end
@@ -283,13 +283,13 @@ describe ApplicationHelper do
           let(:collection) { create(:unrevealed_collection) }
 
           it "returns same string" do
-            original_cache_key = "#{series.cache_key_with_version}/blurb_css_classes-v2"
-            expect(helper.css_classes_for_creation_blurb(series)).to eq("#{default_classes} series-#{series.id} user-#{user1.id}")
+            original_cache_key = "#{series.cache_key_with_version}/blurb_css_classes-v3"
+            expect(helper.css_classes_for_creation_blurb(series)).to eq("#{default_classes} series-#{series.id} user-#{user1.id} creator-#{user1.id}")
 
             travel(1.day)
             work.collections << collection
-            expect(helper.css_classes_for_creation_blurb(series.reload)).to eq("#{default_classes} series-#{series.id} user-#{user1.id}")
-            expect(original_cache_key).to eq("#{series.cache_key_with_version}/blurb_css_classes-v2")
+            expect(helper.css_classes_for_creation_blurb(series.reload)).to eq("#{default_classes} series-#{series.id} user-#{user1.id} creator-#{user1.id}")
+            expect(original_cache_key).to eq("#{series.cache_key_with_version}/blurb_css_classes-v3")
             travel_back
           end
         end
@@ -303,19 +303,19 @@ describe ApplicationHelper do
 
       it "returns string with default classes and creation and creator info" do
         result = helper.css_classes_for_creation_blurb(work)
-        expect(result).to eq("#{default_classes} work-#{work.id} user-#{user1.id}")
+        expect(result).to eq("#{default_classes} work-#{work.id} user-#{user1.id} creator-#{user1.id}")
       end
 
       context "when new user is added" do
         it "returns updated string" do
           travel_to(1.day.ago)
-          original_cache_key = "#{work.cache_key_with_version}/blurb_css_classes-v2"
-          expect(helper.css_classes_for_creation_blurb(work)).to eq("#{default_classes} work-#{work.id} user-#{user1.id}")
+          original_cache_key = "#{work.cache_key_with_version}/blurb_css_classes-v3"
+          expect(helper.css_classes_for_creation_blurb(work)).to eq("#{default_classes} work-#{work.id} user-#{user1.id} creator-#{user1.id}")
 
           travel_back
           work.creatorships.find_or_create_by(pseud_id: user2.default_pseud_id)
-          expect(helper.css_classes_for_creation_blurb(work)).to eq("#{default_classes} work-#{work.id} user-#{user1.id} user-#{user2.id}")
-          expect(original_cache_key).not_to eq("#{work.cache_key_with_version}/blurb_css_classes-v2")
+          expect(helper.css_classes_for_creation_blurb(work)).to eq("#{default_classes} work-#{work.id} user-#{user1.id} creator-#{user1.id} user-#{user2.id} creator-#{user2.id}")
+          expect(original_cache_key).not_to eq("#{work.cache_key_with_version}/blurb_css_classes-v3")
         end
       end
 
@@ -323,13 +323,13 @@ describe ApplicationHelper do
         it "returns updated string" do
           travel_to(1.day.ago)
           work.creatorships.find_or_create_by(pseud_id: user2.default_pseud_id)
-          original_cache_key = "#{work.cache_key_with_version}/blurb_css_classes-v2"
-          expect(helper.css_classes_for_creation_blurb(work)).to eq("#{default_classes} work-#{work.id} user-#{user1.id} user-#{user2.id}")
+          original_cache_key = "#{work.cache_key_with_version}/blurb_css_classes-v3"
+          expect(helper.css_classes_for_creation_blurb(work)).to eq("#{default_classes} work-#{work.id} user-#{user1.id} creator-#{user1.id} user-#{user2.id} creator-#{user2.id}")
 
           travel_back
           work.creatorships.find_by(pseud_id: user2.default_pseud_id).destroy
-          expect(helper.css_classes_for_creation_blurb(work)).to eq("#{default_classes} work-#{work.id} user-#{user1.id}")
-          expect(original_cache_key).not_to eq("#{work.cache_key_with_version}/blurb_css_classes-v2")
+          expect(helper.css_classes_for_creation_blurb(work)).to eq("#{default_classes} work-#{work.id} user-#{user1.id} creator-#{user1.id}")
+          expect(original_cache_key).not_to eq("#{work.cache_key_with_version}/blurb_css_classes-v3")
         end
       end
 
@@ -338,13 +338,13 @@ describe ApplicationHelper do
 
         it "returns updated string" do
           travel_to(1.day.ago)
-          original_cache_key = "#{work.cache_key_with_version}/blurb_css_classes-v2"
-          expect(helper.css_classes_for_creation_blurb(work)).to eq("#{default_classes} work-#{work.id} user-#{user1.id}")
+          original_cache_key = "#{work.cache_key_with_version}/blurb_css_classes-v3"
+          expect(helper.css_classes_for_creation_blurb(work)).to eq("#{default_classes} work-#{work.id} user-#{user1.id} creator-#{user1.id}")
 
           travel_back
           work.collections << collection
           expect(helper.css_classes_for_creation_blurb(work)).to eq("#{default_classes} work-#{work.id}")
-          expect(original_cache_key).not_to eq("#{work.cache_key_with_version}/blurb_css_classes-v2")
+          expect(original_cache_key).not_to eq("#{work.cache_key_with_version}/blurb_css_classes-v3")
         end
       end
 
@@ -353,13 +353,13 @@ describe ApplicationHelper do
 
         it "returns updated string" do
           travel_to(1.day.ago)
-          original_cache_key = "#{work.cache_key_with_version}/blurb_css_classes-v2"
-          expect(helper.css_classes_for_creation_blurb(work)).to eq("#{default_classes} work-#{work.id} user-#{user1.id}")
+          original_cache_key = "#{work.cache_key_with_version}/blurb_css_classes-v3"
+          expect(helper.css_classes_for_creation_blurb(work)).to eq("#{default_classes} work-#{work.id} user-#{user1.id} creator-#{user1.id}")
 
           travel_back
           work.collections << collection
           expect(helper.css_classes_for_creation_blurb(work)).to eq("#{default_classes} work-#{work.id}")
-          expect(original_cache_key).not_to eq("#{work.cache_key_with_version}/blurb_css_classes-v2")
+          expect(original_cache_key).not_to eq("#{work.cache_key_with_version}/blurb_css_classes-v3")
         end
       end
     end
