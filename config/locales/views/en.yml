@@ -441,7 +441,6 @@ en:
     muted_items_notice_html: "You have muted some users on the Archive. Some items may not be shown, and any counts may be inaccurate. You can mute or unmute users on %{muted_users_link}."
     muted_users_link_text: "your Muted Users page"
     placeholder:
-      cocreation: You co-created this with a user you've muted.
       comment: This comment is from a user you've muted.
     users:
       index:

@@ -318,6 +318,18 @@ def submit_bookmark_form(pseud, note, tags)
   step %{all indexing jobs have been run}
 end
 
+Given "{string} has a bookmark of the work {string}" do |login, title|
+  user = User.find_by(login: login) || FactoryBot.create(:user, login: login)
+  work = Work.find_by(title: title) || FactoryBot.create(:work, title: title)
+  FactoryBot.create(:bookmark, bookmarkable: work, pseud: user.default_pseud)
+end
+
+Given "{string} has a bookmark of the series {string}" do |login, title|
+  user = User.find_by(login: login) || FactoryBot.create(:user, login: login)
+  series = Series.find_by(title: title) || FactoryBot.create(:work, series: [FactoryBot.create(:series, title: title)])
+  FactoryBot.create(:bookmark, bookmarkable: series, pseud: user.default_pseud)
+end
+
 When /^I bookmark the work "(.*?)"(?: as "(.*?)")?(?: with the note "(.*?)")?(?: with the tags "(.*?)")?$/ do |title, pseud, note, tags|
   step %{I start a new bookmark for "#{title}"}
   submit_bookmark_form(pseud, note, tags)

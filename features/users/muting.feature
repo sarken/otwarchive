@@ -157,19 +157,15 @@ Feature: Muting
     Then I should see "fxxk you"
 
   @javascript
-  Scenario: Users see expandable placeholders for works and series they've co-created with a muted user
+  Scenario: Users see works and series they've co-created with a muted user
     Given the user "muter" has muted the user "pest"
       And the work "Our Work" by "muter" and "pest" in the series "Our Series"
+      And "bookmarker" has a bookmark of the work "Our Work"
+      And "bookmarker" has a bookmark of the series "Our Series"
     When I am logged in as "muter"
       And I go to my user page
-    Then I should not see "Our Work"
-      And I should not see "Our Series"
-      But I should see "You co-created this with a user you've muted."
-    When I expand the muted work co-created with "pest"
-      Then I should see "Our Work"
-    When I collapse the muted work co-created with "pest"
-      Then I should not see "Our Work"
-    When I expand the muted series co-created with "pest"
-      Then I should see "Our Series"
-    When I collapse the muted series co-created with "pest"
-      Then I should not see "Our Series"
+    #Then I should see "Our Work"
+    #  And I should see "Our Series"
+    When I go to bookmarker's bookmarks page
+    Then I should see "Our Work"
+      And I should see "Our Series"

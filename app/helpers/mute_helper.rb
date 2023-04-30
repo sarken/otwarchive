@@ -27,9 +27,12 @@ module MuteHelper
 
     return if user.muted_users.empty?
  
-    css_classes = user.muted_users.map { |muted_user| ".user-#{muted_user.id}" }.join(", ")
+    # Only hide items if the muter is not one of the creators.
+    selectors = user.muted_users.map do |muted_user|
+                  ".user-#{muted_user.id}:not(.creator-#{user.id}), .bookmarker-#{muted_user.id}"
+                end.join(", ")
 
-    "<style>#{css_classes} { display: none !important; visibility: hidden !important; }</style>".html_safe
+    "<style>#{selectors} { display: none !important; visibility: hidden !important; }</style>".html_safe
   end
 
   def mute_javascript
@@ -45,16 +48,18 @@ module MuteHelper
 
     return if user.muted_users.empty?
 
-    comment_selectors = user.muted_users.map { |muted_user| ".comment.user-#{muted_user.id}" }.join(", ")
+    # Define CSS selectors and placeholder text for each type of muted item that
+    # should have expandable placeholders instead of being hidden, then update
+    # the JavaScript:
+    # makeMutedItemsExpandable("#{new_selectors}", "#{new_placeholder}");
+    comment_selectors = user.muted_users.map do |muted_user|
+                          ".comment.user-#{muted_user.id}"
+                        end.join(", ")
     comment_placeholder = I18n.translate("muted.placeholder.comment")
-
-    cocreation_selectors = user.muted_users.map { |muted_user| ".user-#{user.id}.user-#{muted_user.id}" }.join(", ")
-    cocreation_placeholder = I18n.translate("muted.placeholder.cocreation")
 
     script = <<-SCRIPT
       <script>
         makeMutedItemsExpandable("#{comment_selectors}", "#{comment_placeholder}");
-        makeMutedItemsExpandable("#{cocreation_selectors}", "#{cocreation_placeholder}");
 
         function makeMutedItemsExpandable(css_selectors, expander_text) {
           let items = document.querySelectorAll(css_selectors);
@@ -82,7 +87,7 @@ module MuteHelper
   end
 
   def mute_css_key(user)
-    "muted/#{user.id}/mute_css"
+    "muted/#{user.id}/mute_css-v2"
   end
 
   def mute_javascript_key(user)
