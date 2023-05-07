@@ -12,6 +12,7 @@ $j(document).ready(function() {
     setupAccordion();
     setupDropdown();
     updateCachedTokens();
+    observeAutocomplete()
 
     // remove final comma from comma lists in older browsers
     $j('.commas li:last-child').addClass('last');
@@ -32,6 +33,9 @@ $j(document).ready(function() {
 
 ///////////////////////////////////////////////////////////////////
 // Autocomplete
+//
+// Look for autocomplete_options in application helper and throughout the views to
+// see how to use this!
 ///////////////////////////////////////////////////////////////////
 
 function get_token_input_options(self) {
@@ -48,23 +52,41 @@ function get_token_input_options(self) {
   };
 }
 
-// Look for autocomplete_options in application helper and throughout the views to
-// see how to use this!
-var input = $j('input.autocomplete');
-if (input.livequery) {
-  jQuery(function($) {
-    $('input.autocomplete').livequery(function(){
-      var self = $(this);
-      var token_input_options = get_token_input_options(self);
-      var method;
-      try {
-          method = $.parseJSON(self.data('autocomplete-method'));
-      } catch (err) {
-          method = self.data('autocomplete-method');
-      }
-      self.tokenInput(method, token_input_options);
+// The list of input.autocomplete objects that have already been processed
+// using setupAutocomplete.
+var processedAutocomplete = new Set()
+
+// If the input object is new, set up a tokenInput for it.
+function setupAutocomplete(input) {
+  // Prevent this from firing twice on the same element:
+  if (processedAutocomplete.has(input)) { return }
+  processedAutocomplete.add(input)
+
+  var element = $j(input);
+  var token_input_options = get_token_input_options(element);
+  var method;
+  try {
+    method = $j.parseJSON(element.data('autocomplete-method'));
+  } catch (err) {
+    method = element.data('autocomplete-method');
+  }
+  element.tokenInput(method, token_input_options);
+}
+
+// Run setupAutocomplete on all inputs with class autocomplete, and then set up
+// a MutationObserver to catch any autocomplete fields that are added later:
+function observeAutocomplete() {
+  $j("input.autocomplete").each(function() {
+    setupAutocomplete(this)
+  });
+
+  var observer = new MutationObserver(function(mutations) {
+    $j("input.autocomplete").each(function() {
+      setupAutocomplete(this)
     });
   });
+
+  observer.observe(document.documentElement, { childList: true, subtree: true });
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -74,7 +96,7 @@ jQuery(function($){
   $('.expand').each(function(){
     // start by hiding the list in the page
     list = $($(this).attr('action_target'));
-    if (!list.attr('force_expand') || list.children().size() > 25 || list.attr('force_contract')) {
+    if (!list.attr('force_expand') || list.children().length > 25 || list.attr('force_contract')) {
       list.hide();
       $(this).show();
     } else {

@@ -468,7 +468,7 @@ $.TokenList = function (input, url_or_data, settings) {
         $.each(live_param_fields, function (index, value) {
             var kv = value.split("=");
             var id_to_get = '#' + kv[1] + ' input';
-            if ($(id_to_get).size() === 0) {id_to_get = '#' + kv[1];}
+            if ($(id_to_get).length === 0) {id_to_get = '#' + kv[1];}
             // this will work on both checkboxes and on text fields
             $(id_to_get).each(function(index, node){
                 if ($(node).hasClass("autocomplete")) {
@@ -929,7 +929,7 @@ $.TokenList = function (input, url_or_data, settings) {
                 var kv = value.split("=");
                 // test for checkboxes or text input field
                 var id_to_get = '#' + kv[1] + ' input';
-                if ($(id_to_get).size() === 0) {
+                if ($(id_to_get).length === 0) {
                     id_to_get = '#' + kv[1];
                 } else {
                     id_to_get += ':checked';
