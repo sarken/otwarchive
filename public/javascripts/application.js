@@ -68,69 +68,62 @@ if (input.livequery) {
 
 // expand, contract, shuffle
 jQuery(function($){
-  $('.expand').each(function(){
+  $('[data-allows-js="ecs-expand"]').each(function(){
     // start by hiding the list in the page
-    list = $($(this).attr('action_target'));
+    list = $($(this).attr('data-action-target'));
     if (!list.attr('force_expand') || list.children().size() > 25 || list.attr('force_contract')) {
       list.hide();
       $(this).show();
     } else {
       // show the shuffle and contract button only
-      $(this).nextAll(".shuffle").show();
-      $(this).next(".contract").show();
+      $(this).nextAll('[data-allows-js="ecs-shuffle"]').show();
+      $(this).next('[data-allows-js="ecs-contract"]').show();
     }
 
     // set up click event to expand the list
     $(this).click(function(event){
-      list = $($(this).attr('action_target'));
+      list = $($(this).attr('data-action-target'));
       list.show();
 
       // show the contract & shuffle buttons and hide us
-      $(this).next(".contract").show();
-      $(this).nextAll(".shuffle").show();
+      $(this).next('[data-allows-js="ecs-contract"]').show();
+      $(this).nextAll('[data-allows-js="ecs-shuffle"]').show();
       $(this).hide();
-
-      event.preventDefault(); // don't want to actually click the link
     });
   });
 
-  $('.contract').each(function(){
+  $('[data-allows-js="ecs-contract"]').each(function(){
     $(this).click(function(event){
       // hide the list when clicked
-      list = $($(this).attr('action_target'));
+      list = $($(this).attr('data-action-target'));
       list.hide();
 
       // show the expand and shuffle buttons and hide us
-      $(this).prev(".expand").show();
-      $(this).nextAll(".shuffle").hide();
+      $(this).prev('[data-allows-js="ecs-expand"]').show();
+      $(this).nextAll('[data-allows-js="ecs-shuffle"]').hide();
       $(this).hide();
-
-      event.preventDefault(); // don't want to actually click the link
     });
   });
 
-  $('.shuffle').each(function(){
+  $('[data-allows-js="ecs-shuffle"]').each(function(){
     // shuffle the list's children when clicked
     $(this).click(function(event){
-      list = $($(this).attr('action_target'));
+      list = $($(this).attr('data-action-target'));
       list.children().shuffle();
-      event.preventDefault(); // don't want to actually click the link
     });
   });
 
-  $('.expand_all').each(function(){
-      target = "." + $(this).attr('target_class');
+  $('[data-allows-js="ecs-expand-all"]').each(function(){
+      target = "." + $(this).attr('data-target-class');
      $(this).click(function(event) {
-        $(this).closest(target).find(".expand").click();
-        event.preventDefault();
+        $(this).closest(target).find('[data-allows-js="ecs-expand"]').click();
      });
   });
 
-  $('.contract_all').each(function(){
-     target = "." + $(this).attr('target_class');
+  $('[data-allows-js="ecs-contract-all"]').each(function(){
+     target = "." + $(this).attr('data-target-class');
      $(this).click(function(event) {
-        $(this).closest(target).find(".contract").click();
-        event.preventDefault();
+        $(this).closest(target).find('[data-allows-js="ecs-contract"]').click();
      });
   });
 

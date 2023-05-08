@@ -249,8 +249,14 @@ module ApplicationHelper
 
   # expand/contracts all expand/contract targets inside its nearest parent with the target class (usually index or listbox etc)
   def expand_contract_all(target="index")
-    expand_all = content_tag(:a, ts("Expand All"), href: "#", class: "expand_all", "target_class" => target, role: "button")
-    contract_all = content_tag(:a, ts("Contract All"), href: "#", class: "contract_all", "target_class" => target, role: "button")
+    expand_all = content_tag(:button,
+      ts("Expand All"),
+      type: "button",
+      data: { target_class: target, allows_js: "ecs-expand-all" })
+    contract_all = content_tag(:button,
+      ts("Contract All"),
+      type: "button",
+      data: { target_class: target, allows_js: "ecs-contract-all" })
     content_tag(:span, expand_all + "\n".html_safe + contract_all, class: "actions hidden showme", role: "menu")
   end
 
@@ -259,9 +265,31 @@ module ApplicationHelper
   # Note that these start hidden because if javascript is not available, we
   # don't want to show the user the buttons at all.
   def expand_contract_shuffle(list_id, shuffle=true)
-    ('<span class="action expand hidden" title="expand" action_target="#' + list_id + '"><a href="#" role="button">&#8595;</a></span>
-    <span class="action contract hidden" title="contract" action_target="#' + list_id + '"><a href="#" role="button">&#8593;</a></span>').html_safe +
-    (shuffle ? ('<span class="action shuffle hidden" title="shuffle" action_target="#' + list_id + '"><a href="#" role="button">&#8646;</a></span>') : '').html_safe
+    target = "##{list_id}"
+    expand_button = content_tag(:button,
+      "&#8595;".html_safe,
+      title: "expand",
+      class: "action expand hidden",
+      type: "button",
+      data: { action_target: target, allows_js: "ecs-expand" })
+    contract_button = content_tag(:button,
+      "&#8593;".html_safe,
+      title: "contract",
+      class: "action contract hidden",
+      type: "button",
+      data: { action_target: target, allows_js: "ecs-contract" })
+    shuffle_button = content_tag(:button,
+      "&#8646;".html_safe,
+      title: "shuffle",
+      class: "action shuffle hidden",
+      type: "button",
+      data: { action_target: target, allows_js: "ecs-shuffle" })
+
+    if shuffle
+      expand_button + contract_button + shuffle_button
+    else
+      expand_button + contract_button
+    end
   end
 
   # returns the default autocomplete attributes, all of which can be overridden
