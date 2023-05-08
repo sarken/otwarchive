@@ -25,7 +25,12 @@
             <%= link_to ts('Edit'), edit_admin_banner_path(admin_banner) %>
           </li>
           <li>
-            <%= link_to ts('Delete'), confirm_delete_admin_banner_path(admin_banner), data: {confirm: ts('Are you sure you want to delete this banner?')} %>
+            <%= link_to ts('Delete'),
+                  confirm_delete_admin_banner_path(admin_banner),
+                  data: {
+                    confirm: ts('Are you sure you want to delete this banner?'),
+                    method: :delete
+                } %>
           </li>
         </ul>
       </li>

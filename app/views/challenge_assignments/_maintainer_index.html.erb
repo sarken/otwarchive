@@ -38,7 +38,10 @@
   <li>
     <%= link_to ts("Purge Assignments"),
                 confirm_purge_collection_assignments_path(@collection),
-                data: { confirm: ts("This will delete ALL assignments so you can edit and send them over. Please do not do this unless you absolutely must!") },
+                data: {
+                  confirm: ts("This will delete ALL assignments so you can edit and send them over. Please do not do this unless you absolutely must!"),
+                  method: :delete
+                },
                 role: "button" %>
   </li>
 </ul>

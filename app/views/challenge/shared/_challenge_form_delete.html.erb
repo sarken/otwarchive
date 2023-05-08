@@ -4,5 +4,8 @@
   else
     confirm_delete_collection_gift_exchange_path(@collection)
   end,
-  data: { confirm: ts("Are you sure you want to delete the challenge from this collection? All sign-ups, assignments, and settings will be lost. (Works and bookmarks will remain in the collection.)") }
+  data: {
+    confirm: ts("Are you sure you want to delete the challenge from this collection? All sign-ups, assignments, and settings will be lost. (Works and bookmarks will remain in the collection.)"),
+    method: :delete
+  }
 %>

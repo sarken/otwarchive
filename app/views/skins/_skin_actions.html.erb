@@ -17,7 +17,10 @@
         <li>
           <%= link_to ts("Delete"),
                       confirm_delete_skin_path(skin),
-                      data: { confirm: ts("Are you sure you want to delete this skin?") } %>
+                      data: {
+                        confirm: ts("Are you sure you want to delete this skin?"),
+                        method: :delete
+                      } %>
         </li>
       <% end %>
     <% end %>
