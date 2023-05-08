@@ -184,7 +184,7 @@ jQuery(function($){
 // Set up open and close toggles for a given object
 // Typical setup (this will leave the toggled item open for users without javascript but hide the controls from them):
 // <a class="foo_open hidden">Open Foo</a>
-// <div id="foo" class="toggled">
+// <div id="foo" class="toggled" data-allows-js="toggled">
 //   foo!
 //   <a class="foo_close hidden">Close</a>
 // </div>
@@ -192,14 +192,12 @@ jQuery(function($){
 // Notes:
 // - The open button CANNOT be inside the toggled div, the close button can be (but doesn't have to be)
 // - You can have multiple open and close buttons for the same div since those are labeled with classes
-// - You don't have to use div and a, those are just examples. Anything you put the toggled and _open/_close classes on will work.
+// - You don't have to use div and a, those are just examples. Anything you put data-allows-js="toggled" and the toggled and _open/_close classes on will work.
 // - If you want the toggled item not to be visible to users without JavaScript by default, add the class "hidden" to the toggled item as well.
 //   (and you can then add an alternative link for them using <noscript>)
 // - Generally reserved for toggling complex elements like bookmark forms and challenge sign-ups; for simple elements like lists use setupAccordion.
 function setupToggled(){
-  $j('.toggled').filter(function(){
-    return $j(this).closest('.userstuff').length === 0;
-  }).each(function(){
+  $j('[data-allows-js="toggled"]').each(function(){
     var node = $j(this);
     var open_toggles = $j('.' + node.attr('id') + "_open");
     var close_toggles = $j('.' + node.attr('id') + "_close");

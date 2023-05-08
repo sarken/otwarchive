@@ -49,10 +49,10 @@
             <%= link_to h(ts("Close Offers")) + ' &#8593;'.html_safe, "#", class: "offers_#{signup.id}_close" %>
           </li>
         </ul>
-        <div class="toggled" id="<%= "requests_#{signup.id}" %>">
+        <div class="toggled" id="<%= "requests_#{signup.id}" %>" data-allows-js="toggled">
           <%= render "challenge_signups/show_requests", challenge_signup: signup %>
         </div>
-        <div class="toggled" id="<%= "offers_#{signup.id}" %>">
+        <div class="toggled" id="<%= "offers_#{signup.id}" %>" data-allows-js="toggled">
           <%= render "challenge_signups/show_offers", challenge_signup: signup %>
         </div>
       </dd>

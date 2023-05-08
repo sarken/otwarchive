@@ -74,7 +74,7 @@
   </dl>
 </div>
 <% if logged_in? %>
-  <div id="bookmark_form_placement" class="wrapper toggled">
+  <div id="bookmark_form_placement" class="wrapper toggled" data-allows-js="toggled">
     <% if @bookmark %>
       <%= render "bookmarks/bookmark_form", bookmarkable: @series, bookmark: @bookmark, button_name: ts("Update"), action: :update, in_page: true %>
     <% else %>

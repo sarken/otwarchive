@@ -41,7 +41,7 @@
   </legend>
 
 
-  <div id="advanced_skin" class="<%= show_advanced_skin?(@skin) ? 'toggled open' : 'toggled' %>">
+  <div id="advanced_skin" class="<%= show_advanced_skin?(@skin) ? 'toggled open' : 'toggled' %>" data-allows-js="toggled">
     <fieldset>
       <legend><%= ts('Conditions') %> <%= link_to_help 'skins-conditions' %></legend>
       <h4 class="heading landmark"><%= ts('Conditions') %></h4>

@@ -40,7 +40,7 @@
     <% if collection_item.item %>
       <% # An item can be in multiple collections. Including the collection name in the id prevents multiple items from having the same id. %>
       <% id = "blurb_#{collection_item.item_type}_#{collection_item.item_id}_#{collection_item.collection.name}" %>
-      <blockquote id="<%= id %>" class="<% if collection_item.item_type == 'Bookmark' %>bookmark <% else %>work <% end %> blurb toggled">
+      <blockquote id="<%= id %>" class="<% if collection_item.item_type == 'Bookmark' %>bookmark <% else %>work <% end %> blurb toggled" data-allows-js="toggled">
         <% if collection_item.item_type == 'Work' %>
           <%= render "works/work_module", work: collection_item.item, is_unrevealed: false %>
         <% elsif collection_item.item_type == 'Bookmark' %>

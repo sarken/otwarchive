@@ -127,12 +127,12 @@
 
   <% if logged_in? && @work %>
     <% if is_maintainer? && @work.allow_collection_invitation? %>
-      <div id="collection_item_form_placement" class="wrapper toggled">
+      <div id="collection_item_form_placement" class="wrapper toggled" data-allows-js="toggled">
         <%= render "collection_items/collection_item_form", :item => @work, :in_page => true %>
       </div>
     <% end %>
 
-    <div id="bookmark_form_placement" class="wrapper toggled">
+    <div id="bookmark_form_placement" class="wrapper toggled" data-allows-js="toggled">
       <% @bookmark ||= bookmark_if_exists(commentable) %>
       <% bookmarkable = (commentable.respond_to?(:work) ? commentable.work : commentable) %>
       <% if @bookmark %>
