@@ -4,7 +4,7 @@
 <% unless current_user && current_user.try(:preference).try(:banner_seen) %>
 <% if @admin_banner && @admin_banner.active? %>
 <% unless current_user.nil? && session[:hide_banner] %>
-  <div class="<%= @admin_banner.banner_type %> announcement group" id="admin-banner">
+  <div class="<%= @admin_banner.banner_type %> announcement group" id="admin-banner" data-allows-js="thermometer">
     <blockquote class="userstuff">
       <%=raw sanitize_field(@admin_banner, :content) %>
     </blockquote>
