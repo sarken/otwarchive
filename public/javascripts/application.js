@@ -640,7 +640,7 @@ function thermometer() {
 
 function updateCachedTokens() {
   // we only do full page caching when users are logged out
-  if ($j('#small_login').length > 0) {
+  if ($j('[data-allows-js="update-cached-tokens"]').length > 0) {
     $j.getJSON("/token_dispenser.json", function( data ) {
       var token = data.token;
       // set token on fields
