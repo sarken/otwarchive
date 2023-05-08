@@ -378,14 +378,12 @@ function setupDropdown(){
 // Typical set up:
 // <li aria-haspopup="true">
 //  <a href="#">Expander</a>
-//  <div class="expandable">
+//  <div class="expandable" data-allows-js="accordion">
 //    foo!
 //  </div>
 // </li>
 function setupAccordion() {
-  $j(".expandable").filter(function() {
-    return $j(this).closest(".userstuff").length === 0;
-  }).each(function() {
+  $j('[data-allows-js="accordion"]').each(function() {
     var pane = $j(this);
     // hide the pane element if it's not hidden by default
     if ( !pane.hasClass("hidden") ) {

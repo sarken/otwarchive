@@ -29,7 +29,7 @@
         <%= link_to ts('Chapter Index'), navigate_work_path(@work) %>
       </noscript>
       <a class="hidden" href="#"><%= ts('Chapter Index') %></a>
-      <ul id="chapter_index" class="expandable secondary hidden">
+      <ul id="chapter_index" class="expandable secondary hidden" data-allows-js="accordion">
         <li>
           <%= form_tag url_for({:controller => :chapters, :action => :show, :work_id => @work}), :method => :get do %>
             <p>
@@ -111,7 +111,7 @@
   <% if downloadable? && @admin_settings.downloads_enabled? %>
     <li class="download" aria-haspopup="true">
       <a href="#"><%= ts("Download") %></a>
-      <ul class="expandable secondary">
+      <ul class="expandable secondary" data-allows-js="accordion">
         <% ArchiveConfig.DOWNLOAD_FORMATS.each do |format| %>
           <li><%= link_to ts(format.upcase), download_url_for_work(@work, format) %></li>
         <% end %>

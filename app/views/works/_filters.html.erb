@@ -35,7 +35,7 @@
                     tag_type: tag_type_label_name(tag_type).pluralize
                     ).html_safe %>
               </dt>
-              <dd id="<%= filter_action %>_<%= tag_type %>_tags" class="expandable <%= tag_type_css_class(tag_type) %> tags">
+              <dd id="<%= filter_action %>_<%= tag_type %>_tags" class="expandable <%= tag_type_css_class(tag_type) %> tags" data-allows-js="accordion">
                 <ul>
                   <% @facets[tag_type].each do |tag| %>
                     <li>
@@ -78,7 +78,7 @@
       <dd class="more group">
         <dl>
           <dt id="toggle_work_crossover" class="filter-toggle crossover"><%= ts("Crossovers") %></dt>
-          <dd id="work_crossover" class="expandable">
+          <dd id="work_crossover" class="expandable" data-allows-js="accordion">
             <ul>
               <li>
                 <%= f.label :crossover, value: "" do %>
@@ -101,7 +101,7 @@
             </ul>
           </dd>
           <dt id="toggle_work_complete" class="filter-toggle status"><%= ts("Completion Status") %></dt>
-          <dd id="work_complete" class="expandable">
+          <dd id="work_complete" class="expandable" data-allows-js="accordion">
             <ul>
               <li>
                 <%= f.label :complete, value: "" do %>
@@ -124,7 +124,7 @@
             </ul>
           </dd>
           <dt id="toggle_work_words" class="filter-toggle words"><%= ts("Word Count") %></dt>
-          <dd id="work_words" class="expandable">
+          <dd id="work_words" class="expandable" data-allows-js="accordion">
             <dl class="range">
               <dt><%= f.label :words_from, ts("From") %></dt>
               <dd><%= f.text_field :words_from %></dd>
@@ -133,7 +133,7 @@
             </dl>
           </dd>
           <dt id="toggle_work_dates" class="filter-toggle dates"><%= ts("Date Updated") %></dt>
-          <dd id="work_dates" class="expandable">
+          <dd id="work_dates" class="expandable" data-allows-js="accordion">
             <dl class="range">
               <dt><%= f.label :date_from, ts("From") %></dt>
               <dd><%= f.text_field :date_from, class: "datepicker" %></dd>

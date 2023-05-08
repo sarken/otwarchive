@@ -35,7 +35,7 @@
                     tag_type: tag_type_label_name(tag_type).pluralize
                     ).html_safe %>
               </dt>
-              <dd id="<%= filter_action %>_<%= tag_type %>_tags" class="expandable <%= tag_type_css_class(tag_type) %> tags">
+              <dd id="<%= filter_action %>_<%= tag_type %>_tags" class="expandable <%= tag_type_css_class(tag_type) %> tags" data-allows-js="accordion">
                 <ul>
                   <% @facets[tag_type].each do |tag| %>
                     <li>
