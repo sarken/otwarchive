@@ -272,6 +272,8 @@ en:
         notice:
           unreviewed_by_collection: Works and bookmarks listed here have been added to a collection but need approval from a collection moderator before they are listed in the collection.
         page_heading: Items by %{username} in Collections
+      work:
+        page_heading_html: Collection Items for %{work_link}
   comments:
     commentable:
       actions:
@@ -446,19 +448,6 @@ en:
       transfer:
         one: Transfer this bookmark to the default pseud
         other: Transfer these bookmarks to the default pseud
-  collection_items:
-    collection_item_form:
-      invite_header_html: "Invite %{title} to collections"
-      add_bookmark_header: "Add Bookmark to collections"
-      invite: "Invite"
-      add: "Add"
-    index:
-      collection:
-        page_heading_html: "Items in %{collection_link}"
-      user:
-        page_heading: "Items by %{username} in Collections"
-      work:
-        page_heading_html: "Collection Items for %{work_link}"
   skins:
     confirm_delete:
       confirm_html: Are you sure you want to <strong><em>delete</em></strong> the skin "%{skin_title}"?
