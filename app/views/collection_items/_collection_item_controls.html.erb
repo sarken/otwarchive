@@ -27,7 +27,7 @@
   <li class="collection status">
     <%= form.label(:collection_approval_status,
       options = {},
-      html_options = { class: @user ? "disabled" :  nil }) do %>
+      html_options = { class: @collection ? nil : "disabled" }) do %>
       <span class="landmark"><%= collection_item_approval_options_label(
           actor: "collection",
           item_type: collection_item.item_type) %></span>
@@ -36,7 +36,7 @@
           actor: "collection",
           item_type: collection_item.item_type),
         options = {},
-        html_options = { disabled: @user ? true :  nil }) %>
+        html_options = { disabled: @collection ? nil : true }) %>
     <% end %>
   </li>
 
@@ -44,8 +44,8 @@
     <li>
       <%= form.label(:unrevealed,
         options = {},
-        html_options = { class: @user ? "disabled" :  nil }) do %>
-        <%= form.check_box :unrevealed, disabled: @user %>
+        html_options = { class: @collection ? nil : "disabled" }) do %>
+        <%= form.check_box :unrevealed, disabled: !@collection %>
         <%= ts("Unrevealed") %>
       <% end %>
     </li>
@@ -55,8 +55,8 @@
     <li>
       <%= form.label(:anonymous,
         options = {},
-        html_options = { class: @user ? "disabled" :  nil }) do %>
-        <%= form.check_box :anonymous, disabled: @user %>
+        html_options = { class: @collection ? nil : "disabled" }) do %>
+        <%= form.check_box :anonymous, disabled: !@collection %>
         <%= ts("Anonymous") %>
       <% end %>
     </li>

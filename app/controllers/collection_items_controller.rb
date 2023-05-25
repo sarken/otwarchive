@@ -37,7 +37,7 @@ class CollectionItemsController < ApplicationController
                           else
                             @collection_items.unreviewed_by_user
                           end
-    elsif params[:work_id] && (@work = Work.find_by(id: params[:work_id])) && (current_user.is_author_of?(@work) || logged_in_as_admin?)
+    elsif params[:work_id] && (@work = Work.find_by(id: params[:work_id])) && (current_user&.is_author_of?(@work) || logged_in_as_admin?)
       @collection_items = @work.collection_items
     else
       flash[:error] = ts("You don't have permission to see that, sorry!")
