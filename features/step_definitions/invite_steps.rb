@@ -95,6 +95,12 @@ Given "there are {int} invite request(s) per page" do |amount|
   allow(InviteRequest).to receive(:per_page).and_return(amount)
 end
 
+Given "{string} has invited {string}" do |inviter, invitee|
+  inviter = FactoryBot.create(:user, login: inviter)
+  invitation = FactoryBot.create(:invitation, creator: inviter)
+  FactoryBot.create(:user, login: invitee, invitation: invitation)
+end
+
 ### WHEN
 
 When /^I use an invitation to sign up$/ do

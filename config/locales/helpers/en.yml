@@ -20,3 +20,5 @@ en:
       user:
         bookmark: Bookmarker approval status
         work: Creator approval status
+  invitations_helper:
+    deleted_invitee: User %{id} (Deleted)
