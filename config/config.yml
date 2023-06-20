@@ -393,7 +393,7 @@ DEFAULT_LOCALE_ISO: 'en'
 DEFAULT_LOCALE_NAME: 'English (US)'
 
 # Allow orphaninig
-ORPHANING_ALLOWED: true
+ORPHANING_ALLOWED: false
 
 # Help directory, must be in the public folder.
 # Create subfolders for each supported language
