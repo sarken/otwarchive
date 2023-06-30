@@ -256,42 +256,45 @@ class ChallengeSignupsController < ApplicationController
 protected
 
   def request_to_array(type, request)
-    any_types = TagSet::TAG_TYPES.select {|type| request && request.send("any_#{type}")}
-    any_types.map! { |type| ts("Any %{type}", type: type.capitalize) }
-    tags = request.nil? ? [] : request.tag_set.tags.map {|tag| tag.name}
-    rarray = [(tags + any_types).join(", ")]
+    return [] unless request
+
+    rarray = []
+    if include_tags_in_csv(type)
+      any_types = TagSet::TAG_TYPES.select { |type| request.send("any_#{type}") }
+      any_types.map! { |type| ts("Any %{type}", type: type.capitalize) }
+      tags = request.tag_set.blank? ? [] : request.tag_set.tags.map { |tag| tag.name }
+      rarray = [(tags + any_types).join(", ")]
+    end
 
     if @challenge.send("#{type}_restriction").optional_tags_allowed
-      rarray << (request.nil? ? "" : request.optional_tag_set.tags.map {|tag| tag.name}.join(", "))
+      rarray << request.optional_tag_set.tags.map { |tag| tag.name }.join(", ") unless request.tag_set.blank?
     end
 
     if @challenge.send("#{type}_restriction").title_allowed
-      rarray << (request.nil? ? "" : sanitize_field(request, :title))
+      rarray << sanitize_field(request, :title)
     end
 
     if @challenge.send("#{type}_restriction").description_allowed
-      description = (request.nil? ? "" : sanitize_field(request, :description))
+      description = sanitize_field(request, :description)
       # Didn't find a way to get Excel 2007 to accept line breaks
-      # withing a field; not even when the row delimiter is set to
+      # within a field; not even when the row delimiter is set to
       # \r\n and linebreaks within the field are only \n. :-(
       #
       # Thus stripping linebreaks.
       rarray << description.gsub(/[\n\r]/, " ")
     end
 
-    rarray << (request.nil? ? "" : request.url) if
-      @challenge.send("#{type}_restriction").url_allowed
+    rarray << request.url if @challenge.send("#{type}_restriction").url_allowed
 
     return rarray
   end
 
-
   def gift_exchange_to_csv
     header = ["Pseud", "Email", "Sign-up URL"]
 
-    %w(request offer).each do |type|
+    %w[request offer].each do |type|
       @challenge.send("#{type.pluralize}_num_allowed").times do |i|
-        header << "#{type.capitalize} #{i+1} Tags"
+        header << "#{type.capitalize} #{i+1} Tags" if include_tags_in_csv(type)
         header << "#{type.capitalize} #{i+1} Optional Tags" if
           @challenge.send("#{type}_restriction").optional_tags_allowed
         header << "#{type.capitalize} #{i+1} Title" if
@@ -310,7 +313,7 @@ protected
       row = [signup.pseud.name, signup.pseud.user.email,
              collection_signup_url(@collection, signup)]
 
-      %w(request offer).each do |type|
+      %w[request offer].each do |type|
         @challenge.send("#{type.pluralize}_num_allowed").times do |i|
           row += request_to_array(type, signup.send(type.pluralize)[i])
         end
@@ -321,9 +324,9 @@ protected
     csv_array
   end
 
-
   def prompt_meme_to_csv
-    header = ["Pseud", "Sign-up URL", "Tags"]
+    header = ["Pseud", "Sign-up URL"]
+    header << "Tags" if include_tags_in_csv("request")
     header << "Optional Tags" if @challenge.request_restriction.optional_tags_allowed
     header << "Title" if @challenge.request_restriction.title_allowed
     header << "Description" if @challenge.request_restriction.description_allowed
@@ -343,6 +346,16 @@ protected
     end
 
     csv_array
+  end
+
+  def include_tags_in_csv(prompt_type)
+    return unless %w[request offer].include?(prompt_type)
+
+    TagSet::TAG_TYPES.each do |tag_type|
+      return true if @challenge.send("#{prompt_type}_restriction").allowed(tag_type) > 0
+    end
+
+    false
   end
 
   private

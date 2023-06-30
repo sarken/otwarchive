@@ -47,6 +47,13 @@ FactoryBot.define do
       signups_close_at { Time.now - 1.day }
       signup_open { false }
     end
+
+    # By default, gift exchanges allow character, fandom, and relationship tags
+    # as well as descriptions. no_details allows none of those.
+    trait :no_details do
+      offer_restriction { create(:prompt_restriction, :no_details) }
+      request_restriction { create(:prompt_restriction, :no_details) }
+    end
   end
 
   factory :prompt_meme do

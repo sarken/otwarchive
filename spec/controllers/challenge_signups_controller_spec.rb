@@ -191,32 +191,110 @@ describe ChallengeSignupsController do
   end
 
   describe "gift_exchange_to_csv" do
-    let(:collection) { create(:collection, challenge: create(:gift_exchange)) }
-    let(:signup) { create(:gift_exchange_signup, collection_id: collection.id) }
+    let(:collection) { create(:collection, challenge: create(:gift_exchange, :no_details)) }
+    let(:challenge) { collection.challenge }
+    let(:offer_restriction) { challenge.offer_restriction }
+    let(:request_restriction) { challenge.request_restriction }
+    let!(:signup) { create(:gift_exchange_signup, collection_id: collection.id) }
+    let(:offer) { signup.offers.first }
+    let(:request) { signup.requests.first }
 
     before do
-      challenge = collection.challenge
-      challenge.offer_restriction.update(title_allowed: true)
-      challenge.request_restriction.update(title_allowed: true)
-
-      signup_offer = signup.offers.first
-      signup_offer.description = ""
-      signup_offer.tag_set = create(:tag_set)
-      signup_offer.save
-
-      signup_request = signup.requests.first
-      signup_request.description = ""
-      signup_request.tag_set = create(:tag_set)
-      signup_request.save
-    end
-
-    it "generates a CSV with all the challenge information" do
       controller.instance_variable_set(:@challenge, collection.challenge)
       controller.instance_variable_set(:@collection, collection)
-      expect(controller.send(:gift_exchange_to_csv))
-        .to eq([["Pseud", "Email", "Sign-up URL", "Request 1 Tags", "Request 1 Title", "Request 1 Description", "Offer 1 Tags", "Offer 1 Title", "Offer 1 Description"],
-                [signup.pseud.name, signup.pseud.user.email, collection_signup_url(collection, signup),
-                 signup.requests.first.tag_set.tags.first.name, "", "", signup.offers.first.tag_set.tags.first.name, "", ""]])
+    end
+
+    context "when no details are allowed" do
+      it "generates a CSV with pseud, email, and sign-up URL" do
+        expect(controller.send(:gift_exchange_to_csv))
+          .to eq([["Pseud", "Email", "Sign-up URL"],
+                  [signup.pseud.name, signup.pseud.user.email, collection_signup_url(collection, signup)]])
+      end
+    end
+
+    context "when tags are allowed" do
+      before do
+        offer_restriction.update(fandom_num_allowed: 1)
+        request_restriction.update(fandom_num_allowed: 1)
+
+        offer.update(tag_set_id: create(:tag_set).id)
+        request.update(tag_set_id: create(:tag_set).id)
+      end
+
+      it "generates a CSV with pseud, email, sign-up URL, and request and offer tags" do
+        expect(controller.send(:gift_exchange_to_csv))
+          .to eq([["Pseud", "Email", "Sign-up URL", "Request 1 Tags", "Offer 1 Tags"],
+                  [signup.pseud.name, signup.pseud.user.email, collection_signup_url(collection, signup),
+                   request.tag_set.tags.first.name, offer.tag_set.tags.first.name]])
+      end
+    end
+
+    context "when tags are allowed" do
+      before do
+        offer_restriction.update(fandom_num_allowed: 1)
+        request_restriction.update(fandom_num_allowed: 1)
+
+        offer.update(optional_tag_set_id: create(:tag_set).id)
+        request.update(optional_tag_set_id: create(:tag_set).id)
+      end
+
+      it "generates a CSV with pseud, email, sign-up URL, and request and offer tags" do
+        expect(controller.send(:gift_exchange_to_csv))
+          .to eq([["Pseud", "Email", "Sign-up URL", "Request 1 Tags", "Offer 1 Tags"],
+                  [signup.pseud.name, signup.pseud.user.email, collection_signup_url(collection, signup),
+                   request.optional_tag_set.tags.first.name, offer.optional_tag_set.tags.first.name]])
+      end
+    end
+
+    context "when title is allowed" do
+      before do
+        offer_restriction.update(title_allowed: true)
+        request_restriction.update(title_allowed: true)
+
+        offer.update(title: "My Offer")
+        request.update(title: "My Request")
+      end
+
+      it "generates a CSV with pseud, email, sign-up URL, and request and offer titles" do
+        expect(controller.send(:gift_exchange_to_csv))
+          .to eq([["Pseud", "Email", "Sign-up URL", "Request 1 Title", "Offer 1 Title"],
+                  [signup.pseud.name, signup.pseud.user.email, collection_signup_url(collection, signup),
+                   request.title, offer.title]])
+      end
+    end
+
+    context "when description is allowed" do
+      before do
+        offer_restriction.update(description_allowed: true)
+        request_restriction.update(description_allowed: true)
+
+        offer.update(description: "Deets")
+        request.update(description: "Info")
+      end
+
+      it "generates a CSV with pseud, email, sign-up URL, and request and offer descriptions" do
+        expect(controller.send(:gift_exchange_to_csv))
+          .to eq([["Pseud", "Email", "Sign-up URL", "Request 1 Description", "Offer 1 Description"],
+                  [signup.pseud.name, signup.pseud.user.email, collection_signup_url(collection, signup),
+                   request.description, offer.description]])
+      end
+    end
+
+    context "when url is allowed" do
+      before do
+        offer_restriction.update(url_allowed: true)
+        request_restriction.update(url_allowed: true)
+
+        offer.update(url: "https://example.org")
+        request.update(url: "http://example.org")
+      end
+
+      it "generates a CSV with pseud, email, sign-up URL, and request and offer URLs" do
+        expect(controller.send(:gift_exchange_to_csv))
+          .to eq([["Pseud", "Email", "Sign-up URL", "Request 1 URL", "Offer 1 URL"],
+                  [signup.pseud.name, signup.pseud.user.email, collection_signup_url(collection, signup),
+                   request.url, offer.url]])
+      end
     end
   end
 
