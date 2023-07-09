@@ -513,3 +513,5 @@ ORIGINAL_CREATOR_TTL_HOURS: 72
 
 # The maximum number of tags to provide in a tag wrangling report.
 WRANGLING_REPORT_LIMIT: 1000
+
+HOURS_BEFORE_RESEND_INVITATION: 24
