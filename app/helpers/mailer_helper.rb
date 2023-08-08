@@ -156,10 +156,11 @@ module MailerHelper
   end
 
   # Spacing is dealt with in locale files, e.g. " : " for French.
-  def work_tag_metadata(tags)
-    return if tags.empty?
+  def work_tag_metadata(tag_klass, tag_string)
+    return unless %w[ArchiveWarning Character Fandom Freeform Rating Relationship].include?(tag_klass)
+    return if tag_string.blank?
 
-    "#{work_tag_metadata_label(tags)}#{work_tag_metadata_list(tags)}"
+    "#{work_tag_metadata_label(tag_klass, tag_string)}#{work_tag_metadata_list(tag_string)}"
   end
 
   # TODO: We're using this for labels in set_password_notification, too. Let's
@@ -169,11 +170,12 @@ module MailerHelper
   end
 
   # Spacing is dealt with in locale files, e.g. " : " for French.
-  def style_work_tag_metadata(tags)
-    return if tags.empty?
+  def style_work_tag_metadata(tag_klass, tag_string)
+    return unless %w[ArchiveWarning Character Fandom Freeform Rating Relationship].include?(tag_klass)
+    return if tag_string.blank?
 
-    label = style_bold(work_tag_metadata_label(tags))
-    "#{label}#{style_work_tag_metadata_list(tags)}".html_safe
+    label = style_bold(work_tag_metadata_label(tag_klass, tag_string))
+    "#{label}#{style_work_tag_metadata_list(tag_klass, tag_string)}".html_safe
   end
 
   private
@@ -183,36 +185,30 @@ module MailerHelper
     t("mailer.general.creation.word_count", count: creation.word_count)
   end
 
-  def work_tag_metadata_label(tags)
-    return if tags.empty?
-
+  def work_tag_metadata_label(tag_klass, tag_string)
+    count = tag_string.split(", ").length
     # i18n-tasks-use t('activerecord.models.archive_warning')
     # i18n-tasks-use t('activerecord.models.character')
     # i18n-tasks-use t('activerecord.models.fandom')
     # i18n-tasks-use t('activerecord.models.freeform')
     # i18n-tasks-use t('activerecord.models.rating')
     # i18n-tasks-use t('activerecord.models.relationship')
-    type = tags.first.type
-    t("activerecord.models.#{type.underscore}", count: tags.count) + t("mailer.general.metadata_label_indicator")
+    t("activerecord.models.#{tag_klass.underscore}", count: count) + t("mailer.general.metadata_label_indicator")
   end
 
   # We don't use .to_sentence because these aren't links and we risk making any
   # connector word (e.g., "and") look like part of the final tag.
-  def work_tag_metadata_list(tags)
-    return if tags.empty?
-
-    tags.pluck(:name).join(t("support.array.words_connector"))
+  def work_tag_metadata_list(tag_string)
+    tag_string.split(", ").join(t("support.array.words_connector"))
   end
 
-  def style_work_tag_metadata_list(tags)
-    return if tags.empty?
-
-    type = tags.first.type
+  def style_work_tag_metadata_list(tag_klass, tag_string)
     # Fandom tags are linked and to_sentence'd.
-    if type == "Fandom"
-      tags.map { |f| style_link(f.name, fandom_url(f)) }.to_sentence.html_safe
+    if tag_klass == "Fandom"
+      fandoms = Fandom.where("name IN (?)", tag_string.split(", "))
+      to_sentence(fandoms.map { |f| style_link(f.name, fandom_url(f)) })
     else
-      work_tag_metadata_list(tags)
+      work_tag_metadata_list(tag_string)
     end
   end
 end # end of MailerHelper

@@ -1,16 +1,16 @@
 <% # expects work %>
 <%= work_metadata_label(Work.human_attribute_name("chapter_total_display"))%><%= chapter_total_display(work) %>
-<%= work_tag_metadata(work.fandoms) %>
-<%= work_tag_metadata(work.ratings) %>
-<%= work_tag_metadata(work.archive_warnings) %>
+<%= work_tag_metadata("Fandom", work.fandom_string) %>
+<%= work_tag_metadata("Rating", work.rating_string) %>
+<%= work_tag_metadata("ArchiveWarning", work.archive_warning_string) %>
 <% unless work.relationship_string.blank? %>
-<%= work_tag_metadata(work.relationships) %>
+<%= work_tag_metadata("Relationship", work.relationship_string) %>
 <% end %>
 <% unless work.character_string.blank? %>
-<%= work_tag_metadata(work.characters) %>
+<%= work_tag_metadata("Character", work.character_string) %>
 <% end %>
 <% unless work.freeform_string.blank? %>
-<%= work_tag_metadata(work.freeforms) %>
+<%= work_tag_metadata("Freeform", work.freeform_string) %>
 <% end %>
 <% unless work.series.count.zero? %>
 <%= work_metadata_label(Series.model_name.human(count: work.series.count)) %><%= raw to_plain_text(series_list_for_feeds(work)) %>

@@ -78,6 +78,18 @@ describe MailerHelper do
   end
 
   describe "#work_tag_metadata" do
+    it "returns nil when given an unpermitted tag_klass" do
+      expect(style_work_tag_metadata("Media", "tag")).to be_nil
+    end
+
+    it "returns nil when given a blank tag_string" do
+      expect(style_work_tag_metadata("Fandom", "")).to be_nil
+    end
+
+    it "returns nil when given nil as a tag_string" do
+      expect(style_work_tag_metadata("Fandom", nil)).to be_nil
+    end
+
     {
       "Fandom" => ["Fandom: ", "Fandoms: "],
       "Rating" => ["Rating: ", "Ratings: "],
@@ -87,49 +99,58 @@ describe MailerHelper do
       "Freeform" => ["Additional Tag: ", "Additional Tags: "]
     }.each_pair do |klass, labels|
       context "when given one #{klass.underscore.humanize.downcase.singularize}" do
-        let(:tag) { create(:tag, type: klass) }
-        let(:tags) { [tag] }
+        let(:string) { "tag 1" }
 
         it "returns \"#{labels[0]}\" followed by the tag name" do
-          expect(work_tag_metadata(tags)).to eq("#{labels[0]}#{tag.name}")
+          expect(work_tag_metadata(klass, string)).to eq("#{labels[0]}#{string}")
         end
       end
 
       context "when given multiple #{klass.underscore.humanize.downcase.pluralize}" do
-        let(:tag1) { create(:tag, type: klass) }
-        let(:tag2) { create(:tag, type: klass) }
-        let(:tags) { [tag1, tag2] }
+        let(:string) { "tag 1, tag 2" }
 
         it "returns \"#{labels[1]}\" followed by a comma-separated list of tag names" do
-          expect(work_tag_metadata(tags)).to eq("#{labels[1]}#{tag1.name}, #{tag2.name}")
+          expect(work_tag_metadata(klass, string)).to eq("#{labels[1]}#{string}")
         end
       end
     end
   end
 
   describe "#style_work_tag_metadata" do
+    it "returns nil when given an unpermitted tag_klass" do
+      expect(style_work_tag_metadata("Media", "tag")).to be_nil
+    end
+
+    it "returns nil when given a blank tag_string" do
+      expect(style_work_tag_metadata("Fandom", "")).to be_nil
+    end
+
+    it "returns nil when given nil as a tag_string" do
+      expect(style_work_tag_metadata("Fandom", nil)).to be_nil
+    end
+
     context "when given one fandom" do
       let(:fandom) { create(:fandom) }
-      let(:fandoms) { [fandom] }
+      let(:string) { fandom.name }
 
       it "returns \"Fandom: \" styled bold and red followed by a link to the fandom" do
         label = "<b style=\"color:#990000\">Fandom: </b>"
         link = link_to(fandom.name, fandom_url(fandom), style: "color:#990000")
-        expect(style_work_tag_metadata(fandoms)).to eq("#{label}#{link}")
+        expect(style_work_tag_metadata("Fandom", string)).to eq("#{label}#{link}")
       end
     end
 
     context "when given multiple fandoms" do
       let(:fandom1) { create(:fandom) }
       let(:fandom2) { create(:fandom) }
-      let(:fandoms) { [fandom1, fandom2] }
+      let(:string) { "#{fandom1.name}, #{fandom2.name}" }
 
       it "returns \"Fandoms: \" styled bold and red followed by links to the fandoms combined using to_sentence" do
         label = "<b style=\"color:#990000\">Fandoms: </b>"
         link1 = link_to(fandom1.name, fandom_url(fandom1), style: "color:#990000")
         link2 = link_to(fandom2.name, fandom_url(fandom2), style: "color:#990000")
         list = "#{link1} and #{link2}"
-        expect(style_work_tag_metadata(fandoms)).to eq("#{label}#{list}")
+        expect(style_work_tag_metadata("Fandom", string)).to eq("#{label}#{list}")
       end
     end
 
@@ -141,24 +162,20 @@ describe MailerHelper do
       "Freeform" => ["Additional Tag:", "Additional Tags:"]
     }.each_pair do |klass, labels|
       context "when given one #{klass.underscore.humanize.downcase.singularize}" do
-        let(:tag) { create(:tag, type: klass) }
-        let(:tags) { [tag] }
+        let(:string) { "tag 1" }
 
         it "returns \"#{labels[0]} \" styled bold and red followed by the tag name" do
           label = "<b style=\"color:#990000\">#{labels[0]} </b>"
-          expect(style_work_tag_metadata(tags)).to eq("#{label}#{tag.name}")
+          expect(style_work_tag_metadata(klass, string)).to eq("#{label}#{string}")
         end
       end
 
       context "when given multiple #{klass.underscore.humanize.downcase.pluralize}" do
-        let(:tag1) { create(:tag, type: klass) }
-        let(:tag2) { create(:tag, type: klass) }
-        let(:tags) { [tag1, tag2] }
+        let(:string) { "tag 1, tag 2" }
 
         it "returns \"#{labels[1]} \" styled bold and red followed by a comma-separated list of tag names" do
           label = "<b style=\"color:#990000\">#{labels[1]} </b>"
-          list = "#{tag1.name}, #{tag2.name}"
-          expect(style_work_tag_metadata(tags)).to eq("#{label}#{list}")
+          expect(style_work_tag_metadata(klass, string)).to eq("#{label}#{string}")
         end
       end
     end
