@@ -389,6 +389,7 @@ Feature: Collection
       And I go to "Anonymous Collection" collection edit page
       And I follow "Delete Collection"
       And I press "Yes, Delete Collection"
+      And it is currently 1 second from now
       And I go to creator's works page
     Then I should see "Secret Work"
 
@@ -411,6 +412,7 @@ Feature: Collection
     Given I have an anonymous collection "Anonymous Collection"
       And I am logged in as "creator"
       And I post the work "Secret Work" to the collection "Anonymous Collection"
+      And it is currently 1 second from now
 
     When I go to my works page
     Then I should not see "Secret Work"
@@ -452,7 +454,7 @@ Feature: Collection
     When I edit the work "Secret Work"
       And I fill in "Collections" with "Holidays,Fluffy"
       And I press "Post"
-      And all indexing jobs have been run
+      And it is currently 1 second from now
       And I go to my works page
     Then I should see "Secret Work"
 
