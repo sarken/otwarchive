@@ -168,6 +168,7 @@ Feature: Collection
       # items listed in date order so checking the second will reveal the older work
       And I uncheck the 2nd checkbox with id matching "collection_items_\d+_anonymous"
       And I submit
+      And it is currently 1 second from now
     Then the author of "First Snippet" should be publicly visible
     When subscription notifications are sent
     Then "second_user" should be emailed
