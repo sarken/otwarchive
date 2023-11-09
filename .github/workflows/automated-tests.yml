@@ -51,46 +51,66 @@ jobs:
         tests:
           - command: rake
             arguments: db:otwseed
-          - command: rspec
-            arguments: spec/controllers
-          - command: rspec
-            arguments: spec/models
-          - command: rspec
-            arguments: --exclude-pattern 'spec/{controllers,models}/**/*.rb'
-          - command: cucumber
-            arguments: features/admins
-          - command: cucumber
-            arguments: features/bookmarks
           - command: cucumber
             arguments: features/collections
           - command: cucumber
-            arguments: features/comments_and_kudos
+            arguments: features/collections
           - command: cucumber
-            arguments: features/gift_exchanges
+            arguments: features/collections
           - command: cucumber
-            arguments: features/importing
-            vcr: true
+            arguments: features/collections
           - command: cucumber
-            arguments: features/other_a
+            arguments: features/collections
           - command: cucumber
-            arguments: features/other_b
+            arguments: features/collections
           - command: cucumber
-            arguments: features/prompt_memes_a
+            arguments: features/collections
           - command: cucumber
-            arguments: features/prompt_memes_b
+            arguments: features/collections
           - command: cucumber
-            arguments: features/prompt_memes_c
+            arguments: features/collections
           - command: cucumber
-            arguments: features/search
+            arguments: features/collections
           - command: cucumber
-            arguments: features/tag_sets
+            arguments: features/collections
           - command: cucumber
-            arguments: features/tags_and_wrangling
+            arguments: features/collections
           - command: cucumber
-            arguments: features/users
+            arguments: features/collections
           - command: cucumber
-            arguments: features/works
-            ebook: true
+            arguments: features/collections
+          - command: cucumber
+            arguments: features/collections
+          - command: cucumber
+            arguments: features/collections
+          - command: cucumber
+            arguments: features/collections
+          - command: cucumber
+            arguments: features/collections
+          - command: cucumber
+            arguments: features/collections
+          - command: cucumber
+            arguments: features/collections
+          - command: cucumber
+            arguments: features/collections
+          - command: cucumber
+            arguments: features/collections
+          - command: cucumber
+            arguments: features/collections
+          - command: cucumber
+            arguments: features/collections
+          - command: cucumber
+            arguments: features/collections
+          - command: cucumber
+            arguments: features/collections
+          - command: cucumber
+            arguments: features/collections
+          - command: cucumber
+            arguments: features/collections
+          - command: cucumber
+            arguments: features/collections
+          - command: cucumber
+            arguments: features/collections
 
     steps:
       - name: Check out code
