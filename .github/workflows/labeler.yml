@@ -10,7 +10,6 @@ jobs:
       - name: Updated config
         uses: actions/checkout@v4
         with:
-          repository: "sarken/otwarchive"
           ref: "AO3-6653"
 
       - name: Content-Based
