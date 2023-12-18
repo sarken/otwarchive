@@ -7,7 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - uses: actions/checkout@v4
+      - name: Updated config
+        uses: actions/checkout@v4
         with:
           repository: "sarken/otwarchive"
           ref: "AO3-6653"
