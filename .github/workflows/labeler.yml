@@ -7,9 +7,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+      - uses: actions/checkout@v4
+        with:
+          repository: "sarken/otwarchive"
+
       - name: Content-Based
-        uses: actions/checkout@v4
-          with: "sarken/otwarchive"
         uses: actions/labeler@v5
         with:
           configuration-path: ".github/labeler/contents.yml"
