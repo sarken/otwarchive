@@ -268,6 +268,76 @@ describe CollectionItemsController do
         end
       end
     end
+
+    context "with work params" do
+      let(:work) { create(:work, authors: [pseud]) }
+
+      let!(:rejected_by_collection_work_item) { create(:collection).collection_items.create(item: work) }
+      let!(:rejected_by_user_work_item) { create(:collection).collection_items.create(item: work) }
+      let!(:approved_work_item) { create(:collection).collection_items.create(item: work) }
+      let!(:unreviewed_by_user_work_item) { create(:collection).collection_items.create(item: work) }
+      let!(:unreviewed_by_collection_work_item) { create(:collection).collection_items.create(item: work) }
+
+      context "when work does not exist" do
+        it "redirects and shows an error message" do
+          get :index, params: { work_id: 000 }
+          it_redirects_to_with_error(collections_path, "You don't have permission to see that, sorry!")
+        end
+      end
+
+      context "when the user is not a creator of the work" do
+        it "redirects and shows an error message" do
+          fake_login
+          get :index, params: { work_id: work.id }
+          it_redirects_to_with_error(collections_path, "You don't have permission to see that, sorry!")
+        end
+      end
+
+      context "when the user is logged out" do
+        it "redirects and shows an error message" do
+          get :index, params: { work_id: work.id }
+          it_redirects_to_with_error(collections_path, "You don't have permission to see that, sorry!")
+        end
+      end
+
+      context "when the user is a creator of the work" do
+        it "allows access" do
+          fake_login_known_user(user)
+          get :index, params: { work_id: work.id }
+          expect(response).to have_http_status(:success)
+        end
+
+        it "includes all collection items for the work" do
+          fake_login_known_user(user)
+          get :index, params: { work_id: work.id }
+          expect(assigns(:collection_items)).to include rejected_by_collection_work_item
+          expect(assigns(:collection_items)).to include rejected_by_user_work_item
+          expect(assigns(:collection_items)).to include approved_work_item
+          expect(assigns(:collection_items)).to include unreviewed_by_user_work_item
+          expect(assigns(:collection_items)).to include unreviewed_by_collection_work_item
+        end
+      end
+
+      context "when the user is an admin" do
+        let(:admin) { create(:admin) }
+
+        it "allows access" do
+          fake_login_admin(admin)
+          get :index, params: { work_id: work.id }
+          expect(response).to have_http_status(:success)
+        end
+
+        it "includes all collection items for the work" do
+          fake_login_admin(admin)
+          get :index, params: { work_id: work.id }
+          expect(assigns(:collection_items)).to include rejected_by_collection_work_item
+          expect(assigns(:collection_items)).to include rejected_by_user_work_item
+          expect(assigns(:collection_items)).to include approved_work_item
+          expect(assigns(:collection_items)).to include unreviewed_by_user_work_item
+          expect(assigns(:collection_items)).to include unreviewed_by_collection_work_item
+        end
+      end
+    end
   end
 
   describe "GET #create" do
