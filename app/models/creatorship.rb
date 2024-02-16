@@ -1,6 +1,6 @@
 class Creatorship < ApplicationRecord
-  belongs_to :pseud, inverse_of: :creatorships
-  belongs_to :creation, inverse_of: :creatorships, polymorphic: true, touch: true
+  belongs_to :pseud
+  belongs_to :creation, polymorphic: true, touch: true
 
   scope :approved, -> { where(approved: true) }
   scope :unapproved, -> { where(approved: false) }
@@ -206,7 +206,7 @@ class Creatorship < ApplicationRecord
   # ambiguous/missing pseuds. By storing the desired name in the @byline
   # variable, we can generate nicely formatted messages.
   def byline=(byline)
-    pseuds = Pseud.parse_byline(byline).to_a
+    pseuds = Pseud.parse_byline_ambiguous(byline).to_a
 
     if pseuds.size == 1
       self.pseud = pseuds.first
