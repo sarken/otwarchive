@@ -439,7 +439,7 @@ describe CollectionItemsController do
 
     let(:attributes) { { remove: "1" } }
 
-    describe "on the user collection items page for the work's owner" do
+    context "on the user collection items page for the work's owner" do
       let(:work_owner) { work.pseuds.first.user }
 
       let(:params) do
@@ -543,7 +543,7 @@ describe CollectionItemsController do
       end
     end
 
-    describe "on the collection items page for the work's collection" do
+    context "on the collection items page for the work's collection" do
       let(:params) do
         {
           collection_id: collection.name,
@@ -643,7 +643,7 @@ describe CollectionItemsController do
       end
     end
 
-    describe "on the collection items page for a different user" do
+    context "on the collection items page for a different user" do
       let(:user) { create(:user) }
       let(:params) do
         {
@@ -664,7 +664,7 @@ describe CollectionItemsController do
       end
     end
 
-    describe "on the collection items page for a different collection" do
+    context "on the collection items page for a different collection" do
       let(:other_collection) { create(:collection) }
       let(:params) do
         {
