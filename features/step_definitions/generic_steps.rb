@@ -58,11 +58,6 @@ When "all AJAX requests are complete" do
   wait_for_ajax if @javascript
 end
 
-When 'the system processes jobs' do
-  #resque runs inline during testing. see resque.rb in initializers/gem-plugin_config
-  #Delayed::Worker.new.work_off
-end
-
 When 'I reload the page' do
   visit current_url
 end
@@ -139,6 +134,10 @@ end
 
 Then /^I should not see a button with text "(.*?)"(?: within "(.*?)")?$/ do |text, selector|
   assure_xpath_not_present("input", "value", text, selector)
+end
+
+Then "I should see a link to {string} within {string}" do |url, selector|
+  assure_xpath_present("a", "href", url, selector)
 end
 
 Then "the {string} input should be blank" do |label|
@@ -243,6 +242,10 @@ end
 Then /^I should see a link "([^\"]*)"$/ do |name|
   text = name + "</a>"
   page.body.should =~ /#{Regexp.escape(text)}/m
+end
+
+Then "I should see a link {string} to {string}" do |text, href|
+  expect(page).to have_link(text, href: href)
 end
 
 Then /^I should not see a link "([^\"]*)"$/ do |name|
