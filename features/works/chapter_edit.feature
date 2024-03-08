@@ -29,7 +29,7 @@ Feature: Edit chapters
   When I press "Post"
   Then I should not see "Chapter 1"
     And I should see "Well, maybe not so epic"
-    And I should see "Words:5"
+    And I should see "Words:5" within "dd.work.stats"
 
   # add chapters to a single-chapter work
   When I follow "Add Chapter"
@@ -40,7 +40,8 @@ Feature: Edit chapters
   Then I should see "This is a draft chapter in a posted work. It will be kept unless the work is deleted."
   When I press "Post"
     Then I should see "2/100"
-    And I should see "Words:8"
+    And I should see "Words:8" within "dd.work.stats"
+    And I should see "Words: 3" within "dd.chapter.stats"
   When I follow "Add Chapter"
     And I fill in "chapter_position" with "3"
     And I fill in "chapter_wip_length" with "50"
@@ -49,7 +50,8 @@ Feature: Edit chapters
   Then I should see "Chapter 3"
   When I press "Post"
   Then I should see "3/50"
-    And I should see "Words:11"
+    And I should see "Words:11" within "dd.work.stats"
+    And I should see "Words: 3" within "dd.chapter.stats"
 
   # add chapters in the wrong order
   When I follow "Add Chapter"
@@ -60,7 +62,8 @@ Feature: Edit chapters
   Then I should see "Chapter 4"
   When I press "Post"
     And I should see "4/17"
-    And I should see "Words:17"
+    And I should see "Words:17" within "dd.work.stats"
+    And I should see "Words: 6" within "dd.chapter.stats"
 
   # delete a chapter
   When I follow "Edit"
@@ -69,7 +72,7 @@ Feature: Edit chapters
     And I press "Yes, Delete Chapter"
   Then I should see "The chapter was successfully deleted."
     And I should see "3/17"
-    And I should see "Words:14"
+    And I should see "Words:14" within "dd.work.stats"
 
   # fill in the missing chapter
   When I follow "Add Chapter"
@@ -78,7 +81,8 @@ Feature: Edit chapters
     And I press "Preview"
   When I press "Post"
   Then I should see "4/17"
-    And I should see "Words:20"
+    And I should see "Words:20" within "dd.work.stats"
+    And I should see "Words: 6" within "dd.chapter.stats"
 
   # edit an existing chapter
   When I follow "Edit"
@@ -92,7 +96,8 @@ Feature: Edit chapters
   Then I should see "Chapter was successfully updated"
     And I should see "Chapter 4"
     And I should see "4/4"
-    And I should see "Words:19"
+    And I should see "Words:19" within "dd.work.stats"
+    And I should see "Words: 2" within "dd.chapter.stats"
   When I follow "Edit"
     And I follow "Manage Chapters"
   Then I should see "Drag chapters to change their order."
