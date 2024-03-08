@@ -9,7 +9,7 @@
     <li>
       <%= link_to chapter.display_title.html_safe, [chapter.work, chapter] %> 
       <span class="words">
-        <%= t(".word_count", count: chapter.word_count) %>
+        <%= t(".word_count", count: number_with_delimiter(chapter.word_count)) %>
       </span>
       <span class="datetime">
         (<%= chapter.published_at.to_date %>)
