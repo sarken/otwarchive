@@ -255,7 +255,8 @@ Feature: Edit chapters
       And I should not see "Completed" within ".work.meta .stats"
     When I follow "Edit Chapter"
       And I press "Post"
-      Then I should see Completed today
+    Then I should see Completed today
+      And I should see chapter published today
 
 
   Scenario: Posting a new chapter without previewing should set the work's updated date to now

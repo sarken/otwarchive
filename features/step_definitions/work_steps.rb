@@ -758,6 +758,11 @@ Then /^I should not see Completed today$/ do
   step "I should not see \"Completed:#{today}\""
 end
 
+Then "I should see chapter published today" do
+  today = Date.current.to_s
+  step %{I should see "Published: #{today}" within "dd.chapter.stats"}
+end
+
 Then /^I should find a list for associations$/ do
   page.should have_xpath("//ul[@class=\"associations\"]")
 end
