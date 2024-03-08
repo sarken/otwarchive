@@ -798,36 +798,36 @@ en:
         preferences: Set your preferences now
       page_title: Adult Content Warning
     meta:
+      collections: 'Collections:'
+      ip:
+        data:
+          none: No address recorded
+        label: 'IP Address:'
+      language: 'Language:'
       original_creators:
         one: 'Original Creator ID:'
         other: 'Original Creator IDs:'
-      stats:
-        work: "Work Stats:"
-        chapter: "Chapter Stats:"
-        words: "Words:"
-        comments: "Comments:"
-        published: "Published:"
-      collections: "Collections:"
-      series: "Series:"
-      language: "Language:"
-      ip:
-        label: "IP Address:"
-        data:
-          none: No address recorded
+      rejected_gift: 'Refused As Gift:'
+      series: 'Series:'
       spam:
-        label: "Akismet Reported As Spam:"
         data:
+          ham: 'false'
           none: No result recorded
-          spam: "true"
-          ham: "false"
+          spam: 'true'
+        label: 'Akismet Reported As Spam:'
+      stats:
+        chapter: 'Chapter Stats:'
+        comments: 'Comments:'
+        published: 'Published:'
+        words: 'Words:'
+        work: 'Work Stats:'
       tag_limit:
-        label: "Over Tag Limit:"
         data:
-          over: "Yes"
-          under: "No"
-      rejected_gift: "Refused As Gift:"
+          over: 'Yes'
+          under: 'No'
+        label: 'Over Tag Limit:'
     navigate:
-      heading_html: "Chapter Index for %{title} by %{byline}"
+      heading_html: Chapter Index for %{title} by %{byline}
       word_count:
         one: "(%{count} word)"
         other: "(%{count} words)"
