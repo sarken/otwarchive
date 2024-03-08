@@ -30,8 +30,14 @@ Feature: View a work with various options
 
   Scenario: Viewing a work in the default chapter by chapter mode
   Given the chaptered work "Whatever"
+    And the work "Whatever" has 1 comment on chapter 1
+    And the work "Whatever" has 2 comments on chapter 2
   When I view the work "Whatever"
   Then I should see "Chapter Stats"
+    And I should see "Comments:3" within "dd.work.stats"
+    And I should see "Words:10" within "dd.work.stats"
+    And I should see "Comments: 1" within "dd.chapter.stats"
+    And I should see "Words: 8" within "dd.chapter.stats"
 
   Scenario: viewing a work and chapter that have been deleted
   Given I am logged in as a random user

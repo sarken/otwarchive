@@ -264,6 +264,14 @@ Given "the work {string} has {int} {word} tag(s)" do |title, count, type|
   work.send("#{type.pluralize}=", FactoryBot.create_list(type.to_sym, count))
 end
 
+Given "the work {string} has {int} comment(s) on chapter {int}" do |title, comment_count, chapter_number|
+  work = Work.find_by(title: title)
+  comment_count.times do
+    chapter = work.chapters.where(position: chapter_number).first
+    FactoryBot.create(:comment, commentable: chapter)
+  end
+end
+
 ### WHEN
 
 When /^I view the ([\d]+)(?:st|nd|rd|th) chapter$/ do |chapter_no|
