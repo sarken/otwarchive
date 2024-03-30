@@ -103,14 +103,6 @@ zh-CN:
         open_doors: Open Doors（Open Doors拯救计划）团队
         parent_org: Organization for Transformative Works – OTW（OTW再创作组织）
         support: AO3支持委员会团队
-  users:
-    mailer:
-      reset_password_instructions:
-        expiration: 此链接一周后失效，如果您届时仍未修改密码，则需要申请新的链接。
-        intro: 有人提出了重设您的账号密码的申请。您可以进入下方的链接对密码进行更改：
-        link_title: 更改我的密码。
-        subject: "[%{app_name}] 重设您的密码"
-        unrequested: 如果您没有申请重设密码，请忽略此邮件，继续使用您原本的密码。
   user_mailer:
     abuse_report:
       description_para: 违反条款行为说明：
@@ -196,8 +188,8 @@ zh-CN:
         look_up_link: 您的Assignments（点文）页面
         part1: 您在AO3的%{link}写手挑战中收到了以下点文！
       optional_tags: 可选标签：
-      prompts: 点梗：
       prompt_url: 点梗链接：
+      prompts: 点梗：
       recipient: 受赠者：
       recipient_missing: 无受赠者：请联系写手挑战管理员。
       subject: "[%{app_name}][%{collection_title}] 您的点文！"
@@ -302,8 +294,7 @@ zh-CN:
         collection: 您在AO3上收到了一篇来自于作品集 %{collection_link} 的赠文！
       no_collection: 您在AO3上收到了一篇赠文！
       subject:
-        collection: "[%{app_name}][%{collection_title}]来自于作品集 %{collection_title}
-          的赠文"
+        collection: "[%{app_name}][%{collection_title}]来自于作品集 %{collection_title} 的赠文"
         no_collection: "[%{app_name}]您收到了一篇赠文"
       text:
         collection: 您在AO3上收到了一篇来自于作品集%{collection_title} （%{collection_url}）的赠文！
@@ -331,3 +322,11 @@ zh-CN:
         part2: 激活账户后，即可使用本站诸多功能，包括发布同人作品；设置邮件订阅，在喜爱的创作者或作品更新时获取即时通知；进行偏好设置，定制网站界面和操作方式；保留浏览历史，追踪之前在AO3上阅读的作品。
         part3: 您可浏览本站%{faq_url}，详细了解关于AO3使用方法的信息与建议；进入%{admin_posts_url}板块，了解网站建设的最新消息。如您需要更多帮助，遇到程序漏洞，存在疑问或想提出意见，请%{contact_support_url}，该团队将竭诚为您服务。
       welcome: 欢迎来到AO3， %{login}！
+  users:
+    mailer:
+      reset_password_instructions:
+        expiration: 此链接一周后失效，如果您届时仍未修改密码，则需要申请新的链接。
+        intro: 有人提出了重设您的账号密码的申请。您可以进入下方的链接对密码进行更改：
+        link_title: 更改我的密码。
+        subject: "[%{app_name}] 重设您的密码"
+        unrequested: 如果您没有申请重设密码，请忽略此邮件，继续使用您原本的密码。
