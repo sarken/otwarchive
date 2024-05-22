@@ -1247,6 +1247,7 @@ class Work < ApplicationRecord
   # (not counting synonyms)
   def otp
     return true if relationships.size == 1
+    return false if relationships.zero?
 
     all_without_syns = relationships.map { |r| r.merger || r }.uniq
     all_without_syns.count == 1
