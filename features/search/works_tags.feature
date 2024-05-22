@@ -221,7 +221,7 @@ Feature: Search works by tag
   multiple synonymous relationship tags.
     Given a set of Ed/Stede works for searching
     When I am on the search works page
-      And I fill in "Any Field" with "otp: true"
+      And I fill in "Any Field" with "soulmates: true"
       And I press "Search" within "#new_work_search"
     Then I should see "You searched for: soulmates: true"
       And I should see "3 Found"
