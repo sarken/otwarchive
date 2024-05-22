@@ -100,7 +100,7 @@ class WorkIndexer < Indexer
         :bookmarks_count,
         :creators,
         :crossover,
-        :otp,
+        :soulmates,
         :work_types,
         :nonfiction
       ]

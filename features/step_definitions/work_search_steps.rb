@@ -131,7 +131,7 @@ Given /^a set of Ed\/Stede works for searching$/ do
     FactoryBot.create(:work, relationship_string: relationship)
   end
 
-  # Create a work with no relationship tag (an otp: true work)
+  # Create a work with no relationship tag (an otp: false work)
   FactoryBot.create(:work, title: "The Work Without a Relationship")
 
   # Create a work with two unconnected relationship tags (an otp: false work)

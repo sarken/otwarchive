@@ -1245,7 +1245,7 @@ class Work < ApplicationRecord
 
   # Does this work have only one relationship tag?
   # (not counting synonyms)
-  def otp
+  def soulmates
     return true if relationships.size == 1
 
     all_without_syns = relationships.map { |r| r.merger ? r.merger : r }.uniq.compact

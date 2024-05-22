@@ -223,10 +223,10 @@ Feature: Search works by tag
     When I am on the search works page
       And I fill in "Any Field" with "otp: true"
       And I press "Search" within "#new_work_search"
-    Then I should see "You searched for: otp: true"
+    Then I should see "You searched for: soulmates: true"
       And I should see "3 Found"
     When I follow "Edit Your Search"
-    Then the field labeled "Any Field" should contain "otp: true"
+    Then the field labeled "Any Field" should contain "soulmates: true"
 
   Scenario: Searching by relationship and category returns only works using the
   category and the exact relationship tag or its synonyms

@@ -268,47 +268,47 @@ describe Work do
     end
   end
 
-  describe "#otp" do
-    it "is not otp with no relationship" do
+  describe "#soulmates" do
+    it "is not soulmates with no relationship" do
       work = create(:work)
       expect(work.relationships).to be_empty
-      expect(work.otp).to be_falsy
+      expect(work.soulmates).to be_falsy
     end
 
-    it "is otp with only one relationship" do
+    it "is soulmates with only one relationship" do
       rel = create(:relationship, name: "asushin")
       work = create(:work, relationships: [rel])
-      expect(work.otp).to be_truthy
+      expect(work.soulmates).to be_truthy
     end
 
-    it "is otp with one canonical relationship and one of its synonyms" do
+    it "is soulmates with one canonical relationship and one of its synonyms" do
       rel = create(:canonical_relationship, name: "kawoshin")
       syn = create(:relationship, name: "shinkawo", merger: rel)
       work = create(:work, relationships: [rel, syn])
-      expect(work.otp).to be_truthy
+      expect(work.soulmates).to be_truthy
     end
 
-    it "is otp with multiple synonyms of the same canonical relationship" do
+    it "is soulmates with multiple synonyms of the same canonical relationship" do
       rel = create(:canonical_relationship, name: "kawoshin")
       syn1 = create(:relationship, name: "shinkawo", merger: rel)
       syn2 = create(:relationship, name: "kaworu/shinji", merger: rel)
       work = create(:work, relationships: [syn1, syn2])
-      expect(work.otp).to be_truthy
+      expect(work.soulmates).to be_truthy
     end
 
-    it "is not otp with unrelated relationships, one of which is canonical" do
+    it "is not soulmates with unrelated relationships, one of which is canonical" do
       ships = [create(:relationship, name: "shinrei"), create(:canonical_relationship, name: "asurei")]
       work = create(:work, relationships: ships)
-      expect(work.otp).to be_falsy
+      expect(work.soulmates).to be_falsy
     end
 
-    it "is not otp with unrelated relationships" do
+    it "is not soulmates with unrelated relationships" do
       ships = [create(:relationship, name: "asushin"), create(:relationship, name: "asurei")]
       work = create(:work, relationships: ships)
-      expect(work.otp).to be_falsy
+      expect(work.soulmates).to be_falsy
     end
 
-    it "is not otp with relationships sharing a meta tag" do
+    it "is not soulmates with relationships sharing a meta tag" do
       rel1 = create(:canonical_relationship, name: "shinrei")
       rel2 = create(:canonical_relationship, name: "asurei")
       meta_tag = create(:canonical_relationship)
@@ -317,7 +317,7 @@ describe Work do
       rel2.reload
 
       work = create(:work, relationships: [rel1, rel2])
-      expect(work.otp).to be_falsy
+      expect(work.soulmates).to be_falsy
     end
   end
 
