@@ -217,8 +217,8 @@ Feature: Search works by tag
     When I follow "Edit Your Search"
     Then the field labeled "Relationships" should contain "James T. Kirk/Spock"
 
-  Scenario: Searching by otp: true returns works with (a) zero relationship
-  tags, (b) one relationship tag, and (c) multiple synonymous relationship tags.
+  Scenario: Searching by otp: true returns works with one relationship tag or
+  multiple synonymous relationship tags.
     Given a set of Ed/Stede works for searching
     When I am on the search works page
       And I fill in "Any Field" with "otp: true"
