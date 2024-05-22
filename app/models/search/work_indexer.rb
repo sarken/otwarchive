@@ -66,8 +66,7 @@ class WorkIndexer < Indexer
         hidden_by_admin: { type: "boolean" },
         complete: { type: "boolean" },
         in_anon_collection: { type: "boolean" },
-        in_unrevealed_collection: { type: "boolean" },
-        otp: { type: "boolean" }
+        in_unrevealed_collection: { type: "boolean" }
       }
     }
   end

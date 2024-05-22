@@ -224,7 +224,7 @@ Feature: Search works by tag
       And I fill in "Any Field" with "otp: true"
       And I press "Search" within "#new_work_search"
     Then I should see "You searched for: otp: true"
-      And I should see "4 Found"
+      And I should see "3 Found"
     When I follow "Edit Your Search"
     Then the field labeled "Any Field" should contain "otp: true"
 
