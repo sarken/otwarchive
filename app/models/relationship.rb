@@ -24,9 +24,9 @@ class Relationship < Tag
     all_with_synonyms.flatten.uniq.compact
   end
 
-  def relationships
-    (parents + children).select {|t| t.is_a? Relationship}.sort
-  end
+  #def relationships
+  #  (parents + children).select {|t| t.is_a? Relationship}.sort
+  #end
 
   def freeforms
     children.by_type('Freeform').by_name
