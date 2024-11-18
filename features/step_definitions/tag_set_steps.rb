@@ -211,7 +211,7 @@ end
 
 When /^I expand the unassociated characters and relationships$/ do
   within('span[action_target="#list_for_unassociated_char_and_rel"]') do
-    click_link("↓")
+    click_button("↓")
   end
 end
 
