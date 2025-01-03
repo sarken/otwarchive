@@ -99,6 +99,8 @@ class ChallengeAssignmentsController < ApplicationController
         @collection.assignments.fulfilled.order_by_requesting_pseud
       when params[:unfulfilled]
         ChallengeAssignment.unfulfilled_in_collection(@collection).undefaulted.order_by_requesting_pseud
+      when params[:no_giver]
+        ChallengeAssignment.unfulfilled_in_collection(@collection).with_no_offer.undefaulted.order_by_requesting_pseud
       else
         @collection.assignments.defaulted.uncovered.order_by_requesting_pseud
       end
@@ -126,7 +128,8 @@ class ChallengeAssignmentsController < ApplicationController
   def send_out
     no_giver_count = @collection.assignments.with_request.with_no_offer.count
     no_recip_count = @collection.assignments.with_offer.with_no_request.count
-    if (no_giver_count + no_recip_count) > 0
+    # if (no_giver_count + no_recip_count) > 0
+    if no_recip_count.positive?
       flash[:error] = ts("Some participants still aren't assigned. Please either delete them or match them to a placeholder before sending out assignments.")
       redirect_to collection_potential_matches_path(@collection)
     else

@@ -123,6 +123,41 @@ Given /^"(.*?)" has two pinchhit assignments in the gift exchange "(.*?)"$/ do |
   end
 end
 
+# An exchange where you have to offer and request only 1 fandom, which you will then be matched on.
+Given "I have set up the simple fandom-based gift exchange {string}" do |title|
+  step %{I have set up the gift exchange "#{title}"}
+  check("gift_exchange_signup_open")
+  %w[request offer].each do |prompt_type|
+    %w[required allowed].each do |necessity|
+      # Allow and require 1 request and offer.
+      fill_in("gift_exchange_#{prompt_type}s_num_required", with: "1")
+      # Disable all available text fields for requests and offers.
+      uncheck("gift_exchange_#{prompt_type}_restriction_attributes_title_#{necessity}")
+      uncheck("gift_exchange_#{prompt_type}_restriction_attributes_description_#{necessity}")
+      uncheck("gift_exchange_#{prompt_type}_restriction_attributes_url_#{necessity}")
+      # Disable all available tag fields for requests and offers except fandom, which should allow and require 1 tag.
+      fill_in("gift_exchange_#{prompt_type}_restriction_attributes_fandom_num_#{necessity}", with: "1")
+      fill_in("gift_exchange_#{prompt_type}_restriction_attributes_character_num_#{necessity}", with: "0")
+      fill_in("gift_exchange_#{prompt_type}_restriction_attributes_relationship_num_#{necessity}", with: "0")
+      fill_in("gift_exchange_#{prompt_type}_restriction_attributes_rating_num_#{necessity}", with: "0")
+      fill_in("gift_exchange_#{prompt_type}_restriction_attributes_category_num_#{necessity}", with: "0")
+      fill_in("gift_exchange_#{prompt_type}_restriction_attributes_archive_warning_num_#{necessity}", with: "0")
+      fill_in("gift_exchange_#{prompt_type}_restriction_attributes_freeform_num_#{necessity}", with: "0")
+    end
+  end
+  # Match on the fandom tag.
+  select("1", from: "gift_exchange_potential_match_settings_attributes_num_required_fandoms")
+  click_button("Submit")
+end
+
+Given "{string} offers {string} and requests {string} in the simple fandom-based gift exchange {string}" do |user, offer_fandom, request_fandom, collection_title|
+  step %{I am logged in as "#{user}"}
+  visit(new_collection_signup_path(Collection.find_by(title: collection_title)))
+  step %{I fill in the 1st field with id matching "fandom_tagnames" with "#{request_fandom}"}
+  step %{I fill in the 2nd field with id matching "fandom_tagnames" with "#{request_fandom}"}
+  click_button("Submit")
+end
+
 ## Signing up
 
 When /^I set up a signup for "([^\"]*)" with combination A$/ do |title|

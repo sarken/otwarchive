@@ -143,7 +143,7 @@ class TagSetNominationsController < ApplicationController
     # Only this amount of tag nominations is shown on the review page.
     # If there are more (more_noms == true), moderators have to approve/reject from the shown noms to see more noms.
     # TODO: AO3-3764 Show all tag set nominations
-    @nom_limit = 30
+    @nom_limit = 1
     @nominations = HashWithIndifferentAccess.new
     @nominations_count = HashWithIndifferentAccess.new
     more_noms = false
