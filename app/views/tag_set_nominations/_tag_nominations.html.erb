@@ -1,4 +1,4 @@
-<fieldset class="tagset">
+<fieldset>
   <dl>
     <% @tag_set_nomination.send("#{tag_type}_nominations").each_with_index do |nom, index| %>
       <%= f.fields_for "#{tag_type}_nominations".to_sym, nom do |nom_form| %>
