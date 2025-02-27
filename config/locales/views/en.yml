@@ -1967,6 +1967,27 @@ en:
         works: My Work Subscriptions
       series: "(Series)"
       work: "(Work)"
+  tag_set_nominations:
+    nomination_form:
+      form:
+        general:
+          legend: Basic Information
+          pseud: Pseud
+          tag_set: Nominating for
+        landmark: Nominate Tags Form
+        nominations:
+          legend: Tag Nominations
+        submit:
+          legend: Submit
+          button: Submit
+      navigation:
+        back: Back to %{tag_set_title}
+        tag_sets: Tag Sets
+      notes:
+        canonical_preferred: The autocomplete lists canonical tags for you. Please choose the canonical version of your tag if there is one.
+        changes_or_rejection: The tag set moderators might change or leave out your nominations (sometimes just because a different form of your nomination was included).
+      page_title: Tag Nominations for %{tag_set_title}
+
   tag_wranglers:
     show:
       last_wrangled_html: "%{wrangler_login} last wrangled at %{time}."
