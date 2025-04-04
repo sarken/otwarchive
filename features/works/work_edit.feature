@@ -232,7 +232,8 @@ Feature: Edit Works
   Scenario: When editing a work, the title field should not escape HTML
     Given I have a work "What a title! :< :& :>"
       And I go to the works page
-      And I follow "What a title! :< :& :>"
+    When I follow "What a title! :< :& :>"
+    Then I should see the page title "What a title! :< :& :>"
       And I follow "Edit"
     Then I should see "What a title! :< :& :>" in the "Work Title" input
 
