@@ -631,4 +631,17 @@ module ApplicationHelper
       %w[index show].include?(params[:action])
     end
   end
+
+  def browser_page_title
+    return @page_title if @page_title
+
+    page = if @page_subtitle
+             @page_subtitle
+           elsif controller.action_name == "index"
+             process_title(controller.controller_name)
+           else
+             "#{process_title(controller.action_name)} #{process_title(controller.controller_name.singularize)}"
+           end
+    page + " | #{ArchiveConfig.APP_NAME}"
+  end
 end
