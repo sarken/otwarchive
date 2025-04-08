@@ -1986,8 +1986,32 @@ en:
       notes:
         canonical_preferred: The autocomplete lists canonical tags for you. Please choose the canonical version of your tag if there is one.
         changes_or_rejection: The tag set moderators might change or leave out your nominations (sometimes just because a different form of your nomination was included).
-      page_title: Tag Nominations for %{tag_set_title}
-
+      page_heading: Tag Nominations for %{tag_set_title}
+      nomination_notes:
+        additional_tag_limit:
+          one: one additional tag
+          other: "%{count} additional tags"
+        character_limit:
+          one: "%{count} character"
+          other: "%{count} characters"
+        fandom_limit:
+          one: "%{count} fandom"
+          other: "%{count} fandoms"
+        relationship_limit:
+          one: "%{count} relationship"
+          other: "%{count} relationships"
+        additional_tags:
+          only: You can nominate up to %{additional_tag_limit}.
+          and: " You can also nominate up to %{additional_tag_limit}."
+        characters:
+          relationships: You can nomiante up to %{character_limit} and %{relationship_limit}.
+          only: You can nominate up to %{character_limit}.
+        fandoms:
+          characters_and_relationships: You can nominate up to %{fandom_limit} and up to %{character_limit} and %{relationship_limit} for each one.
+          characters: You can nominate up to %{fandom_limit} and up to %{character_limit} for each one.
+          only: You can nominate up to %{fandom_limit}.
+          relationships: You can nominate up to %{fandom_limit} and up to %{relationship_limit} for each one.
+        relationships_only: You can nominate up to %{relationship_limit}.
   tag_wranglers:
     show:
       last_wrangled_html: "%{wrangler_login} last wrangled at %{time}."

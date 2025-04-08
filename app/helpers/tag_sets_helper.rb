@@ -7,33 +7,32 @@ module TagSetsHelper
     if limit[:fandom] > 0
       if limit[:character] > 0
         if limit[:relationship] > 0
-          message = ts("You can nominate up to %{f} fandoms and up to %{c} characters and %{r} relationships for each one.",
-            f: limit[:fandom], c: limit[:character], r: limit[:relationship])
+          message = t(".nomination_notes.fandoms.characters_and_relationships", fandom_limit: t(".nomination_notes.fandom_limit", count: limit[:fandom]), character_limit: t(".nomination_notes.character_limit", count: limit[:character]), relationship_limit: t(".nomination_notes.relationship_limit", count: limit[:relationship]))
         else
-          message = ts("You can nominate up to %{f} fandoms and up to %{c} characters for each one.", f: limit[:fandom], c: limit[:character])
+          message = t(".nomination_notes.fandoms.characters", fandom_limit: t(".nomination_notes.fandom_limit", count: limit[:fandom]), character_limit: t(".nomination_notes.character_limit", count: limit[:character]))
         end
       elsif limit[:relationship] > 0
-        message = ts("You can nominate up to %{f} fandoms and up to %{r} relationships for each one.", f: limit[:fandom], r: limit[:relationship])
+        message = t(".nomination_notes.fandoms.relationships", fandom_limit: t(".nomination_notes.fandom_limit", count: limit[:fandom]), relationship_limit: t(".nomination_notes.relationship_limit", count: limit[:relationship]))
       else
-        message = ts("You can nominate up to %{f} fandoms.", f: limit[:fandom])
+        message = t(".nomination_notes.fandoms.only", fandom_limit: t(".nomination_notes.fandom_limit"))
       end
     else
       if limit[:character] > 0
         if limit[:relationship] > 0
-          message = ts("You can nominate up to %{c} characters and %{r} relationships.", c: limit[:character], r: limit[:relationship])
+          message = t(".nomination_notes.characters.relationships", character_limit: t(".nomination_notes.character_limit", count: limit[:character]), relationship_limit: t(".nomination_notes.relationship_limit", count: limit[:relationship]))
         else
-          message = ts("You can nominate up to %{c} characters.", c: limit[:character])
+          message = t(".nomination_notes.characters.only", character_limit: t(".nomination_notes.character_limit", count: limit[:character]))
         end
       elsif limit[:relationship] > 0
-        message = ts("You can nominate up to %{r} relationships.", r: limit[:relationship])
+        message = t(".nomination_notes.relationships_only", relationship_limit: t(".nomination_notes.relationship_limit", count: limit[:relationship]))
       end
     end
 
     if limit[:freeform] > 0
       if message.blank?
-        message = ts("You can nominate up to %{ff} additional tags.", ff: limit[:freeform])
+        message = t(".nomination_notes.additional_tags.only", additional_tag_limit: t(".nomination_notes.additional_tag_limit", count: limit[:freeform]))
       else
-        message += ts(" You can also nominate up to %{ff} additional tags.", ff: limit[:freeform])
+        message += t(".nomination_notes.additional_tags.and", additional_tag_limit: t(".nomination_notes.additional_tag_limit", count: limit[:freeform]))
       end
     end
 

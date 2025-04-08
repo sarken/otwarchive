@@ -4,7 +4,7 @@
 
 <!--subnav-->
 <ul class="navigation actions">
-	<li><%= link_to t(".navigation.back", tag_set_title: @tag_set.title), tag_set_path(@tag_set_nomination.owned_tag_set) %></li>
+	<li><%= link_to t(".navigation.back", tag_set_title: sanitize(@tag_set.title)), tag_set_path(@tag_set_nomination.owned_tag_set) %></li>
   <li><%= link_to t(".navigation.tag_sets"), tag_sets_path %></li>
 </ul>
 <!--/subnav-->
@@ -31,7 +31,7 @@
       <dd><%= link_to @tag_set_nomination.owned_tag_set.title, tag_set_path(@tag_set_nomination.owned_tag_set) %></dd>
         
       <dt><%= f.label :pseud_id, t(".form.general.pseud") %></dt>
-      <dd><%= f.select :pseud_id, current_user.pseuds.collect {|p| [p.name, p.id] } %></dd>
+      <dd><%= f.select :pseud_id, current_user.pseuds.collect { |p| [p.name, p.id] } %></dd>
     </dl>
   </fieldset>
   <fieldset>
