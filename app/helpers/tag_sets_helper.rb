@@ -39,27 +39,27 @@ module TagSetsHelper
     message
   end
 
-  def nomination_status(nomination=nil)
+  def nomination_status(nomination = nil)
     symbol = "?!"
     status = "unreviewed"
-    tooltip = ts('This nomination has not been reviewed yet.')
+    tooltip = t("tag_sets_helper.nomination_status.unreviewed")
     if nomination
       if nomination.approved
         symbol = "&#10004;"
         status = "approved"
-        tooltip = ts('This nomination has been approved!')
+        tooltip = t("tag_sets_helper.nomination_status.approved")
       elsif nomination.rejected
         symbol = "&#10006;"
         status = "rejected"
-        tooltip = ts('This nomination was rejected (but another version may have been approved instead).')
+        tooltip = t("tag_sets_helper.nomination_status.rejected")
       elsif @tag_set.nominated
         symbol = "?!"
         status = "unreviewed"
-        tooltip = ts('This nomination has not been reviewed yet and can still be changed.')
+        tooltip = t("tag_sets_helper.nomination_status.unreviewed_editable")
       end
     end
 
-    return content_tag(:span, content_tag(:span, "#{symbol}".html_safe), class: "#{status} symbol", data: {tooltip: "#{tooltip}"})
+    return content_tag(:span, content_tag(:span, "#{symbol}".html_safe), class: "#{status} symbol", data: { tooltip: tooltip })
   end
 
   def nomination_tag_information(nominated_tag)

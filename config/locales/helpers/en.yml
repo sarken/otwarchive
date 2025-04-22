@@ -26,6 +26,12 @@ en:
       on_tag_html: Comment on the tag %{name}
       on_unknown: Comment on unknown item
       on_work_html: Comment on the work %{title}
+  tag_sets_helper:
+    nomination_status:
+      approved: This nomination has been approved!
+      rejected: This nomination was rejected (but another version may have been approved instead).
+      unreviewed: This nomination has not been reviewed yet.
+      unreviewed_editable: This nomination has not been reviewed yet and can still be changed.
   users_helper:
     log:
       ban: Suspended Permanently

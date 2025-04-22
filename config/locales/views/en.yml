@@ -2012,6 +2012,12 @@ en:
           only: You can nominate up to %{fandom_limit}.
           relationships: You can nominate up to %{fandom_limit} and up to %{relationship_limit} for each one.
         relationships_only: You can nominate up to %{relationship_limit}.
+    tag_nominations:
+      fandom: Fandom?
+      nomination_type_with_position: "%{tag_type} %{position}"
+    tag_nominations_by_fandom:
+      fandom_with_position: "Fandom %{position}"
+      nomination_type: "%{tag_type}"
   tag_wranglers:
     show:
       last_wrangled_html: "%{wrangler_login} last wrangled at %{time}."

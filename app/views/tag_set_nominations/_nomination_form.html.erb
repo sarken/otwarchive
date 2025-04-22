@@ -4,7 +4,7 @@
 
 <!--subnav-->
 <ul class="navigation actions">
-	<li><%= link_to t(".navigation.back", tag_set_title: sanitize(@tag_set.title)), tag_set_path(@tag_set_nomination.owned_tag_set) %></li>
+  <li><%= link_to t(".navigation.back", tag_set_title: @tag_set.title), tag_set_path(@tag_set_nomination.owned_tag_set) %></li>
   <li><%= link_to t(".navigation.tag_sets"), tag_sets_path %></li>
 </ul>
 <!--/subnav-->
@@ -41,17 +41,17 @@
 
     <% if @limit[:fandom] > 0 %>
 
-      <% # char and relationship nominations grouped with fandom %>
+      <%# char and relationship nominations grouped with fandom %>
       <%= render "tag_nominations_by_fandom", f: f %>
     
-      <% # freeforms on their own %>
+      <%# freeforms on their own %>
       <% if @limit[:freeform] > 0 %>
         <%= render "tag_nominations", f: f, tag_type: "freeform" %>
       <% end %>
 
     <% else %>
   
-      <% # nominations all on same level in fieldset/dls %>
+      <%# nominations all on same level in fieldset/dls %>
       <% %w(character relationship freeform).each do |tag_type| %>
         <% if @limit[tag_type] > 0 %>
           <%= render "tag_nominations", f: f, tag_type: tag_type %>
