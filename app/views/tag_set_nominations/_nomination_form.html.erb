@@ -19,10 +19,7 @@
 
 <%= error_messages_for :tag_set_nomination %>
 
-<%= form_for(@tag_set_nomination, html: {
-        url: (@tag_set_nomination.new_record? ? tag_set_nominations_path(@tag_set) : tag_set_nomination_path(@tag_set, @tag_set_nomination)),
-        method: (@tag_set_nomination.new_record? ? :post : :put),
-        class: "nominations tagset post" }) do |f| %>
+<%= form_for(@tag_set_nomination, url: (@tag_set_nomination.new_record? ? tag_set_nominations_path(@tag_set) : tag_set_nomination_path(@tag_set, @tag_set_nomination)), html: { method: (@tag_set_nomination.new_record? ? :post : :put), class: "nominations tagset post" }) do |f| %>
   <fieldset>
     <legend><%= t(".form.general.legend") %></legend>
     <h4 class="heading"><%= t(".form.general.legend") %></h4>
