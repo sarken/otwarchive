@@ -39,7 +39,7 @@ en:
         other: "%{count} characters"
       characters:
         only: You can nominate up to %{character_limit}.
-        relationships: You can nomiante up to %{character_limit} and %{relationship_limit}.
+        relationships: You can nominate up to %{character_limit} and %{relationship_limit}.
       fandom_limit:
         one: "%{count} fandom"
         other: "%{count} fandoms"
