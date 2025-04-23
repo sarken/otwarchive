@@ -27,6 +27,31 @@ en:
       on_unknown: Comment on unknown item
       on_work_html: Comment on the work %{title}
   tag_sets_helper:
+    nomination_notes:
+      additional_tag_limit:
+        one: one additional tag
+        other: "%{count} additional tags"
+      additional_tags:
+        and: " You can also nominate up to %{additional_tag_limit}."
+        only: You can nominate up to %{additional_tag_limit}.
+      character_limit:
+        one: "%{count} character"
+        other: "%{count} characters"
+      characters:
+        only: You can nominate up to %{character_limit}.
+        relationships: You can nomiante up to %{character_limit} and %{relationship_limit}.
+      fandom_limit:
+        one: "%{count} fandom"
+        other: "%{count} fandoms"
+      fandoms:
+        characters: You can nominate up to %{fandom_limit} and up to %{character_limit} for each one.
+        characters_and_relationships: You can nominate up to %{fandom_limit} and up to %{character_limit} and %{relationship_limit} for each one.
+        only: You can nominate up to %{fandom_limit}.
+        relationships: You can nominate up to %{fandom_limit} and up to %{relationship_limit} for each one.
+      relationship_limit:
+        one: "%{count} relationship"
+        other: "%{count} relationships"
+      relationships_only: You can nominate up to %{relationship_limit}.
     nomination_status:
       approved: This nomination has been approved!
       rejected: This nomination was rejected (but another version may have been approved instead).
