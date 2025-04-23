@@ -14,7 +14,7 @@ module TagSetsHelper
       elsif limit[:relationship] > 0
         message = t("tag_sets_helper.nomination_notes.fandoms.relationships", fandom_limit: t("tag_sets_helper.nomination_notes.fandom_limit", count: limit[:fandom]), relationship_limit: t("tag_sets_helper.nomination_notes.relationship_limit", count: limit[:relationship]))
       else
-        message = t("tag_sets_helper.nomination_notes.fandoms.only", fandom_limit: t(".nomination_notes.fandom_limit"))
+        message = t("tag_sets_helper.nomination_notes.fandoms.only", fandom_limit: t("tag_sets_helper.nomination_notes.fandom_limit"))
       end
     else
       if limit[:character] > 0
