@@ -525,9 +525,9 @@ describe Comment do
         end
 
         context "when parent comment is owned by a user who is no longer a wrangler" do
-          it "does not notify the user" do
-            parent_comment_owner.update!(roles: [])
+          before { parent_comment_owner.update!(roles: []) }
 
+          it "does not notify the user" do
             expect do
               create(:comment, commentable: parent_comment, pseud: tag_wrangler.default_pseud)
             end.to avoid_changing { parent_comment_owner.inbox_comments.count }
@@ -590,37 +590,42 @@ describe Comment do
             comment.update!(comment_content: Faker::Lorem.sentence(word_count: 25))
           end.not_to change { tag_wrangler.reload.last_wrangling_activity.updated_at }
         end
+      end
 
-        context "comment has been replied to" do
-          let!(:reply_comment) { create(:comment, commentable: comment, pseud: create(:tag_wrangler).default_pseud) }
-          let(:inbox_feedback) { tag_wrangler.inbox_comments.find_by(feedback_comment_id: reply_comment.id) }
+      context "parent is indirectly a tag" do
+        let(:parent_comment) { create(:comment, :on_tag, pseud: parent_comment_owner.default_pseud) }
+        let(:parent_comment_owner) { create(:tag_wrangler) }
+        let(:reply_comment) { create(:comment, commentable: parent_comment, pseud: tag_wrangler.default_pseud) }
+        let(:inbox_comment) { parent_comment_owner.inbox_comments.find_by(feedback_comment_id: reply_comment.id) }
 
-          before { inbox_feedback.update!(read: true) }
+        context "when parent comment is owned by a wrangler" do
+          before { inbox_comment.update!(read: true) }
 
-          it "notifies the original tag wrangler when a reply to their comment is edited" do
+          it "notifies the wrangler by email and marks inbox comment unread" do
             expect do
               reply_comment.update!(
                 comment_content: "#{reply_comment.comment_content}!",
                 edited_at: Time.current
               )
-            end.to change { ActionMailer::Base.deliveries.count }
-              .by(1)
+            end.to change { inbox_comment.reload.read }
+              .and enqueue_mail(CommentMailer, :edited_comment_reply_notification)
+          end
+        end
 
-            expect(ActionMailer::Base.deliveries.last.subject).to include("Edited reply to your comment on the tag")
-            expect(inbox_feedback.reload.read).to be false
+        context "when parent comment is owned by a user who is no longer a wrangler" do
+          before do
+            inbox_comment.update!(read: true)
+            parent_comment_owner.update!(roles: [])
           end
 
-          it "does not notify the parent comment owner if not a wrangler any more" do
-            tag_wrangler.update!(roles: [])
-
+          it "does not notify the user by email or mark the inbox comment unread" do
             expect do
               reply_comment.update!(
                 comment_content: "#{reply_comment.comment_content}!",
                 edited_at: Time.current
               )
-            end.to change { ActionMailer::Base.deliveries.count }
-              .by(0)
-            expect(inbox_feedback.reload.read).to be true
+            end.to avoid_changing{ inbox_comment.reload.read }
+              .and not_enqueue_mail(CommentMailer, :edited_comment_reply_notification)
           end
         end
       end
