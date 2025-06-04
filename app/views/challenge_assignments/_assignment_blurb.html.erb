@@ -1,6 +1,7 @@
 <% # expects "assignment" %>
 <dt>
-  <% if @collection && @collection.user_is_maintainer?(current_user) %>
+  <%# !@user to make sure we don't see the maintainer view when we're on /users/USERNAME/assignments?collection_id=collection_name %>
+  <% if @collection && @collection.user_is_maintainer?(current_user) && !@user %>
     <% # we're listing assignments for a mod by the assigned writer %>
     <%= challenge_assignment_byline(assignment) %> <%= challenge_assignment_email(assignment) %>
   <% else %>
@@ -15,7 +16,7 @@
      <%= link_to (assignment.creation.try(:title) || assignment.creation.class.name), assignment.creation, :class => "work" %>
    <% end %>
 
-  <% if @collection && @collection.user_is_maintainer?(current_user) %>
+  <% if @collection && @collection.user_is_maintainer?(current_user) && !@user %>
     <% # for a mod: list recipient (and check in case there are some people without recipients) %>
     <% if assignment.request_signup %>
       <%= ts("for") %> <%= link_to assignment.request_byline, collection_assignment_path(@collection, assignment) %>
