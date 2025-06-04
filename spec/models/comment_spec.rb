@@ -3,6 +3,8 @@
 require "spec_helper"
 
 describe Comment do
+  include ActiveJob::TestHelper
+
   describe "validations" do
     context "with a forbidden guest name" do
       subject { build(:comment, email: Faker::Internet.email) }
@@ -503,33 +505,35 @@ describe Comment do
         let!(:comment) { create(:comment, :on_tag, pseud: tag_wrangler.default_pseud) }
 
         include_examples "updates last wrangling activity"
-
-        it "notifies the tag wrangler when their comment on a tag is replied to" do
-          expect do
-            reply_comment = create(:comment, commentable: comment, pseud: create(:tag_wrangler).default_pseud)
-            expect(tag_wrangler.inbox_comments.last.feedback_comment_id).to eq(reply_comment.id)
-          end.to change { ActionMailer::Base.deliveries.count }
-            .by(1)
-          expect(ActionMailer::Base.deliveries.last.subject).to include("Reply to your comment on the tag")
-        end
-
-        it "does not notify the parent comment owner if not a wrangler any more" do
-          tag_wrangler.update!(roles: [])
-
-          expect do
-            create(:comment, commentable: comment, pseud: create(:tag_wrangler).default_pseud)
-          end.to change { ActionMailer::Base.deliveries.count }
-            .by(0)
-          expect(tag_wrangler.inbox_comments.last).to be_nil
-        end
       end
 
       context "ultimate parent is indirectly a tag" do
-        let(:parent_comment) { create(:comment, :on_tag) }
+        let(:parent_comment) { create(:comment, :on_tag, pseud: parent_comment_owner.default_pseud) }
+        let(:parent_comment_owner) { create(:tag_wrangler) }
 
         before { create(:comment, commentable: parent_comment, pseud: tag_wrangler.default_pseud) }
 
         include_examples "updates last wrangling activity"
+
+        context "when parent comment is owned by a wrangler" do
+          it "notifies the wrangler" do
+            expect do
+              create(:comment, commentable: parent_comment, pseud: tag_wrangler.default_pseud)
+            end.to change { parent_comment_owner.inbox_comments.count }
+              .and enqueue_mail(CommentMailer, :comment_reply_notification)
+          end
+        end
+
+        context "when parent comment is owned by a user who is no longer a wrangler" do
+          it "does not notify the user" do
+            parent_comment_owner.update!(roles: [])
+
+            expect do
+              create(:comment, commentable: parent_comment, pseud: tag_wrangler.default_pseud)
+            end.to avoid_changing { parent_comment_owner.inbox_comments.count }
+            .and not_to_enqueue_mail(CommentMailer, :comment_reply_notification)
+          end
+        end
       end
 
       shared_examples "does not update last wrangling activity" do
