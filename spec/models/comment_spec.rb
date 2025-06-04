@@ -531,7 +531,7 @@ describe Comment do
             expect do
               create(:comment, commentable: parent_comment, pseud: tag_wrangler.default_pseud)
             end.to avoid_changing { parent_comment_owner.inbox_comments.count }
-            .and not_to_enqueue_mail(CommentMailer, :comment_reply_notification)
+            .and not_enqueue_mail(CommentMailer, :comment_reply_notification)
           end
         end
       end
