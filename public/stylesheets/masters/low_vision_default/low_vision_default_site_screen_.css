@@ -36,10 +36,10 @@ form blockquote.userstuff {
 }
 
 #inner .filters,
-#footer,
 .filters dt,
 media .listbox,
-.bookmark .recent .index {
+.bookmark .recent .index,
+#footer button {
   width: 100%;
 }
 
@@ -112,28 +112,6 @@ pre {
   font-size: 200%;
 }
 
-#footer button {
-  background: #eee;
-  color: #444;
-  text-decoration: none;
-  text-align: center;
-  border: 0;
-  width: 100%;
-  padding: 0.25em 0;
-  line-height: 1.286;
-  height: 1.286em;
-  box-shadow: 0 0 0 2px #444;
-}
-
-#footer button:hover,
-#footer button:focus {
-  box-shadow: 0 0 0 2px #eee;
-}
-
-#footer button:active {
-  outline: 1px dotted;
-}
-
 #header li,
 #footer li,
 .home .primary .navigation a,
@@ -148,8 +126,10 @@ pre {
 
 #header .navigation,
 #header li a,
-#footer ul,
-#footer li a {
+#footer .navigation,
+#footer .module,
+#footer li a,
+#footer li button {
   float: none;
 }
 
@@ -165,10 +145,10 @@ pre {
   position: static;
 }
 
-#footer {
+/* #footer {
   float: left;
   padding: 0;
-}
+} */
 
 #header,
 #header .open a,
@@ -200,6 +180,15 @@ pre {
 #header .dropdown .menu a:focus {
   background: #ccc;
   color: #111;
+}
+
+#footer button {
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
+  width: 100%;
+  white-space: normal;
 }
 
 .bookmark div.user {
