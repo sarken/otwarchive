@@ -490,10 +490,6 @@ span.series .divider {
   background: #333;
 }
 
-#inner .module .heading {
-  border-color: #555;
-}
-
 /* 11-GROUP-LISTBOX */
 
 .listbox,
@@ -615,7 +611,7 @@ li.comment {
 /* 6. ZONE: SYSTEM: FAQS */
 
 .faq .categories h3 {
-  border-bottom-color: #eee;
+  border-bottom-color: #555;
 }
 
 .faq .example,
