@@ -168,12 +168,9 @@ textarea {
 }
 
 input:focus,
+select:focus,
 textarea:focus {
   background: #2a2a2a;
-}
-
-select:focus {
-  background-color: initial;
 }
 
 select,
