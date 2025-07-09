@@ -445,7 +445,7 @@ span.requested,
 span.offered,
 .replied,
 .nominations .approved {
-  color: #a8ffad;
+  color: #9aceac;
 }
 
 .nominations .approved,
@@ -454,7 +454,7 @@ span.offered,
 }
 
 span.offered.requested {
-  color: #ffe6a8;
+  color: #debe84;
 }
 
 /* 10-TYPES-GROUPS */
@@ -729,7 +729,7 @@ ul.notes,
 .caution {
   background: #333;
   border-color: #ffd875;
-  color: #ffe6a8;
+  color: #f4eee0;
     box-shadow: none;
 }
 
@@ -739,7 +739,7 @@ ul.notes,
 .alert.flash {
   background: #333;
   border-color: #ff7575;
-  color: #ffada8;
+  color: #ffe9e9;
     box-shadow: none;
 }
 
