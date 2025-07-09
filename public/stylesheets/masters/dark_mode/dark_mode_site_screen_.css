@@ -17,7 +17,7 @@ a:visited:hover,
 }
 
 a:visited {
-  color: #c2c2c2;
+  color: #c1c1c1;
 }
 
 table {
@@ -105,7 +105,7 @@ form dl {
 
 #dashboard a:hover {
   background: #2a2a2a;
-  color: #c2c2c2;
+  color: #c1c1c1;
     box-shadow: inset 2px 2px 2px #000;
 }
 
@@ -504,7 +504,7 @@ fieldset fieldset.listbox {
 }
 
 .listbox .heading a:visited {
-  color: #c2c2c2;
+  color: #c1c1c1;
 }
 
 .listbox .index {
@@ -774,7 +774,7 @@ span.question {
 }
 
 #admin_users_table th a:visited {
-  color: #c2c2c2;
+  color: #c1c1c1;
 }
 
 #admin_users_table th a:hover {
