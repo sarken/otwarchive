@@ -259,13 +259,24 @@ dl#symbols-key dt {
 }
 
 dl#symbols-key dd {
-  margin: -55px auto auto 100px;
+  margin: -70px auto auto 100px;
+}
+
+dl#symbols-key h4 {
+  margin-top: 0;
+  margin-bottom: 1em;
+  line-height: 1;
 }
 
 #symbols-key dl {
-  border: 1px solid #ddd;
-  margin-bottom: 1.286em;
-  padding: 0.15em;
+  border-bottom: 1px solid #ddd;
+  margin-right: 0;
+  margin-bottom: 1.714em;
+  width: 100%;
+}
+
+#symbols-key dd:last-of-type dl {
+  border-bottom: none;
 }
 
 #symbols-key dl dt img, #bookmark-symbols-key dt img, #symbols-key dl dt, #bookmark-symbols-key dt {
