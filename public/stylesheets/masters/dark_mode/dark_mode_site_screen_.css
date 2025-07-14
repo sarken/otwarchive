@@ -174,11 +174,16 @@ select,
 input[type="radio"],
 input[type="checkbox"],
 input[type="file"] {
+  background: #333;
+  border-color: #222;
+  color: #eee;
+    accent-color: #95c6f4;
     color-scheme: dark;
 }
 
-select {
-  border-color: #222;
+/* ensure Chrome on Windows displays menu with dark background */
+select option {
+  background: #333;
 }
 
 form dt {
