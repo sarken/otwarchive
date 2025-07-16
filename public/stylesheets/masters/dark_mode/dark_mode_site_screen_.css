@@ -199,7 +199,7 @@ form dd.required {
 .LV_invalid {
   background: #333;
   border-color: #ff7575;
-  color: #ffada8;
+  color: #fbcfcd;
     box-shadow: none;
 }
 
@@ -447,7 +447,7 @@ span.requested,
 span.offered,
 .replied,
 .nominations .approved {
-  color: #9aceac;
+  color: #9cd1ae;
 }
 
 .nominations .approved,
@@ -725,14 +725,14 @@ ul.notes,
 .qtip-content {
   background: #333;
   border-color: #75bcff;
-    box-shadow: none;
+    box-shadow: 1px 1px 3px #000;
 }
 
 .caution {
   background: #333;
   border-color: #ffd875;
-  color: #f4eee0;
-    box-shadow: none;
+  color: #f8ebcb;
+    box-shadow: 1px 1px 3px #000;
 }
 
 .error,
@@ -741,8 +741,8 @@ ul.notes,
 .alert.flash {
   background: #333;
   border-color: #ff7575;
-  color: #ffe9e9;
-    box-shadow: none;
+  color: #fbcfcd;
+    box-shadow: 1px 1px 3px #000;
 }
 
 form .notice,
