@@ -447,7 +447,7 @@ span.requested,
 span.offered,
 .replied,
 .nominations .approved {
-  color: #9cd1ae;
+  color: #a1d69c;
 }
 
 .nominations .approved,
@@ -678,6 +678,39 @@ form.filters fieldset {
   border-top-color: #444;
 }
 
+/* TODO: If we're going to incorporate this in the default skin, it should have prefixed gradients as fallbacks. */
+
+.filters .indicator:before {
+  background: #555;
+  color: #999;
+    background-image: linear-gradient(#555 2%, #222 95%, #000 100%);
+}
+
+.filters input:checked + .indicator:before {
+  background: #111;
+  border-color: #eee;
+}
+
+.filters [type="checkbox"]:checked + .indicator:before {
+  background: #111;
+  border-color: #a1d69c;
+  color: #a1d69c;
+    background-image: linear-gradient(#555 2%, #222 95%, #000 100%);
+}
+
+.filters [type="radio"]:checked + .indicator:before {
+  background: #111;
+    background-image: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.8) 11%, rgba(255, 255, 255, 0) 23%),
+                      linear-gradient(to bottom, #000 0%, #222 5%, #555 100%);
+}
+
+.filters .exclude [type="checkbox"]:checked + .indicator:before {
+  background: #111;
+  border-color: #ffada8;
+  color: #ffada8;
+    background-image: linear-gradient(#555 2%, #222 95%, #000 100%);
+}
+
 /* 19-ZONE-TAGS */
 
 .nomination dt {
@@ -710,7 +743,7 @@ form.filters fieldset {
 }
 
 .required {
-  color: #83caff;
+  color: #95c6f4;
 }
 
 .error,
