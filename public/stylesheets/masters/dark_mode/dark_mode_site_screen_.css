@@ -93,7 +93,7 @@ form dl {
 
 #header .dropdown .menu a:hover,
 #header .dropdown .menu a:focus {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.25);
 }
 
 #header .primary {
@@ -108,7 +108,7 @@ form dl {
 }
 
 #dashboard a:hover {
-  background: #222;
+  background: #282828;
   color: #95c6f4;
 }
 
@@ -117,7 +117,7 @@ form dl {
 }
 
 #dashboard .current {
-  background: #111;
+  background: #1e1e1e;
 }
 
 #dashboard,
