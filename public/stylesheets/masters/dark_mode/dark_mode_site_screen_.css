@@ -570,7 +570,7 @@ li.comment {
 }
 
 .comment h4.byline {
-  background: #282828;
+  background: transparent;
 }
 
 .comment div.icon {
