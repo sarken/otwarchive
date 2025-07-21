@@ -146,9 +146,7 @@ fieldset dl dl,
 fieldset fieldset fieldset,
 fieldset fieldset dl dl,
 dd.hideme,
-form blockquote.userstuff,
-form.verbose legend,
-.verbose form legend {
+form blockquote.userstuff {
   background: #333;
   border-color: #222;
     box-shadow: none;
