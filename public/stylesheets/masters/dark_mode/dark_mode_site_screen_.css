@@ -83,6 +83,10 @@ form dl {
   background: #282828;
 }
 
+#header .menu {
+    box-shadow: 1px 1px 3px -1px #000;
+}
+
 #header .menu li {
   border-color: #555;
 }
