@@ -30,7 +30,7 @@ tfoot,
 tbody,
 tr,
 th {
-  background: #2a2a2a;
+  background: #282828;
   border: 1px solid #555;
 }
 
@@ -80,20 +80,20 @@ form dl {
 #header .dropdown:hover a,
 #header .open a,
 #header .menu {
-  background: #2a2a2a;
+  background: #282828;
 }
 
-#header .menu {
-    box-shadow: 1px 1px 3px -1px #000;
+#header .menu li {
+  border-color: #555;
 }
 
 #header .dropdown .menu a:hover,
 #header .dropdown .menu a:focus {
-  background: #111;
+  background: rgba(0, 0, 0, 0.5);
 }
 
 #header .primary {
-  background: #2a2a2a url("/images/skins/textures/tiles/black-noise.jpg");
+  background: #282828 url("/images/skins/textures/tiles/black-noise.jpg");
 }
 
 /* 04-REGION-DASHBOARD: The dashboard side bar */
@@ -125,7 +125,7 @@ form dl {
 /* 06-FOOTER */
 
 #footer {
-  background: #2a2a2a url("/images/skins/textures/tiles/black-noise.jpg");
+  background: #282828 url("/images/skins/textures/tiles/black-noise.jpg");
   border-color: #555;
 }
 
@@ -243,7 +243,7 @@ textarea.LV_invalid_field:focus {
 /* widget: sortable list */
 
 .ui-sortable li {
-  background: #2a2a2a;
+  background: #282828;
   border-color: #222;
     box-shadow: 1px 1px 3px transparent;
 }
@@ -399,7 +399,7 @@ span.delete {
 }
 
 .secondary {
-  background: #2a2a2a;
+  background: #363636;
   border-color: #555;
     box-shadow: 1px 1px 3px #000;
 }
@@ -420,7 +420,7 @@ input[type="submit"] {
 .child,
 .unwrangled,
 .unreviewed {
-  background: #222;
+  background: #282828;
   border-color: #555;
 }
 
@@ -473,7 +473,7 @@ a.tag:hover,
 
 dl.index dd,
 li.relationships a {
-  background: #2a2a2a;
+  background: #282828;
 }
 
 a.work {
@@ -496,7 +496,7 @@ span.series .divider {
 
 .listbox,
 fieldset fieldset.listbox {
-  background: #2a2a2a;
+  background: #282828;
   border-color: #555;
     box-shadow: 1px 1px 3px #000;
 }
@@ -510,7 +510,7 @@ fieldset fieldset.listbox {
 }
 
 .listbox .index {
-  background: #2a2a2a;
+  background: #282828;
     box-shadow: inset 1px 1px 3px #000;
 }
 
@@ -528,7 +528,7 @@ li.blurb,
 }
 
 .blurb .blurb {
-  background: #2a2a2a;
+  background: #282828;
     box-shadow: inset 1px 1px 3px #000;
 }
 
@@ -549,7 +549,7 @@ li.blurb,
 }
 
 .reading h4.viewed {
-  background: #2a2a2a;
+  background: #282828;
 }
 
 /* 15-GROUP-COMMENT */
@@ -561,7 +561,7 @@ li.comment {
 }
 
 .comment h4.byline {
-  background: transparent;
+  background: #282828;
 }
 
 .comment div.icon {
@@ -569,7 +569,7 @@ li.comment {
 }
 
 .thread .even {
-  background: #2a2a2a;
+  background: #282828;
 }
 
 /* 16-ZONE-SYSTEM */
@@ -588,7 +588,7 @@ li.comment {
 /* module: favorite tags */
 
 .splash .favorite li:nth-of-type(odd) a {
-  background: #2a2a2a;
+  background: #282828;
 }
 
 .splash .favorite li:nth-of-type(odd) a:hover,
@@ -599,7 +599,7 @@ li.comment {
 /* module: intro */
 
 .splash .module div.account {
-  background: transparent;
+  background: #363636;
   border-color: #555;
     box-shadow: 1px 1px 3px #000;
 }
@@ -607,7 +607,7 @@ li.comment {
 /* module: news */
 
 .splash .news li {
-  border-bottom-color: #2a2a2a;
+  border-bottom-color: #282828;
 }
 
 /* 6. ZONE: SYSTEM: FAQS */
@@ -632,7 +632,7 @@ li.comment {
 }
 
 #tos_prompt .heading {
-  background: #2a2a2a;
+  background: #282828;
   color: #95c6f4;
 }
 
