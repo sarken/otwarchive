@@ -78,12 +78,13 @@ form dl {
 #header .actions a:hover,
 #header .actions a:focus,
 #header .dropdown:hover a,
-#header .open a,
-#header .menu {
+#header .open a {
   background: #282828;
 }
 
-#header .menu {
+#header .menu,
+#small_login {
+  background: #282828;
     box-shadow: 1px 1px 3px -1px #000;
 }
 
@@ -94,6 +95,14 @@ form dl {
 #header .dropdown .menu a:hover,
 #header .dropdown .menu a:focus {
   background: rgba(0, 0, 0, 0.25);
+}
+
+#small_login {
+  border-color: #666;
+}
+
+.dropdown #small_login .footnote a {
+  background: transparent;
 }
 
 #header .primary {
