@@ -55,11 +55,13 @@ module CssCleaner
   # The prefix is used if you want to make sure a particular prefix appears on all the selectors in
   # this block of css, eg ".userstuff p" instead of just "p"
   def clean_css_code(css_code, options = {})
+    Rails.logger.debug "DEBUG: #{css_code.squish}"
     return "" if !css_code.match(/\w/) # only spaces of various kinds
     clean_css = ""
     parser = CssParser::Parser.new
     parser.add_block!(css_code)
-    
+    Rails.logger.debug "DEBUG: #{parser.inspect}"
+
     prefix = options[:prefix] || ''
     caller_check = options[:caller_check]
 
@@ -129,16 +131,13 @@ module CssCleaner
   #   empty property returned.
   def sanitize_css_declaration_value(property, value)
     clean = ""
-    property = property.downcase
     if property == "font-family"
-      if !sanitize_css_font(value).blank?
-        # preserve the original capitalization
-        clean = value
-      end
+      # preserve the original capitalization
+      clean = value if !sanitize_css_font(value).blank?
     elsif property == "content"
       # don't allow var() function
-      clean = value.match(/\bvar\b/) ? "" : sanitize_css_content(value)
-    elsif value.match(/\burl\b/) && (!ArchiveConfig.SUPPORTED_CSS_KEYWORDS.include?("url") || !%w(background background-image border border-image list-style list-style-image).include?(property))
+      clean = value.match(/\bvar\b/i) ? "" : sanitize_css_content(value)
+    elsif value.match(/\burl\b/i) && (!ArchiveConfig.SUPPORTED_CSS_KEYWORDS.include?("url") || !%w(background background-image border border-image list-style list-style-image).include?(property))
       # check whether we can use urls in this property
       clean = ""
     elsif legal_shorthand_property?(property) || custom_property?(property)
@@ -200,6 +199,8 @@ module CssCleaner
     cleantoken = ""
     if token.match(/gradient/)
       cleantoken = sanitize_css_gradient(token)
+    elsif token.match(/\bvar\b/i)
+      cleantoken = sanitize_css_value(token).downcase
     else
       cleantoken = sanitize_css_value(token)
     end
@@ -261,6 +262,4 @@ module CssCleaner
       return ""
     end
   end
-
-
 end
