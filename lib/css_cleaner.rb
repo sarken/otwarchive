@@ -35,7 +35,7 @@ module CssCleaner
   # Custom properties (variables) are declared using --name: value and accessed
   # using property: var(--name). The var() function can be more complex, e.g.,
   # var(--name, fallback value), but we're keeping our implementation simple.
-  CUSTOM_PROPERTY_NAME_REGEXP = Regexp.new("\\-\\-[0-9a-z\\-_]+")
+  CUSTOM_PROPERTY_NAME_REGEXP = Regexp.new("\\-\\-[0-9a-z\\-_]+", Regexp::IGNORECASE)
   PAREN_CUSTOM_PROPERTY_REGEX = Regexp.new("\\(\\s*#{CUSTOM_PROPERTY_NAME_REGEXP}\\s*\\)", Regexp::IGNORECASE)
   VAR_FUNCTION_REGEX = Regexp.new("var#{PAREN_CUSTOM_PROPERTY_REGEX}", Regexp::IGNORECASE)
 
@@ -55,12 +55,10 @@ module CssCleaner
   # The prefix is used if you want to make sure a particular prefix appears on all the selectors in
   # this block of css, eg ".userstuff p" instead of just "p"
   def clean_css_code(css_code, options = {})
-    Rails.logger.debug "DEBUG: #{css_code.squish}"
     return "" if !css_code.match(/\w/) # only spaces of various kinds
     clean_css = ""
     parser = CssParser::Parser.new
     parser.add_block!(css_code)
-    Rails.logger.debug "DEBUG: #{parser.inspect}"
 
     prefix = options[:prefix] || ''
     caller_check = options[:caller_check]
