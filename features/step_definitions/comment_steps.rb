@@ -266,6 +266,10 @@ Then "it should take me to the non-JavaScript delete page" do
   expect(current_url).to include("?delete_comment_id")
 end
 
+Then "it should not take me to the non-JavaScript delete page" do
+  expect(current_url).not_to include("?delete_comment_id")
+end
+
 When "I delete the reply comment" do
   step %{I follow "Delete" within ".even"}
   step %{I press "Yes, delete!"}

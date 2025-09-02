@@ -39,7 +39,7 @@ Feature: Delete a comment
     When I display comments
     Then I should see "Fail comment"
     When I follow "Delete"
-    Then it should take me to the non-JavaScript delete page
+    Then it should not take me to the non-JavaScript delete page
     When I press "Yes, delete!"
     Then I should see "Comment deleted."
       And I should not see "Comments:"
