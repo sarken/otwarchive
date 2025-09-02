@@ -16,6 +16,7 @@ Feature: Delete a comment
       And I should not see "Comments:"
       And I should not see a link "Hide Comments (1)"
 
+  @javascript
   Scenario: User deletes a comment they added to a work and which is the parent of another comment
     When I am logged in as "author"
       And I post the work "Awesome story"
@@ -23,6 +24,21 @@ Feature: Delete a comment
       And I post the comment "Fail comment" on the work "Awesome story"
       And I reply to a comment with "I didn't mean that"
       And I delete the comment
+    Then I should see "Comment deleted."
+      And I should see "(Previous comment deleted.)"
+      And I should see "I didn't mean that"
+      And I should see "Comments:1"
+      And I should see a link "Hide Comments (1)"
+
+  Scenario: User deletes a comment they added to a work and which is the parent of another comment
+    When I am logged in as "author"
+      And I post the work "Awesome story"
+    When I am logged in as "commenter1"
+      And I post the comment "Fail comment" on the work "Awesome story"
+      And I reply to a comment with "I didn't mean that"
+      And I follow "Delete"
+    Then it should take me to the non-JavaScript delete page
+    When I press "Yes, delete!"
     Then I should see "Comment deleted."
       And I should see "(Previous comment deleted.)"
       And I should see "I didn't mean that"
