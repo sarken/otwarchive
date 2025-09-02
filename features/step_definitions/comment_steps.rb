@@ -262,7 +262,7 @@ When "I delete the comment" do
   step %{I press "Yes, delete!"}
 end
 
-Then "it should take me to the non-JavaScript delet page" do
+Then "it should take me to the non-JavaScript delete page" do
   expect(current_url).to include("?delete_comment_id")
 end
 
