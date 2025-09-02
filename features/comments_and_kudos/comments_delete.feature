@@ -23,7 +23,9 @@ Feature: Delete a comment
     When I am logged in as "commenter1"
       And I post the comment "Fail comment" on the work "Awesome story"
       And I reply to a comment with "I didn't mean that"
-      And I delete the comment
+      When I follow "Delete"
+    Then it should take me to the non-JavaScript delete page
+    When I press "Delete"
     Then I should see "Comment deleted."
       And I should see "(Previous comment deleted.)"
       And I should see "I didn't mean that"
