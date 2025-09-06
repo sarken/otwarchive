@@ -71,7 +71,7 @@ describe CollectionQuery do
       expect(query.search_results).to include no_signup
       expect(query.search_results).not_to include prompt_meme_collection
       expect(query.search_results).not_to include gift_exchange_collection
-      expect(quert.search_results).not_to include multifandom_collection
+      expect(query.search_results).not_to include multifandom_collection
     end
 
     it "filters collections by signup_open filter" do
@@ -87,7 +87,7 @@ describe CollectionQuery do
       expect(query.search_results).not_to include prompt_meme_collection
       expect(query.search_results).not_to include gift_exchange_collection
       expect(query.search_results).not_to include no_signup
-      expect(quert.search_results).to include multifandom_collection
+      expect(query.search_results).to include multifandom_collection
     end
 
     it "filters collections by closed filter" do
