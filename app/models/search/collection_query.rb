@@ -33,7 +33,8 @@ class CollectionQuery < Query
       moderated_filter,
       signup_closes_in_future_filter,
       filter_id_filter,
-      named_tag_inclusion_filter
+      named_tag_inclusion_filter,
+      multifandom_filter
     ].flatten.compact
   end
 
@@ -90,6 +91,10 @@ class CollectionQuery < Query
     return if included_tag_names.blank?
 
     match_filter(:tag, included_tag_names.join(" "))
+  end
+
+  def multifandom_filter
+    term_filter(:multifandom, bool_value(options[:multifandom])) if options[:multifandom].present?
   end
 
   ####################
