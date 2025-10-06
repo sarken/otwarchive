@@ -574,15 +574,21 @@ en:
           prompt_meme: Signing up for this challenge will allow any user who claims your prompt to gift you a work in response to your prompt regardless of your preference settings. If you wish to receive additional gifts from users who have not claimed your prompts, please %{preferences_link} to allow gifts from anyone. You can always %{refuse_link}.
           refuse_link_text: refuse a gift
   chapters:
-    chapter_form:
+    post_fields:
+      actions:
+        cancel: Cancel
+        edit: Edit
+        please_wait: Please wait...
+        post: Post
+        preview: Preview
+        save_draft: Save Draft
+        update: Update
       content_policy: Content Policy
+      legend: Post Chapter
       post_notice_html: All works you post on AO3 must comply with our %{content_policy_link}. For more information, please refer to our %{tos_faq_link}.
       tos_faq: Terms of Service FAQ
     preview:
-      content_policy: Content Policy
       page_heading: Preview
-      post_notice_html: All works you post on AO3 must comply with our %{content_policy_link}. For more information, please refer to our %{tos_faq_link}.
-      tos_faq: Terms of Service FAQ
   collection_items:
     collection_item_form:
       add: Add
