@@ -1,4 +1,4 @@
-<div id="dashboard" class="region" role="navigation region">
+<nav id="dashboard" class="region" aria-label="<%= t(".nav_label") %>">
   <h3 class="landmark heading"><%= t(".landmark.dashboard") %></h3>
   <ul class="navigation actions">
     <li><%= span_if_current t(".dashboard"), collection_path(@collection), current_page?(collection_path(@collection)) && params[:show_random].blank? %></li>
@@ -19,7 +19,7 @@
 
   <!-- challenge section of dash -->
   <% if @collection.challenge %>
-    <%= render partial: "challenge/#{challenge_class_name(@collection)}/challenge_sidebar" %>
+    <%= render "challenge/#{challenge_class_name(@collection)}/challenge_sidebar" %>
   <% end %>
 
   <h4 class="landmark heading"><%= t(".landmark.contents") %></h4>
@@ -51,4 +51,4 @@
       <% end %>
     </ul>
   <% end %>
-</div>
+</nav>

@@ -32,13 +32,13 @@
       <div id="inner" class="wrapper">
         <!-- BEGIN sidebar -->
         <% if @admin_posts && !@hide_dashboard %>
-          <%= render :partial => 'admin_posts/sidebar' %>
+          <%= render "admin_posts/sidebar" %>
         <% elsif @user && !@hide_dashboard %>
-          <%= render :partial => 'users/sidebar' %>
+          <%= render "users/sidebar" %>
         <% elsif @collection && !@hide_dashboard %>
-          <%= render :partial => 'collections/sidebar' %>
+          <%= render "collections/sidebar" %>
         <% elsif show_wrangling_dashboard %>
-          <%= render :partial => 'tag_wranglings/wrangler_dashboard' %>
+          <%= render "tag_wranglings/sidebar" %>
         <% end %>
         <!-- END sidebar -->
 

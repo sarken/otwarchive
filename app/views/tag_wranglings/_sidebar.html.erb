@@ -1,5 +1,5 @@
 <% if (logged_in_as_admin? && policy(:wrangling).read_access?) || current_user.try(:is_tag_wrangler?) || @counts %>
-  <div id="dashboard" role="navigation region" class="tag wrangling region">
+  <nav id="dashboard" class="tag wrangling region" aria-label="<%= t(".nav_label") %>">
     <% if (logged_in_as_admin? && policy(:wrangling).read_access?) || current_user.try(:is_tag_wrangler?) %>
       <ul class="navigation actions">
         <% if current_user.is_a?(User) %>
@@ -58,5 +58,5 @@
         <% end %>
       </ul>
     <% end %>
-  </div>
+  </nav>
 <% end %>

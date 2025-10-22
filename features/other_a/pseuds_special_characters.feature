@@ -5,7 +5,7 @@ Scenario: creating pseud with unicode characters
 
   Given I am logged in as "myself"
     And I go to myself's user page
-    And I follow "Profile" within "div#dashboard ul.navigation.actions"
+    And I follow "Profile" within "#dashboard ul.navigation.actions"
     And I follow "Manage My Pseuds" within "div.user"
     And I follow "New Pseud" within "div#main.pseuds-index"
     And I fill in "Name" with "Àlice and Bôb"
@@ -21,7 +21,7 @@ Scenario: creating pseud with chinese characters
 
   Given I am logged in as "myself" with password "password"
     And I go to myself's user page
-    And I follow "Profile" within "div#dashboard ul.navigation.actions"
+    And I follow "Profile" within "#dashboard ul.navigation.actions"
     And I follow "Manage My Pseuds" within "div.user"
     And I follow "New Pseud" within "div#main.pseuds-index"
     And I fill in "Name" with "爱丽丝"
@@ -34,7 +34,7 @@ Scenario: creating pseud with pinyin characters
 
   Given I am logged in as "myself" with password "password"
     And I go to myself's user page
-    And I follow "Profile" within "div#dashboard ul.navigation.actions"
+    And I follow "Profile" within "#dashboard ul.navigation.actions"
     And I follow "Manage My Pseuds" within "div.user"
     And I follow "New Pseud" within "div#main.pseuds-index"
     And I fill in "Name" with "Aì lì sī"
@@ -47,7 +47,7 @@ Scenario: creating pseud with japanese characters
 
   Given I am logged in as "myself" with password "password"
     And I go to myself's user page
-    And I follow "Profile" within "div#dashboard ul.navigation.actions"
+    And I follow "Profile" within "#dashboard ul.navigation.actions"
     And I follow "Manage My Pseuds" within "div.user"
     And I follow "New Pseud" within "div#main.pseuds-index"
     And I fill in "Name" with "アリス"
@@ -60,7 +60,7 @@ Scenario: creating pseud with russian characters
 
   Given I am logged in as "myself" with password "password"
     And I go to myself's user page
-    And I follow "Profile" within "div#dashboard ul.navigation.actions"
+    And I follow "Profile" within "#dashboard ul.navigation.actions"
     And I follow "Manage My Pseuds" within "div.user"
     And I follow "New Pseud" within "div#main.pseuds-index"
     And I fill in "Name" with "Алиса"
@@ -74,7 +74,7 @@ Scenario: not creating pseuds with characters which break urls
 
   Given I am logged in as "myself" with password "password"
     And I go to myself's user page
-    And I follow "Profile" within "div#dashboard ul.navigation.actions"
+    And I follow "Profile" within "#dashboard ul.navigation.actions"
     And I follow "Manage My Pseuds" within "div.user"
     And I follow "New Pseud" within "div#main.pseuds-index"
     And I fill in "Name" with "Alice/Bob"
@@ -84,7 +84,7 @@ Scenario: not creating pseuds with characters which break urls
 
   Given I am logged in as "myself" with password "password"
     And I go to myself's user page
-    And I follow "Profile" within "div#dashboard ul.navigation.actions"
+    And I follow "Profile" within "#dashboard ul.navigation.actions"
     And I follow "Manage My Pseuds" within "div.user"
     And I follow "New Pseud" within "div#main.pseuds-index"
     And I fill in "Name" with "Alice & Bob"
@@ -94,7 +94,7 @@ Scenario: not creating pseuds with characters which break urls
 
   Given I am logged in as "myself" with password "password"
     And I go to myself's user page
-    And I follow "Profile" within "div#dashboard ul.navigation.actions"
+    And I follow "Profile" within "#dashboard ul.navigation.actions"
     And I follow "Manage My Pseuds" within "div.user"
     And I follow "New Pseud" within "div#main.pseuds-index"
     And I fill in "Name" with "Alice."
@@ -104,7 +104,7 @@ Scenario: not creating pseuds with characters which break urls
 
   Given I am logged in as "myself" with password "password"
     And I go to myself's user page
-    And I follow "Profile" within "div#dashboard ul.navigation.actions"
+    And I follow "Profile" within "#dashboard ul.navigation.actions"
     And I follow "Manage My Pseuds" within "div.user"
     And I follow "New Pseud" within "div#main.pseuds-index"
     And I fill in "Name" with "Alice?"
@@ -114,7 +114,7 @@ Scenario: not creating pseuds with characters which break urls
 
   Given I am logged in as "myself" with password "password"
     And I go to myself's user page
-    And I follow "Profile" within "div#dashboard ul.navigation.actions"
+    And I follow "Profile" within "#dashboard ul.navigation.actions"
     And I follow "Manage My Pseuds" within "div.user"
     And I follow "New Pseud" within "div#main.pseuds-index"
     And I fill in "Name" with "Alice#"
@@ -126,7 +126,7 @@ Scenario: not creating pseuds with other characters we don't allow
 
   Given I am logged in as "myself" with password "password"
     And I go to myself's user page
-    And I follow "Profile" within "div#dashboard ul.navigation.actions"
+    And I follow "Profile" within "#dashboard ul.navigation.actions"
     And I follow "Manage My Pseuds" within "div.user"
     And I follow "New Pseud" within "div#main.pseuds-index"
     And I fill in "Name" with "Alice + Bob"
@@ -138,7 +138,7 @@ Scenario: not creating pseuds with more characters we don't allow
 
   Given I am logged in as "myself" with password "password"
     And I go to myself's user page
-    And I follow "Profile" within "div#dashboard ul.navigation.actions"
+    And I follow "Profile" within "#dashboard ul.navigation.actions"
     And I follow "Manage My Pseuds" within "div.user"
     And I follow "New Pseud" within "div#main.pseuds-index"
     And I fill in "Name" with "Alice 'Bob'"
@@ -150,7 +150,7 @@ Scenario: not creating pseuds with even more characters we don't allow
 
   Given I am logged in as "myself" with password "password"
     And I go to myself's user page
-    And I follow "Profile" within "div#dashboard ul.navigation.actions"
+    And I follow "Profile" within "#dashboard ul.navigation.actions"
     And I follow "Manage My Pseuds" within "div.user"
     And I follow "New Pseud" within "div#main.pseuds-index"
     And I fill in "Name" with "Alice (Bob)"

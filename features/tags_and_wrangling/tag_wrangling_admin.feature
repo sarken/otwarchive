@@ -121,11 +121,11 @@ Feature: Tag wrangling
     Given I am logged in as a "<role>" admin
       And basic tags
     When I go to the tags page
-    Then I should see "Wrangling Tools" within "div#dashboard"
-      And I should see "Wranglers" within "div#dashboard"
-      And I should see "Search Tags" within "div#dashboard"
-      And I should see "New Tag" within "div#dashboard"
-      But I should not see "Wrangling Home" within "div#dashboard"
+    Then I should see "Wrangling Tools" within "#dashboard"
+      And I should see "Wranglers" within "#dashboard"
+      And I should see "Search Tags" within "#dashboard"
+      And I should see "New Tag" within "#dashboard"
+      But I should not see "Wrangling Home" within "#dashboard"
 
     Examples:
     | role          |
@@ -137,11 +137,11 @@ Feature: Tag wrangling
     Given I am logged in as a "<role>" admin
       And basic tags
     When I go to the tags page
-    Then I should see "Wrangling Tools" within "div#dashboard"
-      And I should see "Search Tags" within "div#dashboard"
-      But I should not see "Wranglers" within "div#dashboard"
-      And I should not see "New Tag" within "div#dashboard"
-      And I should not see "Wrangling Home" within "div#dashboard"
+    Then I should see "Wrangling Tools" within "#dashboard"
+      And I should see "Search Tags" within "#dashboard"
+      But I should not see "Wranglers" within "#dashboard"
+      And I should not see "New Tag" within "#dashboard"
+      And I should not see "Wrangling Home" within "#dashboard"
 
     Examples:
     | role             |

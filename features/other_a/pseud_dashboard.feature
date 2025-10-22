@@ -68,7 +68,7 @@ Feature: Pseud dashboard
     And I should not see "Stargatte SG-oops"
 
   # check on pseud that didn't post the work
-  When I follow "myself" within "div#dashboard ul.expandable.secondary"
+  When I follow "myself" within "#dashboard ul.expandable.secondary"
   Then I should not see "Stargate"
     And I should not see "SG-1"
     And I should not see "Stargate Franchise"
@@ -99,7 +99,7 @@ Feature: Pseud dashboard
 
   # check on pseud that didn't post the work
 
-  When I follow "myself" within "div#dashboard ul.expandable.secondary"
+  When I follow "myself" within "#dashboard ul.expandable.secondary"
   Then I should not see "Stargate"
     And I should not see "SG-1"
     And I should not see "Stargate Franchise"

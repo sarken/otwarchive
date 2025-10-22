@@ -1,8 +1,8 @@
-<nav id="dashboard" class="admin region" role="navigation region">
-	<h3 class="landmark heading">Page Summary</h3>
-	<ul class="navigation actions">
-	  <% @admin_posts.each do |admin_post| %>
-  		<li><%= span_if_current admin_post.title.html_safe + " (#{admin_post.count_visible_comments})", admin_post %></li>
+<nav id="dashboard" class="admin region" aria-labelledby="admin-post-sidebar-heading">
+  <h3 class="landmark heading" id="admin-post-sidebar-heading"><%= t(".heading") %></h3>
+  <ul class="navigation actions">
+    <% @admin_posts.each do |admin_post| %>
+      <li><%= span_if_current admin_post.title.html_safe + " (#{admin_post.count_visible_comments})", admin_post %></li>
     <% end %>
   </ul>
 </nav>
