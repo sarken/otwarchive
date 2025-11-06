@@ -1,5 +1,6 @@
 <nav id="dashboard" class="region" aria-label="<%= t(".nav_label") %>">
-  <h3 class="landmark heading"><%= t(".landmark.dashboard") %></h3>
+  <h3 class="landmark heading"><%= t(".landmark.nav") %></h3>
+  <h4 class="landmark heading"><%= t(".landmark.about") %></h4>
   <ul class="navigation actions">
     <li><%= span_if_current t(".dashboard"), collection_path(@collection), current_page?(collection_path(@collection)) && params[:show_random].blank? %></li>
     <li><%= span_if_current t(".profile"), collection_profile_path(@collection) %></li>

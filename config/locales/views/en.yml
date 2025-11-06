@@ -452,7 +452,9 @@ en:
         previous: Previous Post
       page_heading: AO3 News
     sidebar:
-      heading: Recent News
+      heading:
+        recent: Recent News
+        summary: Page Summary
   admins:
     index:
       confidentiality_reminder: You are now logged in as an admin. That means you will probably encounter information that is personal or confidential (e.g. usernames, email and IP addresses, creator names on anonymous works, etc). Please do not use this information in ways unrelated to your OTW role. If you have questions about what you can or cannot do with information you see here, contact your committee chair(s).
@@ -694,9 +696,10 @@ en:
       fandoms: Fandoms (%{count})
       faq: FAQ
       landmark:
+        about: About
         choices: Choices
         contents: Contents
-        dashboard: Dashboard
+        nav: Collection Navigation
       manage_items: Manage Items
       nav_label: Collection
       parent_collection: Parent Collection
@@ -2239,6 +2242,8 @@ en:
       characters_by_fandom: Characters by fandom (%{count})
       fandoms_by_media: Fandoms by media (%{count})
       freeforms_by_fandom: Freeforms by fandom (%{count})
+      landmark:
+        nav: Tag Wrangling Navigation
       nav_label: Tag Wrangling
       new_tag: New Tag
       relationships_by_fandom: Relationships by fandom (%{count})
@@ -2578,6 +2583,7 @@ en:
       landmark:
         catch: Catch
         choices: Choices
+        nav: User Navigation
         pitch: Pitch
         switch: Switch
       nav_label: User
