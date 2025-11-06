@@ -2243,7 +2243,11 @@ en:
       fandoms_by_media: Fandoms by media (%{count})
       freeforms_by_fandom: Freeforms by fandom (%{count})
       landmark:
+        basics: Basics
+        children: Children
+        mass_bins: Mass Bins
         nav: Tag Wrangling Navigation
+        uses: Uses
       nav_label: Tag Wrangling
       new_tag: New Tag
       relationships_by_fandom: Relationships by fandom (%{count})

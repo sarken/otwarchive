@@ -2,6 +2,7 @@
   <nav id="dashboard" class="tag wrangling region" aria-label="<%= t(".nav_label") %>">
     <h3 class="landmark heading"><%= t(".landmark.nav") %></h3>
     <% if (logged_in_as_admin? && policy(:wrangling).read_access?) || current_user.try(:is_tag_wrangler?) %>
+      <h4 class="landmark heading"><%= t(".landmark.basics") %></h4>
       <ul class="navigation actions">
         <% if current_user.is_a?(User) %>
           <li><%= span_if_current(t(".wrangling_home"), tag_wrangler_path(current_user)) %></li>
@@ -18,30 +19,34 @@
     <% end %>
 
     <% if @counts %>
-      <ul class="navigation actions">
-        <% if @tag && @uses %>
+      <% if @tag && @uses %>
+        <h4 class="landmark heading"><%= t(".landmark.uses") %></h4>
+        <ul class="navigation actions">
           <% @uses.each do |key| %>
             <% if key == "Works" || key == "Bookmarks" %>
               <li>
-              <%= span_if_current t(".use_type_and_count", use_type: t(".use_type.#{key.downcase}"), count: @counts[key]),
-                    { controller: key.downcase.to_sym, action: :index, tag_id: @tag } %>
-            </li>
+                <%= span_if_current t(".use_type_and_count", use_type: t(".use_type.#{key.downcase}"), count: @counts[key]),
+                      { controller: key.downcase.to_sym, action: :index, tag_id: @tag } %>
+              </li>
             <% elsif key == "External Works" %>
               <li>
-              <%= span_if_current t(".use_type_and_count", use_type: t(".use_type.external_works"), count: @counts[key]),
-                    { controller: :bookmarks, action: :index, tag_id: @tag } %>
-            </li>
+                <%= span_if_current t(".use_type_and_count", use_type: t(".use_type.external_works"), count: @counts[key]),
+                      { controller: :bookmarks, action: :index, tag_id: @tag } %>
+              </li>
             <% else %>
               <li>
-              <span>
-                <%= t(".use_type_and_count",
-                      use_type: t(".use_type.#{key.downcase.gsub(' ', '_')}"),
-                      count: @counts[key]) %>
-              </span>
-            </li>
+                <span>
+                  <%= t(".use_type_and_count",
+                        use_type: t(".use_type.#{key.downcase.gsub(' ', '_')}"),
+                        count: @counts[key]) %>
+                </span>
+              </li>
             <% end %>
           <% end %>
-        <% elsif @tag && @tag.child_types %>
+        </ul>
+      <% elsif @tag && @tag.child_types %>
+        <h4 class="landmark heading"><%= t(".landmark.children") %></h4>
+        <ul class="navigation actions">
           <% @tag.child_types.each do |tag_type| %>
             <li>
               <%= span_if_current t(".tag_type_and_count",
@@ -50,14 +55,17 @@
                     url_for(show: tag_type.underscore.pluralize, id: @tag) %>
             </li>
           <% end %>
-        <% else %>
+        </ul>
+      <% else %>
+        <h4 class="landmark heading"><%= t(".landmark.mass_bins") %></h4>
+        <ul class="navigation actions">
           <li><%= span_if_current t(".fandoms_by_media", count: @counts[:fandoms]), tag_wranglings_path(show: "fandoms") %></li>
           <li><%= span_if_current t(".characters_by_fandom", count: @counts[:characters]), tag_wranglings_path(show: "characters") %></li>
           <li><%= span_if_current t(".relationships_by_fandom", count: @counts[:relationships]), tag_wranglings_path(show: "relationships") %></li>
           <li><%= span_if_current t(".freeforms_by_fandom", count: @counts[:freeforms]), tag_wranglings_path(show: "freeforms") %></li>
           <li><%= span_if_current t(".unsorted_tags", count: @counts[:UnsortedTag]), unsorted_tags_path %></li>
-        <% end %>
-      </ul>
+        </ul>
+      <% end %>
     <% end %>
   </nav>
 <% end %>
