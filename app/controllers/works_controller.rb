@@ -643,7 +643,7 @@ class WorksController < ApplicationController
   end
 
   def edit_multiple
-    if params[:commit] == 'Orphan'
+    if params[:orphan_button]
       redirect_to(new_orphan_path(work_ids: params[:work_ids])) && return
     end
 
@@ -651,7 +651,7 @@ class WorksController < ApplicationController
     @user = current_user
     @works = Work.select('distinct works.*').joins(pseuds: :user).where('users.id = ?', @user.id).where(id: params[:work_ids])
 
-    render('confirm_delete_multiple') && return if params[:commit] == 'Delete'
+    render("confirm_delete_multiple") && return if params[:delete_button]
   end
 
   def confirm_delete_multiple

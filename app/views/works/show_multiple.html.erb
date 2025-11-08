@@ -1,5 +1,5 @@
 <!--Descriptive page name, messages and instructions-->
-<h2 class="heading">Edit Multiple Works</h2>
+<h2 class="heading"><%= t(".page_heading") %></h2>
 <!--/descriptions-->
 
 <!--subnav-->
@@ -12,35 +12,33 @@
     <%= t(".no_works") %>
   </p>
 <% else %>
-  <%= form_tag edit_multiple_user_works_path(@user), id: "edit-multiple-works" do %>
+  <%= form_tag edit_multiple_user_works_path(@user), id: "edit-multiple-works", class: "bulk choose" do %>
 
     <fieldset>
       <%= check_all_none(all_label: t(".works.all_label"), none_label: t(".works.none_label")) %>
 
       <fieldset>
-        <legend>Actions</legend>
-        <p class="actions">
-          <input type="submit" value="Edit" name="commit" />
-          <input type="submit" value="Orphan" name="commit" />
-          <input type="submit" value="Delete" name="commit" />
-        </p>
+        <legend><%= t(".actions.legend") %></legend>
+        <ul class="actions">
+          <li><%= submit_tag t(".actions.edit"), name: "edit_button" %></li>
+          <li><%= submit_tag t(".actions.orphan"), name: "orphan_button" %></li>
+          <li><%= submit_tag t(".actions.delete"), name: "delete_button" %></li>
+        </ul>
       </fieldset>
 
       <ul class="fandom index group">
         <% @works_by_fandom.keys.sort.each do |fandom| %>
           <li>
             <fieldset class="listbox group">
-              <legend>Select <%= fandom %> works</legend>
-              <h3 class="heading">
-                <%= fandom %>
-              </h3>
+              <legend><%= t(".fandom.legend_html") %></legend>
+              <h3 class="heading"><%= fandom %></h3>
               <%= check_all_none(all_label: t(".fandom.all_label_html", fandom: fandom), none_label: t(".fandom.none_label_html", fandom: fandom)) %>
               <ul class="concise work index group">
                 <% @works_by_fandom[fandom].each do |work| %>
                   <li>
                     <% work_title_with_status = work.title + (work.posted? ? "" : t(".draft")) %>
                     <label class="action" aria-label="<%= t(".work_label_html", work_title: work_title_with_status) %>">
-                      <%# nil out the ID to avoid duplicate invalid IDs. We can do this here because we don't use label for="id". %>
+                      <%# nil out the ID to avoid duplicate invalid IDs. We can do this here because we aren't using label for="id". %>
                       <%= check_box_tag "work_ids[]", work.id, false, id: nil %>
                     </label>
                     <%= link_to(work_title_with_status, work_path(work)) %>
@@ -53,12 +51,12 @@
       </ul>
 
       <fieldset>
-        <legend>Actions</legend>
-        <p class="submit">
-          <input type="submit" value="Edit" name="commit" />
-          <input type="submit" value="Orphan" name="commit" />
-          <input type="submit" value="Delete" name="commit" />
-        </p>
+        <legend><%= t(".actions.legend") %></legend>
+        <ul class="actions">
+          <li><%= submit_tag t(".actions.edit"), name: "edit_button" %></li>
+          <li><%= submit_tag t(".actions.orphan"), name: "orphan_button" %></li>
+          <li><%= submit_tag t(".actions.delete"), name: "delete_button" %></li>
+        </ul>
       </fieldset>
 
     </fieldset>
