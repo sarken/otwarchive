@@ -39,10 +39,10 @@
                 <% @works_by_fandom[fandom].each do |work| %>
                   <li>
                     <% work_title_with_status = work.title + (work.posted? ? "" : t(".draft")) %>
-                    <label class="action" title="select <%= work_title_with_status %>">
+                    <label class="action" aria-label="<%= t(".label", work_title: work_title_with_status) %>">
                       <%= check_box_tag "work_ids[]", work.id, false, id: "work_ids_#{work.id}" %>
                     </label>
-                  <%= link_to work_title_with_status, work_path(id: work.id) %>
+                    <%= link_to(work_title_with_status, work_path(work)) %>
                   </li>
                 <% end %>
               </ul>
