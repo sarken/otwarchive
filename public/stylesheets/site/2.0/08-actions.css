@@ -211,6 +211,10 @@ dl.stats + .landmark + .actions, .mystery .summary + .landmark + .actions {
   float: left;
 }
 
+.concise label.action input[type="checkbox"] {
+  margin: 0.25em;
+}
+
 dd.any label.action {
   margin-left: 0.5625em;
 }
