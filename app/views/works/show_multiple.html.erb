@@ -26,16 +26,16 @@
         </p>
       </fieldset>
 
-      <ul class="index">
+      <ul class="fandom index group">
         <% @works_by_fandom.keys.sort.each do |fandom| %>
           <li>
-            <fieldset class="fandom listbox">
+            <fieldset class="listbox group">
               <legend>Select <%= fandom %> works</legend>
               <h3 class="heading">
                 <%= fandom %>
                 <%= check_all_none %>
               </h3>
-              <ul class="concise index">
+              <ul class="concise work index group">
                 <% @works_by_fandom[fandom].each do |work| %>
                   <li>
                     <% work_title_with_status = work.title + (work.posted? ? "" : t(".draft")) %>

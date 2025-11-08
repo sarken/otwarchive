@@ -79,7 +79,7 @@ https://otwcode.github.io/docs/patterns/listbox.html
 }
 
 /* The height (1.286em) of the buttons plus their veritcal padding (0.25em * 2) plus the vertical padding (0.15em * 2) and vertical margins (0.375em * 2) of the actions container (=2.836em), multiplied by 0.75 because the actions are only 75% of the heading's font size. Unfortunately, this doesn't account for the buttons' vertical borders (1px * 2). */
-.fandom.listbox > .heading:has(.actions) {
+.fandom .listbox > .heading:has(.actions) {
   line-height: 2.127;
 }
 
