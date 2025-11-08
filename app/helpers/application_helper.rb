@@ -512,9 +512,9 @@ module ApplicationHelper
     css_class
   end
 
-  def check_all_none(all_text = "All", none_text = "None", id_filter = nil)
-    check_all = button_tag(all_text, class: "check_all", type: "button", data: { checkbox_id_filter: id_filter })
-    check_none = button_tag(none_text, class: "check_none", type: "button", data: { checkbox_id_filter: id_filter })
+  def check_all_none(all_text = "All", none_text = "None", id_filter = nil, all_label: nil, none_label: nil)
+    check_all = button_tag(all_text, class: "check_all", type: "button", aria: { label: all_label }, data: { checkbox_id_filter: id_filter })
+    check_none = button_tag(none_text, class: "check_none", type: "button", aria: { label: none_label }, data: { checkbox_id_filter: id_filter })
     tag.ul(tag.li(check_all) + tag.li(check_none), class: "actions")
   end
 
