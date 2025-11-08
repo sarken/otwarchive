@@ -28,7 +28,6 @@
 
       <ul class="fandom index group">
         <% @works_by_fandom.keys.sort.each do |fandom| %>
-          <% fandom_id = Fandom.find_by_name(fandom).id %>
           <li>
             <fieldset class="listbox group">
               <legend>Select <%= fandom %> works</legend>
@@ -41,7 +40,8 @@
                   <li>
                     <% work_title_with_status = work.title + (work.posted? ? "" : t(".draft")) %>
                     <label class="action" aria-label="<%= t(".work_label_html", work_title: work_title_with_status) %>">
-                      <%= check_box_tag "work_ids[]", work.id, false, id: "work_ids_#{work.id}_fandom_#{fandom_id}" %>
+                      <%# nil out the ID to avoid duplicate invalid IDs. We can do this here because we don't use label for="id". %>
+                      <%= check_box_tag "work_ids[]", work.id, false, id: nil %>
                     </label>
                     <%= link_to(work_title_with_status, work_path(work)) %>
                   </li>
