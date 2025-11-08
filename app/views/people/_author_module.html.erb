@@ -1,0 +1,35 @@
+<% # expects author %>
+  <div class="header module">
+    <h4 class="heading"><%= link_to(author.name, user_pseud_path(author.user, author)) %>
+      <% if (author.name != author.user.login) %>
+        (<%= link_to(author.user_name, user_path(author.user)) %>)
+      <% end %>
+    </h4>
+
+    <% if @search.present? %>
+      <% creations = author.authored_items_links(fandom_id: @search.options[:fandom_ids]).html_safe %>
+    <% elsif !@subscriptions %>
+      <% creations = authored_items(author, @work_counts, @rec_counts) %>
+    <% end %>
+
+    <%# On the subscriptions page, we want the user work count %>
+    <% if @subscriptions %>
+      <h5 class="heading">
+        <% # On the subscriptions page, we want the user work count %>
+        <% work_count = User.find(author.user_id).visible_work_count %>
+        <%= ts("Works: %{count}", count: work_count) %>
+      </h5>
+    <% elsif creations.present? %>
+      <h5 class="heading"><%= creations %></h5>
+    <% end %>
+
+    <div class="icon">
+      <%= icon_display(author.user, author) %>
+    </div>
+  </div>
+
+  <% unless author.description.blank? %>
+    <blockquote class="userstuff">
+      <p><%=raw sanitize_field(author, :description) %></p>
+    </blockquote>
+  <% end %>

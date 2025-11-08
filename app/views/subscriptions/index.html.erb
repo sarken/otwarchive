@@ -10,7 +10,7 @@
 
 <!--subnav-->
 <h3 class="landmark heading"><%= t("a11y.navigation") %></h3>
-<ul class="navigation actions" role="navigation">
+<ul class="navigation actions">
   <li>
     <%= span_if_current(t(".navigation.all"),
           user_subscriptions_path(@user),
@@ -47,30 +47,62 @@
 <%= will_paginate @subscriptions %>
 
 <h3 class="landmark heading"><%= t(".heading.landmark.list") %></h3>
-<dl class="subscription index group">
+<p><b>Note:</b> "Details" currently <em>toggles</em> information that is already present
+(but not visible) when the page loads. For performance, the information should
+not be loaded until "Details" is pressed. (The user won't notice a difference.)</p>
+
+<ul class="subscription index group">
   <% @subscriptions.each do |subscription| %>
-    <dt>
-      <% if subscription.subscribable %>
-        <%= link_to(subscription.name, subscription.subscribable) %>
-        <% case subscription.subscribable_type %>
-        <% when "Work" %>
-          <%= t(".work") if @subscribable_type.blank? %>
-          <%= t(".byline_html", creators: byline(subscription.subscribable)) %>
-        <% when "Series" %>
-          <%= t(".series") if @subscribable_type.blank? %>
-          <%= t(".byline_html", creators: byline(subscription.subscribable)) %>
+    <% type = subscription.subscribable_type %>
+    <% subscribable = subscription.subscribable %>
+    <% name = subscription.name %>
+    <li class="<% type.downcase %> item blurb group" id="subscription_<%= subscription.id %>">
+      <div class="header module">
+        <h4 class="heading">
+          <%= link_to(name, subscribable) %>
+          <% case subscription.subscribable_type %>
+          <% when "Work" %>
+            <%= t(".work") if @subscribable_type.blank? %>
+            <%= t(".byline_html", creators: byline(subscription.subscribable)) %>
+          <% when "Series" %>
+            <%= t(".series") if @subscribable_type.blank? %>
+            <%= t(".byline_html", creators: byline(subscription.subscribable)) %>
+          <% end %>
+        </h4>
+      </div>
+      <% # remove "toggled" class at end to make this visible %>
+      <% subscribable_classes = "#{type.downcase}" %>
+      <blockquote id="subscription_<%= subscription.id %>_subscribable" class="<%= type.downcase %> <%= 'item picture' if type == 'User' %> blurb group toggled">
+        <% # these modules should only be loaded on request %>
+        <% if type == "User" %>
+          <% # the exisiting author blurb is intended for pseuds %>
+          <% author = Pseud.find(subscribable.default_pseud.id) %>
+          <%= render "people/author_module", author: author %>
         <% end %>
-      <% else %>
-        <%= subscription.name %>
-      <% end %>
-    </dt>
-    <dd>
-      <%= form_for [current_user, subscription], :html => {:method => :delete} do |f| %>
-        <%= f.submit t(".button_html", name: subscription.name) %>
-      <% end %>
-    </dd>
-  <% end %>
-</dl>
+        <%= render "works/work_module", work: subscribable if type == "Work" %>
+        <%= render "series/series_module", series: subscribable if type == "Series" %>
+      </blockquote>
+      <ul class="actions">
+        <li>
+          <% target = "subscription_#{subscription.id}_subscribable" %>
+          <button class="<%= target %>_open expanded">
+            <%= ts("Details") %>
+          </button>
+          <button class="<%= target %>_close collapsed hidden">
+            <%= ts("Close Details") %>
+          </button>
+        </li>
+        <li>
+          <% # TODO use ajax-remove pattern here %>
+          <% # render "form", subscription: subscription %>
+          <%= form_for [current_user, subscription], :html => { :method => :delete } do |f| %>
+            <%= f.submit t(".button_html", name: subscription.name) %>
+          <% end %>
+        </li>
+      </ul>
+    <% end %>
+  </li>
+</ul>
 
 <%= will_paginate @subscriptions %>
 <!--/content-->
