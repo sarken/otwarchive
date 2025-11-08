@@ -166,8 +166,8 @@ Feature: Orphan work
       And the work "Work2" by "orphaneer"
       And I am logged in as "orphaneer"
     When I go to orphaneer's edit multiple works page
-    When I check "work_ids[]" within "//label[@title='select Work1']"
-      And I check "work_ids[]" within "//label[@title='select Work2']"
+    When I select "Work1" for editing
+      And I select "Work2" for editing
       And I press "Orphan"
     Then I should see "Orphaning will permanently remove all identifying data from the following work(s),"
     When I follow "Cancel"

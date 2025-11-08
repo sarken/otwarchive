@@ -47,7 +47,7 @@ describe WorksController do
 
     context "when logged in as a user" do
       it "redirects to the orphan path when the Orphan button was clicked" do
-        post :edit_multiple, params: { id: work1.id, work_ids: work_ids, commit: "Orphan" }
+        post :edit_multiple, params: { id: work1.id, work_ids: work_ids, orphan_button: true }
 
         it_redirects_to new_orphan_path(work_ids: work_ids)
       end
@@ -56,7 +56,7 @@ describe WorksController do
     context "when logged in as a banned user" do
       it "redirects to the orphan path when the Orphan button was clicked" do
         multiple_works_user.update!(banned: true)
-        post :edit_multiple, params: { id: work1.id, work_ids: work_ids, commit: "Orphan" }
+        post :edit_multiple, params: { id: work1.id, work_ids: work_ids, orphan_button: true }
 
         it_redirects_to new_orphan_path(work_ids: work_ids)
       end
@@ -65,7 +65,7 @@ describe WorksController do
     context "when logged in as a suspended user" do
       it "errors and redirects to user page" do
         multiple_works_user.update!(suspended: true, suspended_until: 1.week.from_now)
-        post :edit_multiple, params: { id: work1.id, work_ids: work_ids, commit: "Orphan" }
+        post :edit_multiple, params: { id: work1.id, work_ids: work_ids, orphan_button: true }
 
         it_redirects_to_simple(user_path(multiple_works_user))
         expect(flash[:error]).to include("Your account has been suspended")
@@ -76,7 +76,7 @@ describe WorksController do
   describe "confirm_delete_multiple" do
     let!(:work1) { create(:work, authors: [multiple_works_user.default_pseud]) }
     let!(:work2) { create(:work, authors: [multiple_works_user.default_pseud]) }
-    let(:params) { { commit: "Orphan", id: work1.id, work_ids: [work1.id, work2.id] } }
+    let(:params) { { oprhan_button: true, id: work1.id, work_ids: [work1.id, work2.id] } }
 
     before do
       fake_login_known_user(multiple_works_user)

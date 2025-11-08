@@ -411,10 +411,10 @@ end
 When /^I set the fandom to "([^"]*)"$/ do |fandom|
   fill_in("Fandoms", with: fandom)
 end
+
 # on the edit multiple works page
-When /^I select "([^"]*)" for editing$/ do |title|
-  id = Work.find_by(title: title).id
-  check("work_ids_#{id}")
+When "I select {string} for editing" do |title|
+  page.find("[aria-label=\"Select #{title}\"] input[type=\"checkbox\"]").set(true)
 end
 
 When /^I edit the multiple works "([^"]*)" and "([^"]*)"/ do |title1, title2|
