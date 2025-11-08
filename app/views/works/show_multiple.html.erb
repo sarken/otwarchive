@@ -19,7 +19,7 @@
 
       <fieldset>
         <legend>Actions</legend>
-        <p class="submit">
+        <p class="actions">
           <input type="submit" value="Edit" name="commit" />
           <input type="submit" value="Orphan" name="commit" />
           <input type="submit" value="Delete" name="commit" />
@@ -31,11 +31,11 @@
           <li>
             <fieldset class="fandom listbox">
               <legend>Select <%= fandom %> works</legend>
-              <h5 class="heading">
+              <h3 class="heading">
                 <%= fandom %>
                 <%= check_all_none %>
-              </h5>
-              <ul class="index concise">
+              </h3>
+              <ul class="concise index">
                 <% @works_by_fandom[fandom].each do |work| %>
                   <li>
                     <% work_title_with_status = work.title + (work.posted? ? "" : t(".draft")) %>
