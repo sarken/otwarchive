@@ -33,8 +33,8 @@
               <legend>Select <%= fandom %> works</legend>
               <h3 class="heading">
                 <%= fandom %>
-                <%= check_all_none(all_label: t(".fandom.all_label_html", fandom: fandom), none_label: t(".fandom.none_label_html", fandom: fandom)) %>
               </h3>
+              <%= check_all_none(all_label: t(".fandom.all_label_html", fandom: fandom), none_label: t(".fandom.none_label_html", fandom: fandom)) %>
               <ul class="concise work index group">
                 <% @works_by_fandom[fandom].each do |work| %>
                   <li>
