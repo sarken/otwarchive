@@ -59,7 +59,7 @@ describe BookmarkSearchForm, bookmark_search: true do
             results = BookmarkSearchForm.new(
               parent: tag, sort_column: "bookmarkable_date"
             ).bookmarkable_search_results
-            expect(results.map(&:title)).to eq ["One", "Three", "Two"]
+            expect(results.map(&:title)).to eq %w[One Three Two]
           end
 
           it "changes when the work is updated" do
@@ -68,7 +68,7 @@ describe BookmarkSearchForm, bookmark_search: true do
             results = BookmarkSearchForm.new(
               parent: tag, sort_column: "bookmarkable_date"
             ).bookmarkable_search_results
-            expect(results.map(&:title)).to eq ["Two", "One", "Three"]
+            expect(results.map(&:title)).to eq %w[Two One Three]
           end
         end
 
@@ -77,7 +77,7 @@ describe BookmarkSearchForm, bookmark_search: true do
             results = BookmarkSearchForm.new(
               parent: tag, sort_column: "created_at"
             ).bookmarkable_search_results
-            expect(results.map(&:title)).to eq ["Two", "Three", "One"]
+            expect(results.map(&:title)).to eq %w[Two Three One]
           end
 
           it "changes when a new bookmark is created" do
@@ -86,7 +86,7 @@ describe BookmarkSearchForm, bookmark_search: true do
             results = BookmarkSearchForm.new(
               parent: tag, sort_column: "created_at"
             ).bookmarkable_search_results
-            expect(results.map(&:title)).to eq ["One", "Two", "Three"]
+            expect(results.map(&:title)).to eq %w[One Two Three]
           end
         end
       end
@@ -109,7 +109,7 @@ describe BookmarkSearchForm, bookmark_search: true do
             res = search.bookmarkable_search_results.map(&:id)
 
             [work1, work2].each do |work|
-              work.update(summary: "Updated")
+              work.update!(summary: "Updated")
               run_all_indexing_jobs
               expect(search.bookmarkable_search_results.map(&:id)).to eq(res)
             end
@@ -124,7 +124,7 @@ describe BookmarkSearchForm, bookmark_search: true do
             res = search.bookmarkable_search_results.map(&:id)
 
             [work1, work2].each do |work|
-              work.update(summary: "Updated")
+              work.update!(summary: "Updated")
               run_all_indexing_jobs
               expect(search.bookmarkable_search_results.map(&:id)).to eq(res)
             end
@@ -143,7 +143,7 @@ describe BookmarkSearchForm, bookmark_search: true do
         let!(:bookmark1) { create(:bookmark, bookmarkable: work1) }
         let!(:bookmark2) { create(:bookmark, bookmarkable: work2) }
 
-        let(:unused_language) { create(:language, short: "tlh") }
+        let(:unused_language) { create(:language, name: "unused", short: "tlh") }
 
         before { run_all_indexing_jobs }
 
@@ -278,13 +278,13 @@ describe BookmarkSearchForm, bookmark_search: true do
             res = search.search_results.map(&:id)
 
             [work1, work2].each do |work|
-              work.update(summary: "Updated")
+              work.update!(summary: "Updated")
               run_all_indexing_jobs
               expect(search.search_results.map(&:id)).to eq(res)
             end
 
             [bookmark1, bookmark2].each do |bookmark|
-              bookmark.update(bookmarker_notes: "Updated")
+              bookmark.update!(bookmarker_notes: "Updated")
               run_all_indexing_jobs
               expect(search.search_results.map(&:id)).to eq(res)
             end
@@ -299,7 +299,7 @@ describe BookmarkSearchForm, bookmark_search: true do
 
     {
       Work: :work,
-      Series: :series_with_a_work,
+      Series: :series,
       ExternalWork: :external_work
     }.each_pair do |type, factory|
       it "returns the correct bookmarked #{type.to_s.pluralize} when bookmarker changes username" do
@@ -330,7 +330,7 @@ describe BookmarkSearchForm, bookmark_search: true do
 
     {
       Work: :work,
-      Series: :series_with_a_work
+      Series: :series
     }.each_pair do |type, factory|
       it "returns the correct bookmarked #{type.to_s.pluralize} when author changes username" do
         bookmarkable = create(factory, authors: [author.default_pseud])

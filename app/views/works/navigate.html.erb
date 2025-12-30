@@ -1,13 +1,9 @@
-<h2 class="heading">
-  <%= t(".heading_html",
-         title: link_to(@work.title, @work),
-         byline: byline(@work)) %>
-</h2>
+<h2 class="heading"><%= t(".page_heading_html", work_link: link_to(@work.title, @work), creators: byline(@work)) %></h2>
 
 <ol class="chapter index group" role="navigation">
   <% for chapter in @chapters %>
     <li>
-      <%= link_to chapter.display_title.html_safe, [chapter.work, chapter] %> 
+      <%= link_to chapter.display_title.html_safe, [chapter.work, chapter] %>
       <span class="words">
         <%= t(".word_count", count: number_with_delimiter(chapter.word_count)) %>
       </span>
