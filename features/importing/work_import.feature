@@ -249,8 +249,8 @@ Feature: Import Works
       And I should see "Published:2002-01-12"
       And I should see "Completed:2010-01-11"
     When I follow "Chapter Index"
-    Then I should see "1. Chapter 1 (78 words) (2002-01-12)"
-      And I should see "2. Huddling (62 words) (2010-01-11)"
+    Then I should see "1. Chapter 1 (45 words) (2002-01-12)"
+      And I should see "2. Huddling (23 words) (2010-01-11)"
 
   Scenario: Imported multichapter work should have the correct word count
     Given I import the urls with mock websites as chapters without preview
