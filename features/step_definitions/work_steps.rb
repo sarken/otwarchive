@@ -247,7 +247,7 @@ Given /^I am logged in as the author of "([^"]*)"$/ do |work|
 end
 
 Given "the spam work {string}" do |work|
-  FactoryBot.create(:work, title: work).update_attribute(:spam, true)
+  FactoryBot.create(:work, title: work).update_attributes(spam: true, spam_checked_at: Time.now)
 end
 
 Given "the hidden work {string}" do |work|
