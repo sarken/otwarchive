@@ -26,16 +26,6 @@ Feature: View a work with various options
     And I set my preferences to View Full Work mode by default
   When I view the work "Whatever"
   Then I should see "Chapter 2"
-    And I should not see "Chapter Stats"
-
-  Scenario: Viewing a work in the default chapter by chapter mode
-  Given the chaptered work "Whatever"
-    And the work "Whatever" has 1 comment on chapter 1
-    And the work "Whatever" has 2 comments on chapter 2
-  When I view the work "Whatever"
-  Then I should see "Chapter Stats"
-    And I should see "Comments:3" within "dd.work.stats"
-    And I should see "Comments: 1" within "dd.chapter.stats"
 
   Scenario: viewing a work and chapter that have been deleted
   Given I am logged in as a random user
@@ -119,3 +109,22 @@ Feature: View a work with various options
       And I should see the work meta
       And I should see the work preface
       And I should see the work styles
+
+  Scenario: Only works with more than one posted chapter include chapter stats
+  on the individual posted chapters
+  Given the work "WIP"
+    And I am logged in as the author of "WIP"
+  When I view the work "WIP"
+  Then I should see "Work Stats"
+    And I should not see "Chapter Stats"
+  When a draft chapter is added to "WIP"
+    And I view the work "WIP"
+    And I follow "Next Chapter"
+  Then I should see "Work Stats"
+    And I should not see "Chapter Stats"
+  When I press "Post Chapter"
+  Then I should see "Work Stats"
+    And I should see "Chapter Stats"
+  When I view the work "WIP" in full mode
+  Then I should see "Work Stats"
+    And I should not see "Chapter Stats"

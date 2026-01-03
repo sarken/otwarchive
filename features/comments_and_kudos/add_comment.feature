@@ -414,3 +414,14 @@ Scenario: Cannot reply to comments (no button) while logged as admin
       And the email to "creator" should contain "edited their reply to your comment on"
       And the email to "creator" should contain "Go to the thread starting from this comment"
       And the email to "creator" should be translated
+
+  Scenario: Work and chapter comment counts are included in the work meta
+    Given the chaptered work "lowercase title"
+      And the work "lowercase title" has 1 comment on chapter 1
+      And the work "lowercase title" has 2 comments on chapter 2
+    When I view the work "lowercase title"
+    Then I should see "Comments:3" within "dd.work.stats"
+      And I should see "Comments: 1" within "dd.chapter.stats"
+    When I follow "Next Chapter"
+    Then I should see "Comments:3" within "dd.work.stats"
+      And I should see "Comments: 2" within "dd.chapter.stats"
