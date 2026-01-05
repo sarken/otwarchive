@@ -219,6 +219,10 @@ dl.index p.actions {
   margin: 0;
 }
 
+#first-login-help-banner p.actions {
+  float: none;
+}
+
 /* context: work navigation actions with secondary navigation */
 
 .work.navigation .download {
