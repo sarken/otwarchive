@@ -650,7 +650,11 @@ end
 When "I invite the co-author {string} to the work {string}" do |coauthor, work|
   step %{I edit the work "#{work}"}
   step %{I invite the co-author "#{coauthor}"}
-  step %{I update the work}
+  if Work.find_by(title: work).posted?
+    step %{I update the work}
+  else
+    click_button "Save Draft"
+  end
 end
 
 When /^I add the co-author "([^"]*)" to the work "([^"]*)"$/ do |coauthor, work|
