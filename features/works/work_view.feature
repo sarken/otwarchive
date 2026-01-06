@@ -110,21 +110,85 @@ Feature: View a work with various options
       And I should see the work preface
       And I should see the work styles
 
-  Scenario: Only works with more than one posted chapter include chapter stats
-  on the individual posted chapters
+  Scenario: Chapter Stats are not included in the meta on single-chapter works.
+  Given the work "Oneshot"
+    And the user "cocreator" allows co-creators
+  When I am logged in as the author of "Oneshot"
+    And I view the work "Oneshot"
+  Then I should not see "Chapter Stats"
+  When I invite the co-author "cocreator" to the work "Oneshot"
+    And I am logged in as "cocreator"
+    And I view the work "Oneshot"
+  Then I should not see "Chapter Stats"
+  When I am logged in as a random user
+    And I view the work "Oneshot"
+  Then I should not see "Chapter Stats"
+  When I am logged out
+    And I view the work "Oneshot"
+  Then I should not see "Chapter Stats"
+  When I am logged in as a "superadmin" admin
+    And I view the work "Oneshot"
+  Then I should not see "Chapter Stats"
+
+  Scenario: Chapter Stats are included in the meta on chapter pages for draft
+  works with multiple draft chapters.
+  Given I am logged in as a random user
+    And the draft "Chaptered Draft"
+    And a draft chapter is added to "Chaptered Draft"
+    And the user "cocreator" allows co-creators
+  When I am logged in as the author of "Chaptered Draft"
+    And I view the work "Chaptered Draft"
+  Then I should see "Chapter Stats"
+  When I view the 2nd chapter
+  Then I should see "Chapter Stats"
+  When I view the work "Chaptered Draft" in full mode
+  Then I should not see "Chapter Stats"
+  When I invite the co-author "cocreator" to the work "Chaptered Draft"
+    And I am logged in as "cocreator"
+    And I view the work "Chaptered Draft"
+  Then I should see "Chapter Stats"
+  When I view the 2nd chapter
+  Then I should see "Chapter Stats"
+  When I view the work "Chaptered Draft" in full mode
+  Then I should not see "Chapter Stats"
+  When I am logged in as a "superadmin" admin
+    And I view the work "Chaptered Draft"
+  Then I should see "Chapter Stats"
+  When I view the 2nd chapter
+  Then I should see "Chapter Stats"
+  When I view the work "Chaptered Draft" in full mode
+  Then I should not see "Chapter Stats"
+
+  Scenario: Only users who can access draft chapters see Chapter Stats on
+  chapter pages when a work has a single posted chapter and a draft chapter.
   Given the work "WIP"
-    And I am logged in as the author of "WIP"
-  When I view the work "WIP"
-  Then I should see "Work Stats"
-    And I should not see "Chapter Stats"
-  When a draft chapter is added to "WIP"
+    And a draft chapter is added to "WIP"
+    And the user "cocreator" allows co-creators
+  When I am logged in as the author of "WIP"
     And I view the work "WIP"
-    And I follow "Next Chapter"
-  Then I should see "Work Stats"
-    And I should not see "Chapter Stats"
-  When I press "Post Chapter"
-  Then I should see "Work Stats"
-    And I should see "Chapter Stats"
+  Then I should see "Chapter Stats"
+  When I view the 2nd chapter
+  Then I should see "Chapter Stats"
   When I view the work "WIP" in full mode
-  Then I should see "Work Stats"
-    And I should not see "Chapter Stats"
+  Then I should not see "Chapter Stats"
+  When I invite the co-author "cocreator" to the work "WIP"
+    And I am logged in as "cocreator"
+    And I view the work "WIP"
+  Then I should see "Chapter Stats"
+  When I view the 2nd chapter
+  Then I should see "Chapter Stats"
+  When I view the work "WIP" in full mode
+  Then I should not see "Chapter Stats"
+  When I am logged in as a "superadmin" admin
+    And I view the work "WIP"
+  Then I should see "Chapter Stats"
+  When I view the 2nd chapter
+  Then I should see "Chapter Stats"
+  When I view the work "WIP" in full mode
+  Then I should not see "Chapter Stats"
+  When I am logged in as a random user
+    And I view the work "WIP"
+  Then I should not see "Chapter Stats"
+  When I am logged out
+    And I view the work "WIP"
+  Then I should not see "Chapter Stats"

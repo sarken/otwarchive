@@ -242,8 +242,12 @@ module WorksHelper
     (offer_signups + pinch_hits)
   end
 
-  def show_chapter_stats(work)
-    return unless work.number_of_posted_chapters > 1
+  # Include chapter stats in Chapter by Chapter mode if
+  # - this is one of multiple posted chapters, or
+  # - there are draft chapters and the user can see them
+  def include_chapter_stats(work)
+    return unless work.number_of_posted_chapters > 1 || (logged_in_as_admin? ||
+      work.user_is_owner_or_invited?(current_user)) && work.number_of_chapters > 1
 
     params[:controller] == "chapters" ||
       params[:controller] == "work" && params[:view_full_work].nil?
