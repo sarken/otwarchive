@@ -242,7 +242,7 @@ Feature: Edit chapters
       And I select "January" from "work_chapter_attributes_published_at_2i"
       And I select "1990" from "work_chapter_attributes_published_at_1i"
       And I press "Update"
-    Then I should see "Published:1990-01-01"
+    Then I should see "Published:1990-01-01" within "dd.work.stats"
     When I follow "Add Chapter"
       And I fill in "content" with "this is my second chapter"
       And I set the publication date to today

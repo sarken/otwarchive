@@ -152,7 +152,7 @@ Feature: Work Drafts
       Then I should be on the work "Unicorns are everywhere"
         And I should see "Words:5"
 
-    Scenario: Word count should equal all draft chapters' word counts if work isn't posted
+    Scenario: Work word count should equal all draft chapters' word counts if work isn't posted
       Given I am logged in as "test_user"
         And I set up the draft "Unicorns are everywhere"
         And I fill in "content" with "Help there are unicorns everywhere"
@@ -161,13 +161,15 @@ Feature: Work Drafts
       When a chapter is set up for "Unicorns are everywhere"
         And I press "Preview"
         And I press "Save Draft"
-      Then I should see "Words:16"
+      Then I should see "Words:16" within "dd.work.stats"
+        And I should see "Words: 11" within "dd.chapter.stats"
       When a chapter is set up for "Unicorns are everywhere"
         And I press "Preview"
       When I press "Save Draft"
-      Then I should see "Words:27"
+      Then I should see "Words:27" within "dd.work.stats"
+        And I should see "Words: 11" within "dd.chapter.stats"
 
-      Scenario: When posting chapter(s) in unpublished multichapter work, word count should equal posted chapter(s) word count
+      Scenario: When posting chapter(s) in unpublished multichapter work, work word count should equal posted chapter(s) word count
       Given I am logged in as "test_user"
         And I set up the draft "Unicorns are everywhere"
         And I fill in "content" with "Help there are unicorns everywhere"
@@ -176,17 +178,17 @@ Feature: Work Drafts
       When a chapter is set up for "Unicorns are everywhere"
         And I press "Preview"
         And I press "Save Draft"
-      Then I should see "Words:16"
+      Then I should see "Words:16" within "dd.work.stats"
       When a chapter is set up for "Unicorns are everywhere"
         And I press "Preview"
         And I press "Save Draft"
-      Then I should see "Words:27"
+      Then I should see "Words:27" within "dd.work.stats"
       When I view the work "Unicorns are everywhere"
         And I press "Post Chapter"
-      Then I should see "Words:5"
+      Then I should see "Words:5" within "dd.work.stats"
       When I follow "Next Chapter"
         And I press "Post Chapter"
-      Then I should see "Words:16"
+      Then I should see "Words:16" within "dd.work.stats"
 
   Scenario: A user should not be able to comment on an unposted work
     Given I am logged in as "Scott" with password "password"

@@ -246,8 +246,9 @@ Feature: Import Works
     Then I should see "Preview"
     When I press "Post"
     Then I should see "Language: Deutsch"
-      And I should see "Published:2002-01-12"
+      And I should see "Published:2002-01-12" within "dd.work.stats"
       And I should see "Completed:2010-01-11"
+      And I should see "Published: 2010-01-11" within "dd.chapter.stats"
     When I follow "Chapter Index"
     Then I should see "1. Chapter 1 (45 words) (2002-01-12)"
       And I should see "2. Huddling (23 words) (2010-01-11)"
@@ -258,7 +259,11 @@ Feature: Import Works
       http://import-site-without-tags
       http://second-import-site-without-tags
       """
-    Then I should see "Words:5"
+    Then I should see "Words:5" within "dd.work.stats"
+      And I should see "Words: 2" within "dd.chapter.stats"
+    When I view the 2nd chapter
+    Then I should see "Words:5" within "dd.work.stats"
+      And I should see "Words: 3" within "dd.chapter.stats"
 
   Scenario: Editing an imported multichapter work should have the correct word count
     Given I import the urls with mock websites as chapters without preview
@@ -266,12 +271,14 @@ Feature: Import Works
       http://import-site-without-tags
       http://second-import-site-without-tags
       """
-    Then I should see "Words:5"
+    Then I should see "Words:5" within "dd.work.stats"
+      And I should see "Words: 2" within "dd.chapter.stats"
     When I follow "Edit"
       And I follow "1"
       And I fill in "content" with "some extra content that is longer than before"
       And I press "Update"
-    Then I should see "Words:11"
+    Then I should see "Words:11" within "dd.work.stats"
+      And I should see "Words: 8" within "dd.chapter.stats"
 
 #  Scenario: Import works for others and have them automatically notified
 
