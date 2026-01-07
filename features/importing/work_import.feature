@@ -248,7 +248,9 @@ Feature: Import Works
     Then I should see "Language: Deutsch"
       And I should see "Published:2002-01-12" within "dd.work.stats"
       And I should see "Completed:2010-01-11"
-      And I should see "Published: 2010-01-11" within "dd.chapter.stats"
+      And I should see "Published: 2002-01-12" within "dd.chapter.stats"
+    When I view the 2nd chapter
+    Then I should see "Published: 2010-01-11" within "dd.chapter.stats"
     When I follow "Chapter Index"
     Then I should see "1. Chapter 1 (45 words) (2002-01-12)"
       And I should see "2. Huddling (23 words) (2010-01-11)"
