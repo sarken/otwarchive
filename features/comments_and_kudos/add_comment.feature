@@ -422,6 +422,6 @@ Scenario: Cannot reply to comments (no button) while logged as admin
     When I view the work "lowercase title"
     Then I should see "Comments:3" within "dd.work.stats"
       And I should see "Comments: 1" within "dd.chapter.stats"
-    When I follow "Next Chapter"
+    When I view the 2nd chapter
     Then I should see "Comments:3" within "dd.work.stats"
       And I should see "Comments: 2" within "dd.chapter.stats"
