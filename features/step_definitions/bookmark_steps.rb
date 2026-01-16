@@ -449,67 +449,6 @@ When "I follow {string} in the blurb for {word}'s bookmark of {string}" do |link
   find("#bookmark_#{bookmark_id}").click_link(link)
 end
 
-Then "the bookmark form should be open in the bookmarkable blurb for {string}" do |title|
-  work_id = Work.find_by(title: title).id
-  within("#bookmark_#{work_id}") do
-    step %{I should see "save a bookmark!"}
-    step %{I should not see "Saved"}
-    step %{I should not see "Edit"}
-  end
-end
-
-Then "the bookmark form should be open in the blurb for {word}'s bookmark of {string}" do |login, title|
-  user = User.find_by(login: login)
-  work = Work.find_by(title: title)
-  bookmark_id = user.bookmarks.find_by(bookmarkable: work).id
-  within("#bookmark_#{bookmark_id}") do
-    step %{I should see "save a bookmark!"}
-    step %{I should not see "Edit"}
-  end
-end
-
-Then "the bookmark form should be closed in the bookmarkable blurb for {string}" do |title|
-  work_id = Work.find_by(title: title).id
-  within("#bookmark_#{work_id}") do
-    step %{I should not see "save a bookmark!"}
-    step %{I should see "Saved"}
-    step %{I should see "Edit"}
-  end
-end
-
-Then "{word}'s bookmark form should be closed in the bookmarkable blurb for {string}" do |bookmarker, title|
-  work_id = Work.find_by(title: title).id
-  within("#bookmark_#{work_id}") do
-    step %{I should not see "save a bookmark!"}
-    step %{I should see "Save"}
-  end
-end
-
-Then "the bookmark form should be closed in the blurb for {word}'s bookmark of {string}" do |login, title|
-  user = User.find_by(login: login)
-  work = Work.find_by(title: title)
-  bookmark_id = user.bookmarks.find_by(bookmarkable: work).id
-  within("#bookmark_#{bookmark_id}") do
-    step %{I should not see "save a bookmark!"}
-    step %{I should see "Edit"}
-  end
-end
-
-Then "{word}'s bookmark form should be closed in the blurb for {word}'s bookmark of {string}" do |bookmarker, login, title|
-  bookmarker = User.find_by(login: bookmarker)
-  user = User.find_by(login: login)
-  work = Work.find_by(title: title)
-  if (user == bookmarker)
-    step %{the bookmark form should be closed in the blurb for #{login}'s bookmark of #{title}}
-  else
-    bookmark_id = user.bookmarks.find_by(bookmarkable: work).id
-    within("#bookmark_#{bookmark_id}") do
-      step %{I should not see "save a bookmark!"}
-      step %{I should see "Save"}
-    end
-  end
-end
-
 When /^I add my bookmark to the collection "([^\"]*)"$/ do |collection_name|
   step %{I follow "Add To Collection"}
   fill_in("collection_names", with: collection_name)
@@ -579,4 +518,62 @@ Then /^the cache of the bookmark on "([^\"]*)" should not expire if I have not e
   visit bookmark_path(bookmark)
   bookmark.reload
   assert orig_cache_key == bookmark.cache_key, "Cache key #{orig_cache_key} does not match #{bookmark.cache_key}."
+end
+
+Then "the {word} bookmark form should be open" do |action|
+  step %{I should see "save a bookmark!"}
+  if action == "edit"
+    step %{I should not see "Saved"}
+    step %{I should not see "Edit"}
+  elsif action == "new"
+    step %{I should not see "Save"}
+  end
+end
+
+Then "the {word} bookmark form should be open in the bookmarkable blurb for {string}" do |action, title|
+  work_id = Work.find_by(title: title).id
+  within("#bookmark_#{work_id}") do
+    step %{the #{action} bookmark form should be open}
+  end
+end
+
+Then "the {word} bookmark form should be open in the blurb for {word}'s bookmark of {string}" do |action, login, title|
+  user = User.find_by(login: login)
+  work = Work.find_by(title: title)
+  bookmark_id = user.bookmarks.find_by(bookmarkable: work).id
+  within("#bookmark_#{bookmark_id}") do
+    step %{the #{action} bookmark form should be open}
+  end
+end
+
+Then "the {word} bookmark form should be closed" do |action|
+  step %{I should not see "save a bookmark!"}
+  if action == "edit"
+    step %{I should see "Saved"}
+    step %{I should see "Edit"}
+  elsif action == "new"
+    step %{I should see "Save"}
+  end
+end
+
+Then "the {word} bookmark form should be closed in the bookmarkable blurb for {string}" do |action, title|
+  work_id = Work.find_by(title: title).id
+  within("#bookmark_#{work_id}") do
+    step %{the #{action} bookmark form should be closed}
+  end
+end
+
+Then "the {word} bookmark form should be closed in the blurb for {word}'s bookmark of {string}" do |action, login, title|
+  user = User.find_by(login: login)
+  work = Work.find_by(title: title)
+  bookmark_id = user.bookmarks.find_by(bookmarkable: work).id
+  blurb_id = "#bookmark_#{bookmark_id}"
+  # Bookmarks owned by the current user don't have Save or Saved links, only Edit
+  #if find(blurb_id).has_selector?(".own")
+  #  step %{I should see "Edit" within "#{blurb_id}"}
+  #else
+    within(blurb_id) do
+      step %{the #{action} bookmark form should be closed}
+    end
+  #end
 end
