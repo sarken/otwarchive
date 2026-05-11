@@ -80,7 +80,6 @@
         </dl>
       </dd>
     <% end %>
-
     <% if policy(:user_creation).show_original_creators? %>
       <% if @work.original_creators.any? %>
         <% original_creators = @work.original_creators.map(&:display) %>
