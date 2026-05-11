@@ -10,7 +10,7 @@
         <% unless tags.blank? %>
           <dt class="<%= tag_type_css_class(type) %> tags">
             <% if type == "ArchiveWarning" %>
-              <%= link_to( tags.size == 1 ? type.constantize::NAME : type.constantize::NAME.pluralize, tos_faq_path(anchor: "tags") ) %>:
+              <%= link_to( tags.size == 1 ? type.constantize::NAME : type.constantize::NAME.pluralize, tos_faq_path(:anchor => "tags") ) %>:
             <% elsif type.constantize::NAME == ArchiveConfig.FREEFORM_CATEGORY_NAME %>
               <%= type.constantize::NAME %>:
             <% else %>
@@ -23,7 +23,7 @@
               <% if (type == "ArchiveWarning" && hide_warnings?(@work)) || (type == "Freeform" && hide_freeform?(@work)) %>
                 <%= show_hidden_tag_link_list_item(@work, type, { suppress_toggle_class: true }) %>
              <% else %>
-               <%= tag_link_list(tags, link_to_works = true) %>
+               <%= tag_link_list(tags, link_to_works=true) %>
              <% end %>
             </ul>
           </dd>
@@ -72,7 +72,7 @@
           <dd class="published"><%= localize(@chapter.published_at) %></dd>
           <dt class="words"><%= t(".stats.words") %></dt>
           <dd class="words"><%= number_with_delimiter(@chapter.word_count) %></dd>
-          <% unless @chapter.count_visible_comments.zero? %>
+          <% if @chapter.count_visible_comments.positive? %>
             <dt class="comments"><%= t(".stats.comments") %></dt>
             <dd class="comments"><%= number_with_delimiter(@chapter.count_visible_comments) %></dd>
           <% end %>
