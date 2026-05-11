@@ -664,7 +664,7 @@ When "I invite the co-author {string} to the work {string}" do |coauthor, work|
   end
 end
 
-When /^I add the co-author "([^"]*)" to the work "([^"]*)"$/ do |coauthor, work|
+Whe "I add the co-author {string} to the work {string}" do |coauthor, work|
   step %{I invite the co-author "#{coauthor}" to the work "#{work}"}
   step %{the user "#{coauthor}" accepts the creator invite for the work "#{work}"}
 end

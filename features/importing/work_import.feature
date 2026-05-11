@@ -233,7 +233,7 @@ Feature: Import Works
     Then I should see "Preview"
       And I should see "2010-01-11"
 
-  Scenario: Importing a new multichapter work with backdating should have correct chapter index dates
+  Scenario: Importing a new multichapter work with backdating should have the correct dates
     Given I set up importing with a mock website
     When I fill in "urls" with
         """

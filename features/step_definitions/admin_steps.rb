@@ -596,8 +596,8 @@ end
 
 Then "I should see the original creator {string}" do |creator|
   user = User.find_by(login: creator)
-  expect(page).to have_selector("dt.creators", text: "Original Creator ID:")
-  expect(page).to have_selector("dd.creators",
+  expect(page).to have_selector("dt.original_creators", text: "Original Creator ID:")
+  expect(page).to have_selector("dd.original_creators",
                                 text: "#{user.id} (#{creator})")
 end
 

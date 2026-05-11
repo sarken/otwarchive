@@ -458,7 +458,7 @@ Scenario: Guest comments with an email from a banned or suspended user should be
       And the email to "creator" should contain "Go to the thread starting from this comment"
       And the email to "creator" should be translated
 
-  Scenario: Work and chapter comment counts are included in the work meta
+  Scenario: Work and chapter comment counts are included in the work meta for works with multiple posted chapters
     Given the chaptered work "lowercase title"
       And the work "lowercase title" has 1 comment on chapter 1
       And the work "lowercase title" has 2 comments on chapter 2
