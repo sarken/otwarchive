@@ -26,6 +26,16 @@ Feature: View a work with various options
     And I set my preferences to View Full Work mode by default
   When I view the work "Whatever"
   Then I should see "Chapter 2"
+    And I should not see "Chapter Stats"
+
+  Scenario: Viewing a work in the default chapter by chapter mode
+  Given the chaptered work "Whatever"
+    And the work "Whatever" has 1 comment on chapter 1
+    And the work "Whatever" has 2 comments on chapter 2
+  When I view the work "Whatever"
+  Then I should see "Chapter Stats"
+    And I should see "Comments: 3" within "dd.work.stats"
+    And I should see "Comments: 1" within "dd.chapter.stats"
 
   Scenario: viewing a work and chapter that have been deleted
   Given I am logged in as a random user
