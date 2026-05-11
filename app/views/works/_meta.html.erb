@@ -9,6 +9,7 @@
       <% tags = tag_group[type] %>
         <% unless tags.blank? %>
           <dt class="<%= tag_type_css_class(type) %> tags">
+
             <% if type == "ArchiveWarning" %>
               <%= link_to( tags.size == 1 ? type.constantize::NAME : type.constantize::NAME.pluralize, tos_faq_path(:anchor => "tags") ) %>:
             <% elsif type.constantize::NAME == ArchiveConfig.FREEFORM_CATEGORY_NAME %>
@@ -83,15 +84,14 @@
     <% if policy(:user_creation).show_original_creators? %>
       <% if @work.original_creators.any? %>
         <% original_creators = @work.original_creators.map(&:display) %>
-        <dt class="creators">
+        <dt class="original_creators">
           <%= t(".original_creators", count: original_creators.count) %>
         </dt>
-        <dd class="creators">
+        <dd class="original_creators">
           <%= original_creators.join(", ") %>
         </dd>
       <% end %>
     <% end %>
-
     <% if policy(:user_creation).show_ip_address? %>
       <dt class="ip">
         <%= t(".ip.label") %>
@@ -104,7 +104,6 @@
         <% end %>
       </dd>
     <% end %>
-
     <% if logged_in_as_admin? %>
       <dt class="akismet">
         <%= t(".spam.label") %>
@@ -116,14 +115,12 @@
           <%= @work.spam? ? t(".spam.data.spam") : t(".spam.data.ham") %>
         <% end %>
       </dd>
-
       <dt class="limit">
         <%= t(".tag_limit.label") %>
       </dt>
       <dd class="limit">
         <%= @work.user_defined_tags_count > ArchiveConfig.USER_DEFINED_TAGS_MAX ? t(".tag_limit.data.over") : t(".tag_limit.data.under") %>
       </dd>
-
       <% if @work.gifts.are_rejected.exists? %>
         <dt class="gift">
           <%= t(".rejected_gift") %>
