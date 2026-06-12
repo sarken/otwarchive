@@ -67,8 +67,6 @@ reversi:
   unusable: 0
   featured: 1
   in_chooser: 1
-  new_record: false
-  active_record_yaml_version: 2
 snow_blue:
   id: 932
   title: Snow Blue
