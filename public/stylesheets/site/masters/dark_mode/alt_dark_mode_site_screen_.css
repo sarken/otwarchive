@@ -1,0 +1,939 @@
+:root {
+  /*--background: #252525;
+  --midground: #2a2a2a;*/
+  --background: #2a2a2a;
+  /*--alt-background-soft: #252525; we need to go with lighter*/
+  --alt-background-soft: #3a3a3a;
+  --alt-background-strong: #1d1d1d;
+  --midground: #303030;
+  --text: #ddd;
+  --link: #fff;
+  --link-visited: #c1c1c1;
+  --link-hover: #999;
+  --card: #333;
+  --accent: #95c6f4;
+  --border-soft: #2a2a2a;
+  --border-strong: #555;
+  --meaning-tip: #95c6f4;
+  --meaning-negative: #ffada8;
+  --meaning-iffy: #debe84;
+  --meaning-positive: #a1d69c;
+  --shadow-heavy-dimensions: 1px 1px 3px;
+  --shadow-heavy-color: #000;
+}
+
+/* 01-CORE, 02-ELEMENTS: Very basics */
+
+body,
+.toggled form,
+.dynamic form,
+.secondary,
+.dropdown {
+  background: var(--background);
+  color: var(--text);
+}
+
+a,
+a:link,
+a:visited:hover {
+  color: var(--link);
+}
+
+a:visited {
+  color: var(--link-visited);
+}
+
+.heading {
+  color: var(--text);
+}
+
+table {
+    box-shadow: var(--shadow-heavy-dimensions) var(--shadow-heavy-color);
+}
+
+table,
+thead,
+tfoot,
+tbody,
+tr,
+th {
+  background: var(--alt-background-soft);
+  border: 1px solid var(--border-strong);
+}
+
+tr {
+  background: var(--background);
+}
+
+td {
+  background: transparent;
+}
+
+tbody tr,
+tbody tr:hover {
+  border-color: var(--border-strong);
+}
+
+tbody tr:hover {
+  background: var(--alt-background-soft);
+}
+
+li.blurb,
+fieldset,
+form dl {
+  border-color: var(--border-strong);
+}
+
+/* 03-REGION-HEADER: The header */
+
+#header { --menu: #3f3f3f; }
+
+#header a,
+#header a:visited,
+#header .primary .open a,
+#header .primary .dropdown:hover a,
+#header .primary .dropdown a:focus {
+  color: var(--link);
+}
+
+#header .actions a:hover,
+#header .actions a:focus,
+#header .dropdown:hover a,
+#header .open a {
+  background: yellow;
+}
+
+#header .heading a {
+  color: var(--accent);
+}
+
+#header .menu,
+#small_login {
+  background: var(--menu);
+  background-image: linear-gradient(to bottom, rgba(63, 63, 63, 0.1) 0%, rgba(79, 79, 79, 0.1) 100%);
+/*  background-image: linear-gradient(to bottom, rgba(63, 63, 63, 0.1) 0%, rgba(47, 47, 47, 0.1) 100%); */
+    box-shadow: var(--shadow-heavy-dimensions) var(--shadow-heavy-color);
+}
+
+#header .menu li {
+  border-bottom-color: cyan;
+}
+
+#header .dropdown .menu a {
+  background: transparent;
+}
+
+#header .dropdown .menu a:hover,
+#header .dropdown .menu a:focus {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+#header .user a:hover,
+#header .user a:focus {
+  color: var(--accent);
+}
+
+#login .open a:hover,
+#login .open a:focus {
+  background: blue;
+}
+
+#small_login {
+  border-color: var(--border-strong);
+}
+
+#greeting .menu {
+    box-shadow: -1px 1px 3px -1px orange;
+}
+
+#header .primary {
+  background: var(--menu) url("/images/skins/textures/tiles/black-noise.jpg");
+}
+
+#header .primary a {
+  color: lavender;
+}
+
+#header .primary .menu a {
+  color: purple;
+}
+
+#header .search,
+#header #search input:focus {
+  color: var(--text);
+}
+
+/* 04-REGION-DASHBOARD: The dashboard side bar */
+
+#dashboard a,
+#dashboard span {
+  color: #fff;
+}
+
+#dashboard a:hover {
+  background: #222;
+  color: var(--accent);
+}
+
+#dashboard ul {
+  border-color: var(--border-strong);
+}
+
+#dashboard .current {
+  background: #111;
+}
+
+#dashboard,
+#dashboard.own {
+  border-bottom-color: var(--accent);
+  border-top-color: var(--accent);
+}
+
+/* 06-FOOTER */
+
+#footer {
+  background: #2a2a2a url("/images/skins/textures/tiles/black-noise.jpg");
+  border-color: var(--border-strong);
+}
+
+/* 07-INTERACTIONS: The forms */
+
+fieldset, form dl,
+fieldset dl dl,
+fieldset fieldset fieldset,
+fieldset fieldset dl dl,
+dd.hideme,
+form blockquote.userstuff,
+form.verbose legend,
+.verbose form legend {
+  background: var(--midground);
+  border-color: var(--border-strong);
+    box-shadow: var(--shadow-heavy-dimensions) var(--shadow-heavy-color);
+}
+
+fieldset dl,
+fieldset.actions,
+fieldset dl fieldset dl {
+  background: transparent;
+    box-shadow: none;
+}
+
+fieldset fieldset,
+fieldset dl dl,
+form blockquote.userstuff {
+  background: var(--background);
+    box-shadow: inset var(--shadow-heavy-dimensions) var(--shadow-heavy-color);
+}
+
+input,
+textarea {
+  background: var(--background);
+  border-color: #222;
+  color: var(--text);
+    box-shadow: inset 0 1px 2px #000;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  background: var(--midground);
+}
+
+select,
+input[type="radio"],
+input[type="checkbox"],
+input[type="file"] {
+  background: #333;
+  border-color: #222;
+  color: #eee;
+    accent-color: var(--accent);
+    color-scheme: dark;
+}
+
+/* ensure Chrome on Windows displays menu with dark background */
+select option {
+  background: #333;
+}
+
+form dt {
+  border-bottom-color: var(--border-strong);
+}
+
+form dd.required {
+  color: var(--text);
+}
+
+/* widget: live validation  */
+
+.LV_invalid {
+  background: #333;
+  border-color: #ff7575;
+  color: #fbcfcd;
+    box-shadow: none;
+}
+
+.LV_invalid_field,
+input.LV_invalid_field:hover,
+input.LV_invalid_field:active,
+textarea.LV_invalid_field:hover,
+textarea.LV_invalid_field:active {
+  border-color: #ff7575;
+}
+
+/* Firefox's focus indicator is very bright in dark mode, so tone our error color down by decreasing the opacity */
+input.LV_invalid_field:focus,
+textarea.LV_invalid_field:focus {
+  border-color: rgba(255, 117, 117, 0.75);
+}
+
+.LV_invalid:before {
+  border-color: #ff7575 transparent;
+}
+
+/* widget: autocomplete */
+
+.autocomplete div.dropdown ul {
+  background: #333;
+  border-color: #222;
+  color: var(--text);
+}
+
+.autocomplete .dropdown ul li:hover,
+.autocomplete .dropdown li.selected {
+  background: var(--accent);
+  color: #111;
+}
+
+.required .autocomplete,
+.autocomplete .notice {
+  color: var(--text);
+}
+
+/* widget: sortable list */
+
+.ui-sortable li {
+  background: #2a2a2a;
+  border-color: #222;
+    box-shadow: var(--shadow-heavy-dimensions) transparent;
+}
+
+.ui-sortable li:hover {
+  background: #333;
+  border-color: var(--border-strong);
+    box-shadow: var(--shadow-heavy-dimensions) var(--shadow-heavy-color);
+}
+
+.ui-draggable form {
+    box-shadow: 0 0 3px #000;
+}
+
+/* widget: datepicker, timepicker */
+
+#ui-datepicker-div {
+  background: #333;
+    box-shadow: 3px 3px 5px #000;
+}
+
+.ui-datepicker table {
+  background: #333;
+}
+
+.ui-datepicker td {
+  border-color: #222;
+}
+
+.ui-datepicker tr:hover,
+.ui-datepicker td:hover {
+  background: #555;
+}
+
+/* modal */
+
+#modal {
+  background: #333;
+  border-color: #222;
+}
+
+#modal .content {
+  border-bottom-color: #222;
+}
+
+div.dynamic {
+  background: #333;
+}
+
+/* mods: single */
+
+form.single fieldset {
+  border-color: var(--border-strong);
+}
+
+/* widget: toggled forms */
+
+.toggled form,
+.dynamic form {
+  border-color: #222;
+    box-shadow: none;
+}
+
+.post .required .warnings {
+  color: var(--text);
+}
+
+/* rich text editor */
+
+.mce-container button {
+    box-shadow: none;
+}
+
+.mce-container input:focus {
+  background: #f3efec;
+}
+
+/* 08-ACTIONS */
+
+.actions a,
+.actions a:link,
+.action,
+.action:link,
+.actions button,
+.actions input,
+input[type="submit"],
+button,
+.current,
+.actions label {
+  /* a little dark background: #444;
+  color: #eee;
+  border-color: #101010;
+  background: linear-gradient(#686868 2%, #5e5e5e 6%, #2e2e2e 85%, #272727 95%, #242424 100%);*/
+  background-color: #555;
+  color: #fafafa;
+  border-color: #333;
+  border-bottom-color: #303030;
+    /* previously background: linear-gradient(180deg, #555 0%, #333 100%); */
+    background: linear-gradient(180deg, #666 0%, #303030 50%, #333 100%);
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5),
+      inset 0px 1px 1px rgba(255, 255, 255, 0.1),
+      inset 0px 0px 3px rgba(255, 255, 255, 0.1);
+  /* hard to see background: #555;
+  border-color: #222;
+  color: #eee;
+    box-shadow: inset 0 -8px 4px #232323, inset 0 8px 7px #555;
+    text-shadow: none; */
+}
+
+.actions a:visited,
+.action:visited,
+.action a:link,
+.action a:visited {
+  color: #eee;
+}
+
+.actions a:hover,
+.actions button:hover,
+.actions input:hover,
+.actions a:focus,
+.actions button:focus,
+.actions input:focus,
+label.action:hover,
+.action:hover,
+.action:focus {
+  background-color: #444;
+  border-color: #313131;
+  border-bottom-color: #2e2e2e;
+  color: hsla(209, 98%, 81%, 1);
+    box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.65),
+      -1px -1px 3px #000,
+      /*1px 1px 3px rgba(0, 0, 0, 0.5),*/
+      inset 0px 1px 1px rgba(255, 255, 255, 0.1),
+      inset 0px 0px 3px rgba(255, 255, 255, 0.15),
+      inset 0px -1px 1px hsla(209, 85%, 77%, 0.7);
+  /* we'll see border-color: #131313;
+  color: var(--accent);
+    background: linear-gradient(180deg, #444 0%, #222 100%);
+    box-shadow: inset 2px 2px 2px #000; */
+  /*border-color: #000;
+  color: #fafafa;
+    box-shadow: inset 2px 2px 2px #000;*/
+}
+
+.actions a:active,
+.current,
+a.current,
+a:link.current,
+.current a:visited,
+span.unread,
+.replied,
+span.claimed,
+.actions span.defaulted {
+  background: #555;
+  border-color: #fff;
+  color: #fff;
+    box-shadow: inset 1px 1px 3px #333;
+}
+
+.current,
+a.current,
+a:link.current {
+  background: #222;
+  border-color: var(--border-strong);
+    box-shadow: -1px -1px 3px #000;
+}
+
+.actions label.disabled {
+  background: #222;
+}
+
+.actions .disabled select {
+  color: #999;
+  border-color: #000;
+}
+
+.delete a,
+span.delete {
+  color: var(--meaning-negative);
+}
+
+.secondary {
+  background: #2a2a2a;
+  border-color: var(--border-strong);
+    box-shadow: var(--shadow-heavy-dimensions) var(--shadow-heavy-color);
+}
+
+.work.navigation .download,
+.javascript .work.navigation .download .secondary {
+  background: #2a2a2a;
+  border-color: var(--border-strong);
+    box-shadow: var(--shadow-heavy-dimensions) var(--shadow-heavy-color);
+}
+
+/* don't let iOS add its special styling for dark buttons */
+button,
+input[type="button"],
+input[type="submit"] {
+    -webkit-appearance: none;
+}
+
+/* 09-ROLES-STATES */
+
+.own,
+.draft,
+.draft .wrapper,
+.unread,
+.child,
+.unwrangled,
+.unreviewed {
+  background: #333;
+  border-color: var(--border-strong);
+}
+
+span.unread,
+.replied,
+span.claimed,
+.actions span.defaulted {
+  background: #222;
+  border-color: var(--border-strong);
+    box-shadow: -1px -1px 3px #000;
+}
+
+.draggable,
+.droppable,
+span.requested,
+.nominations .rejected {
+  color: var(--meaning-negative);
+}
+
+.actions span.defaulted {
+  color: #eee;
+}
+
+span.offered,
+.replied,
+.nominations .approved {
+  color: var(--meaning-positive);
+}
+
+.nominations .approved,
+.nominations .rejected {
+  background: #333;
+}
+
+span.offered.requested {
+  color: var(--meaning-iffy);
+}
+
+/* 10-TYPES-GROUPS */
+
+a.tag:hover,
+.listbox .heading a.tag:visited:hover {
+  background: var(--accent);
+  color: #111;
+}
+
+.wrapper {
+    box-shadow: 1px 1px 3px #000;
+}
+
+dl.index dd,
+li.relationships a {
+  background: var(--alt-background-soft);
+}
+
+a.work {
+  color: var(--accent);
+}
+
+.actions .reindex a {
+  border-bottom-color: var(--accent);
+}
+
+span.series .divider {
+  color: #999;
+}
+
+.statistics .index li:nth-of-type(even) {
+  background: #333;
+}
+
+/* 11-GROUP-LISTBOX */
+
+.listbox,
+fieldset fieldset.listbox {
+  background: var(--midground);
+  border-color: var(--border-strong);
+    box-shadow: var(--shadow-heavy-dimensions) var(--shadow-heavy-color);
+}
+
+.listbox > .heading {
+  color: var(--text);
+}
+
+.listbox .heading a:visited {
+  color: var(--link-visited);
+}
+
+.listbox .index {
+  background: var(--background);
+    box-shadow: inset var(--shadow-heavy-dimensions) var(--shadow-heavy-color);
+}
+
+/* 12-GROUP-META */
+
+dl.meta {
+  border-color: var(--border-strong);
+}
+
+dl.meta .wrapper {
+  border-color: var(--border-soft);
+}
+
+/* 13-GROUP-BLURB */
+
+li.blurb,
+.listbox li.blurb {
+  background: var(--midground);
+    box-shadow: var(--shadow-heavy-dimensions) var(--shadow-heavy-color);
+}
+
+.blurb .blurb {
+  background: #2a2a2a;
+    box-shadow: inset var(--shadow-heavy-dimensions) var(--shadow-heavy-color);
+}
+
+.blurb h4 a:link {
+  color: var(--accent);
+}
+
+.picture .header {
+  border-color: var(--border-strong);
+}
+
+.listbox li.blurb {
+  background: var(--midground);
+}
+
+.bookmark .user {
+  border-color: var(--border-strong);
+}
+
+.reading h4.viewed {
+  background: #2a2a2a;
+}
+
+/* 15-GROUP-COMMENT */
+
+div.comment,
+li.comment {
+  border-color: var(--border-strong);
+    box-shadow: var(--shadow-heavy-dimensions) var(--shadow-heavy-color);
+}
+
+.comment h4.byline {
+  background: transparent;
+}
+
+.comment div.icon {
+  border-bottom-color: var(--border-strong);
+}
+
+.thread .even {
+  background: var(--alt-background-soft);
+}
+
+/* 16-ZONE-SYSTEM */
+
+.splash .module h3 {
+  border-bottom-color: var(--border-strong);
+  color: var(--accent);
+}
+
+/* module: browse */
+
+.splash .browse li a:before {
+  color: var(--accent);
+}
+
+/* module: favorite tags */
+
+.splash .favorite li:nth-of-type(odd) a {
+  background: var(--alt-background-strong);
+}
+
+.splash .favorite li:nth-of-type(odd) a:hover,
+.splash .favorite li:nth-of-type(odd) a:focus {
+  background: var(--accent);
+}
+
+/* module: intro */
+
+.splash .module div.account {
+  background: var(--midground);
+  border-color: var(--border-strong);
+    box-shadow: var(--shadow-heavy-dimensions) var(--shadow-heavy-color);
+}
+
+/* module: news */
+
+.splash .news li {
+  border-bottom-color: var(--border-soft);
+}
+
+/* 2. ZONE: SYSTEM: SESSIONS */
+
+.authentication fieldset {
+  border-color: var(--border-strong);
+}
+
+/* 6. ZONE: SYSTEM: FAQS */
+
+.faq .categories h3 {
+  border-bottom-color: var(--border-strong);
+}
+
+.faq .example,
+.guideline .example {
+  border-color: #75bcff;
+}
+
+/* 7. ZONE: SYSTEM: TOS, TOS FAQ, AND TOS POPUP */
+
+.tos .userstuff nav.toc > details > summary {
+  border-bottom-color: var(--border-strong);
+}
+
+#tos_prompt {
+  background: var(--background);
+}
+
+#tos_prompt .heading {
+  background: #2a2a2a;
+  color: var(--accent);
+}
+
+#tos_prompt [disabled] {
+  background: #222;
+}
+
+/* 8. ZONE: SYSTEM: PROXY NOTICE */
+
+#proxy-notice {
+  background: #330f0f;
+  border-bottom-color: #ff7575;
+}
+
+/* 17-ZONE-HOME */
+
+.home .header h2 {
+  border-bottom-color: var(--border-strong);
+}
+
+/* 18-ZONE-SEARCH-BROWSE */
+
+form.search input[type="text"] {
+  border-top-color: #000;
+}
+
+.search [role="tooltip"] {
+  background: var(--meaning-tip);
+  border-color: #111;
+}
+
+/* TODO: If you keep the new form styling, just set border-width: 1px and remove the rest */
+
+form.filters fieldset {
+  border: 1px solid var(--border-strong);
+    box-shadow: var(--shadow-heavy-dimensions) var(--shadow-heavy-color);
+}
+
+.filters .expander {
+  color: var(--text);
+    box-shadow: none;
+}
+
+.filters .group dt.bookmarker {
+  border-top-color: #444;
+}
+
+/* TODO: If we're going to incorporate this in the default skin, it should have prefixed gradients as fallbacks. */
+
+.filters .indicator:before {
+  background: #555;
+  color: #999;
+    background-image: linear-gradient(#555 2%, #222 95%, #000 100%);
+}
+
+.filters input:checked + .indicator:before {
+  background: #111;
+  border-color: #eee;
+}
+
+.filters [type="checkbox"]:checked + .indicator:before {
+  background: #111;
+  border-color: var(--meaning-positive);
+  color: var(--meaning-positive);
+    background-image: linear-gradient(#555 2%, #222 95%, #000 100%);
+}
+
+.filters [type="radio"]:checked + .indicator:before {
+  background: #111;
+    background-image: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.8) 11%, rgba(255, 255, 255, 0) 23%),
+                      linear-gradient(to bottom, #000 0%, #222 5%, #555 100%);
+}
+
+.filters .exclude [type="checkbox"]:checked + .indicator:before {
+  background: #111;
+  border-color: var(--meaning-negative);
+  color: var(--meaning-negative);
+    background-image: linear-gradient(#555 2%, #222 95%, #000 100%);
+}
+
+/* 19-ZONE-TAGS */
+
+.nomination dt {
+  background: var(--background);
+}
+
+/* 21-USERSTUFF */
+
+.userstuff h2 {
+  color: var(--link);
+}
+
+.userstuff h3 {
+  border-bottom-color: var(--border-strong);
+}
+
+.userstuff blockquote {
+  border-left-color: var(--border-strong);
+}
+
+.userstuff table {
+    box-shadow: none;
+}
+
+/* 22-SYSTEM-MESSAGES */
+
+.announcement .action {
+  background: #333;
+  border-color: #222;
+}
+
+.required {
+  color: var(--accent);
+}
+
+.error,
+.alert.flash {
+  color: var(--text);
+}
+
+.notice,
+.comment_notice,
+.kudos_notice,
+ul.notes,
+.qtip-content {
+  background: var(--background);
+  border-color: #75bcff;
+    box-shadow: var(--shadow-heavy-dimensions) var(--shadow-heavy-color);
+}
+
+.caution {
+  background: var(--background);
+  border-color: #ffd875;
+  color: #f8ebcb;
+    box-shadow: var(--shadow-heavy-dimensions) var(--shadow-heavy-color);
+}
+
+.error,
+.comment_error,
+.kudos_error,
+.alert.flash {
+  background: var(--background);
+  border-color: #ff7575;
+  color: #fbcfcd;
+    box-shadow: var(--shadow-heavy-dimensions) var(--shadow-heavy-color);
+}
+
+form .notice,
+form ul.notes {
+    box-shadow: none;
+}
+
+/* symbols */
+
+span.symbol {
+  color: var(--meaning-tip);
+}
+
+span.question {
+  background: var(--meaning-tip);
+  border-color: #111;
+  color: #111;
+    box-shadow: none;
+}
+
+/* 24-ROLE-ADMIN */
+
+/* Note: There is no reasonable way to change the #footer background for admins outside the default site skin, which only loads 24-role-admin.css if the user is logged in as an admin. Styles in this and other skins will be loaded for everyone. */
+
+#header .admin {
+  background: #277e7e;
+  border-top-color: #333;
+}
+
+#header .admin a:hover,
+#header .admin a:focus {
+  color: #fff;
+}
+
+.admin .management a {
+  border-bottom-color: #73c4c4;
+}
+
+#admin_users_table th a:visited {
+  color: var(--link-visited);
+}
+
+#admin_users_table th a:hover {
+  color: #73c4c4;
+}
