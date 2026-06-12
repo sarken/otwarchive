@@ -1,9 +1,8 @@
---- !ruby/object:Skin
+---
 low_vision_default:
   id: 891
   title: Low Vision Default
-  author_id: 14
-  css: #placeholder { display: hidden; }
+  css: "#placeholder { display: hidden; }"
   public: 1
   official: 1
   icon_alt_text: ''
@@ -33,8 +32,7 @@ low_vision_default:
 snow:
   id: 922
   title: Snow
-  author_id: 14
-  css: #placeholder { display: hidden; }
+  css: "#placeholder { display: hidden; }"
   public: 1
   official: 1
   icon_alt_text: ''
@@ -51,8 +49,7 @@ snow:
 reversi:
   id: 929
   title: Reversi
-  author_id: 14
-  css: #placeholder { display: hidden; }
+  css: "#placeholder { display: hidden; }"
   public: 1
   official: 1
   icon_alt_text: ''
@@ -75,8 +72,7 @@ reversi:
 snow_blue:
   id: 932
   title: Snow Blue
-  author_id: 14
-  css: #placeholder { display: hidden; }
+  css: "#placeholder { display: hidden; }"
   public: 1
   official: 1
   icon_alt_text: ''
