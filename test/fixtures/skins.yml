@@ -1,0 +1,94 @@
+--- !ruby/object:Skin
+low_vision_default:
+  id: 891
+  title: Low Vision Default
+  author_id: 14
+  css: #placeholder { display: hidden; }
+  public: 1
+  official: 1
+  icon_alt_text: ''
+  description: <pre>Please DO copy and reuse and modify this code any way
+      you like!CREDITS-- much owed to Amanda Bankier# to go over what's going on here--#
+      takes out all "columns" and makes everything max-width, so dashboard is max, filters
+      are max# and so it puts the filters at the bottom of the page# puts strong borders
+      around some groups and buttons# makes header and footer buttons max width blocks#
+      shows the header text instead of image# removes the blurb icons and replaces with
+      text# enlarges the pre and textarea text by 200% so it scales in Firefox# swaps
+      a lot of margins and padding into percentages so they don't scale up as much and
+      crowd out the text# takes off the header and footer texture and makes it flatThere's
+      not a lot else done with colours/images on the grounds you're probably overriding
+      in your browser. If the skin doesn't do these things somewhere, please DO tell
+      us via Support!</pre>
+  rejected: 0
+  role: override
+  media: |
+      ---
+      - all
+  ie_condition: ''
+  do_not_upgrade: 0
+  cached: 1
+  unusable: 0
+  featured: 1
+  in_chooser: 1
+snow:
+  id: 922
+  title: Snow
+  author_id: 14
+  css: #placeholder { display: hidden; }
+  public: 1
+  official: 1
+  icon_alt_text: ''
+  description: "<pre>Please DO copy and reuse and modify this code any
+      way you like!\nmakes everything that is very light lavender pure white. \nTo remove
+      all backgrounds load 'Get The Backers'</pre>"
+  rejected: 0
+  media: "--- []\n\n"
+  do_not_upgrade: 0
+  cached: 0
+  unusable: 0
+  featured: 0
+  in_chooser: 0
+reversi:
+  id: 929
+  title: Reversi
+  author_id: 14
+  css: #placeholder { display: hidden; }
+  public: 1
+  official: 1
+  icon_alt_text: ''
+  description: "<pre>Light on dark with blue key, default skin  Please
+      DO copy and reuse and modify this code any way you like!# code adapted from 'colour
+      flip combos' by lim @ ao3</pre>"
+  rejected: 0
+  role: user
+  media: |
+      ---
+      - all
+  ie_condition: ''
+  do_not_upgrade: 0
+  cached: 1
+  unusable: 0
+  featured: 1
+  in_chooser: 1
+  new_record: false
+  active_record_yaml_version: 2
+snow_blue:
+  id: 932
+  title: Snow Blue
+  author_id: 14
+  css: #placeholder { display: hidden; }
+  public: 1
+  official: 1
+  icon_alt_text: ''
+  description: ''
+  rejected: 0
+  role: user
+  media: |
+      ---
+      - all
+  ie_condition: ''
+  do_not_upgrade: 0
+  cached: 1
+  unusable: 0
+  featured: 0
+  in_chooser: 1
