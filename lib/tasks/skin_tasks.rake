@@ -73,6 +73,20 @@ namespace :skins do
     end
   end
 
+  desc "Load official skins for the chooser"
+  task(load_official_skins: :environment) do
+    ["Low Vision Default", "Reversi", "Snow", "Snow Blue"].each do |title|
+      dir = Skin.site_skins_dir + "masters/#{title.parameterize(separator: "_")}"
+      css_files = Dir.entries(dir).select { |f| f.match(/css$/) }
+      css_files.each do |file|
+        skin = Skin.find_by(title: title)
+        css = File.read("#{dir}/#{file}")
+        skin.update_attribute!(:css, css)
+      end
+    end
+    Rake::Task["skins:cache_chooser_skins"].invoke
+  end
+
   desc "Load user skins"
   task(:load_user_skins => :environment) do
     replace = ask("Replace existing skins with same titles? (y/n) ") == "y"
