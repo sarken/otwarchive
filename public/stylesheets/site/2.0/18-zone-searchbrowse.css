@@ -258,4 +258,36 @@ https://browserstrangeness.github.io/css_hacks.html
     background-image: linear-gradient(#fff 2%, #efd1d1 95%, #d8bebe 100%);
 }
 
+#work-filters {
+  background: #ddd;
+  border: 2px solid #f3efec;
+  margin: 0.643em;
+  padding: 0;
+    box-sizing: border-box;
+    box-shadow: inset 1px 0 5px #999;
+}
+
+#work-filters fieldset {
+  background: transparent;
+  border: none;
+    box-shadow: none;
+}
+
+#work-filters h4 {
+  line-height: 2;
+}
+
+#work-filters details {
+  border-bottom: 1px solid #f3efec;
+  padding: 0.375em 0;
+}
+
+#work-filters div {
+  margin: 0.375em 0;
+}
+
+#work-filters .submit {
+  padding: 0.643em;
+}
+
 /* END== */
