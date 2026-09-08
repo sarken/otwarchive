@@ -63,12 +63,17 @@ not be loaded until "Details" is pressed. (The user won't notice a difference.)<
           <% case subscription.subscribable_type %>
           <% when "Work" %>
             <%= t(".work") if @subscribable_type.blank? %>
-            <%= t(".byline_html", creators: byline(subscription.subscribable)) %>
+            <% unless subscription.subscribable.unrevealed? %>
+              <%= t(".byline_html", creators: byline(subscription.subscribable)) %>
+            <% end %>
           <% when "Series" %>
             <%= t(".series") if @subscribable_type.blank? %>
             <%= t(".byline_html", creators: byline(subscription.subscribable)) %>
           <% end %>
         </h4>
+        <h5 class="heading">
+          Subscribed on <%= subscription.created_at %>
+        </h5>
       </div>
       <% # remove "toggled" class at end to make this visible %>
       <% subscribable_classes = "#{type.downcase}" %>
@@ -85,10 +90,10 @@ not be loaded until "Details" is pressed. (The user won't notice a difference.)<
       <ul class="actions">
         <li>
           <% target = "subscription_#{subscription.id}_subscribable" %>
-          <button class="<%= target %>_open expanded">
+          <button class="<%= target %>_open collapsed">
             <%= ts("Details") %>
           </button>
-          <button class="<%= target %>_close collapsed hidden">
+          <button class="<%= target %>_close expanded hidden">
             <%= ts("Close Details") %>
           </button>
         </li>
