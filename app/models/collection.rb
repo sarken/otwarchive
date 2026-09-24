@@ -59,6 +59,7 @@ class Collection < ApplicationRecord
   has_many :moderators, -> { where(collection_participants: { participant_role: CollectionParticipant::MODERATOR }) }, through: :collection_participants, source: :pseud
   has_many :members, -> { where(collection_participants: { participant_role: CollectionParticipant::MEMBER }) }, through: :collection_participants, source: :pseud
   has_many :posting_participants, -> { where(collection_participants: { participant_role: [CollectionParticipant::MEMBER, CollectionParticipant::MODERATOR, CollectionParticipant::OWNER] }) }, through: :collection_participants, source: :pseud
+  has_many :banned_participants, -> { where(collection_participants: { participant_role: CollectionParticipant::BANNED }) }, through: :collection_participants, source: :pseud
 
   CHALLENGE_TYPE_OPTIONS = [
     ["", ""],
@@ -242,6 +243,10 @@ class Collection < ApplicationRecord
     (self.posting_participants + (self.parent ? self.parent.posting_participants : [])).uniq
   end
 
+  def all_banned_participants
+    (self.banned_participants + (self.parent ? self.parent.banned_participants : [])).uniq
+  end
+
   def all_participants
     (self.participants + (self.parent ? self.parent.participants : [])).uniq
   end
@@ -272,6 +277,11 @@ class Collection < ApplicationRecord
 
   def user_is_posting_participant?(user)
     user && user != false && !(user.pseuds & self.all_posting_participants).empty?
+  end
+
+  # Using all_banned_participants instead would be more in line with the other roles and mean the user will be banned from a subcollection if they are banned from the parent. This would meant a ban in the parent collection would override any role they have in the current subcollection. Use banned_participants only applies to the subcollection.
+  def user_is_banned_participant?(user)
+    user && user != false && !(user.pseuds & self.banned_participants).empty?
   end
 
   def get_participating_pseuds_for_user(user)

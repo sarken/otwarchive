@@ -9,6 +9,7 @@ class WorksController < ApplicationController
   before_action :users_only, except: [:index, :show, :navigate, :search, :collected, :edit, :update, :drafts, :share]
   before_action :check_user_status, except: [:index, :edit, :edit_multiple, :confirm_delete_multiple, :delete_multiple, :confirm_delete, :destroy, :show, :show_multiple, :navigate, :search, :collected, :share]
   before_action :check_user_not_suspended, only: [:edit, :confirm_delete, :destroy, :show_multiple, :edit_multiple, :confirm_delete_multiple, :delete_multiple]
+  before_action :check_participant_banned, only: [:new]
   before_action :load_work, except: [:new, :create, :import, :index, :show_multiple, :edit_multiple, :update_multiple, :delete_multiple, :search, :drafts, :collected]
   # this only works to check ownership of a SINGLE item and only if load_work has happened beforehand
   before_action :check_ownership, except: [:index, :show, :navigate, :new, :create, :import, :show_multiple, :edit_multiple, :edit, :update, :update_multiple, :delete_multiple, :search, :mark_for_later, :mark_as_read, :drafts, :collected, :share]
@@ -774,6 +775,13 @@ class WorksController < ApplicationController
                else
                  @work.chapters.in_order.posted.first
                end
+  end
+
+  def check_participant_banned
+    if @collection && @collection.user_is_banned_participant?(current_user)
+      flash[:error] = ts("You are banned from the collection %{title}.", title: @collection.title)
+      redirect_to @collection
+    end
   end
 
   # Check whether we should display :new or :edit instead of previewing or

@@ -110,3 +110,56 @@ Scenario: Collection member should see correct button text
   When I am on the collections page
   Then I should see "Leave" exactly 1 time
     And I should see "Join" exactly 1 time
+
+Scenario Outline: Collection owners can change any participant's role to Banned
+  Given a user exists with login: "likeanactor"
+    And I have the collection "KnowYourRoles"
+    And I am logged in as the owner of "KnowYourRoles"
+  When I am on the "KnowYourRoles" participants page
+    And I fill in "participants_to_invite" with "likeanactor"
+    And I press "Submit"
+  Then I should see "New members invited: likeanactor"
+  When I select "<role>" from "likeanactor_role"
+    And I submit with the 3rd button
+  Then I should see "Updated likeanactor."
+  When I select "Banned" from "likeanactor_role"
+    And I submit with the 3rd button
+  Then I should see "Updated likeanactor."
+
+  Examples:
+  | role       |
+  | Invited    |
+  | None       |
+  | Moderator  |
+  | Owner      |
+
+Scenario Outline: Collection moderators can change certain participants' roles to Banned
+  Given a user exists with login: "likeanactor"
+    And a user exists with login: "mymoderator"
+    And I have the collection "KnowYourRoles"
+    And I am logged in as the owner of "KnowYourRoles"
+  When I am on the "KnowYourRoles" participants page
+    And I fill in "participants_to_invite" with "mymoderator"
+    And I press "Submit"
+  Then I should see "New members invited: mymoderator"
+  When I select "Moderator" from "mymoderator_role"
+    And I submit with the 4th button
+  Then I should see "Updated mymoderator."
+  When I fill in "participants_to_invite" with "likeanactor"
+    And I press "Submit"
+  Then I should see "New members invited: likeanactor"
+  When I am logged in as "mymoderator"
+    And I am on the "KnowYourRoles" participants page
+    And I select "<role>" from "likeanactor_role"
+    And I submit with the 3rd button
+  Then I should see "Updated likeanactor."
+  When I select "Banned" from "likeanactor_role"
+    And I submit with the 3rd button
+  Then I should see <message>
+
+  Examples:
+  | role       | message                                 |
+  | Invited    | "Updated likeanactor."                  |
+  | None       | "Updated likeanactor."                  |
+  | Moderator  | "Sorry, you're not allowed to do that." |
+  | Owner      | "Sorry, you're not allowed to do that." |

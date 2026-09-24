@@ -1,8 +1,10 @@
 <%= form_tag add_collection_participants_path(@collection), class: "single simple post", method: :post do %>
   <fieldset>
-    <legend>Add new members</legend>
+    <legend>Add participants</legend>
+    <p>Participants will be added as members. You can ban them or promote them to moderators or owners after adding. Some version of this note will be on the page.</p>
+    <p>(We could also change this so participants are added without a role (aka with the None role) and can have their roles set after. I lean toward this.)</p>
     <p>
-      <%= label_tag :participants_to_invite, ts("Add new members"), class: "landmark" %>
+      <%= label_tag :participants_to_invite, ts("Add participants"), class: "landmark" %>
       <%= text_field_tag :participants_to_invite, nil, autocomplete_options("pseud") %>
       <span class="submit actions"><%= submit_tag ts("Submit") %></span>
     </p>

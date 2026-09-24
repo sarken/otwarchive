@@ -2,7 +2,8 @@ class CollectionParticipantsController < ApplicationController
   before_action :users_only, except: [:index]
   before_action :load_collection
   before_action :load_participant, only: [:update, :destroy]
-  before_action :allowed_to_promote, only: [:update]
+  before_action :check_participant_banned, only: [:join, :destroy]
+  before_action :allowed_to_promote_or_ban, only: [:update]
   before_action :allowed_to_destroy, only: [:destroy]
   before_action :has_other_owners, only: [:update, :destroy]
   before_action :collection_maintainers_or_privileged_admins_only, only: [:index]
@@ -24,9 +25,10 @@ class CollectionParticipantsController < ApplicationController
     @participant = @collection.collection_participants.find(params[:id])
   end
 
-  def allowed_to_promote
+  def allowed_to_promote_or_ban
     @new_role = collection_participant_params[:participant_role]
-    @participant.user_allowed_to_promote?(current_user, @new_role) || not_allowed(@collection)
+    @current_role = @participant.participant_role
+    @participant.user_allowed_to_promote?(current_user, @new_role) || @participant.user_allowed_to_ban?(current_user, @current_role) || not_allowed(@collection)
   end
 
   def allowed_to_destroy
@@ -35,6 +37,14 @@ class CollectionParticipantsController < ApplicationController
 
   def has_other_owners
     !@participant.is_owner? || (@collection.owners != [@participant.pseud]) || owners_required
+  end
+
+  # TODO: The banned participant sees a Leave button. We don't want that.
+  def check_participant_banned
+    if @collection.user_is_banned_participant?(current_user)
+      flash[:error] = ts("You are banned from the collection %{title}.", title: @collection.title)
+      redirect_to @collection
+    end
   end
 
   ## ACTIONS

@@ -39,6 +39,13 @@ class CollectionItem < ApplicationRecord
     errors.add(:collection, :closed, title: collection.title)
   end
 
+  validate :user_is_not_banned_participant, on: :create
+  def user_is_not_banned_participant
+    return unless collection.present? && collection.user_is_banned_participant?(User.current_user)
+
+    errors.add(:collection, :banned_participant, title: collection.title)
+  end
+
   scope :include_for_works, -> { includes(item: :pseuds) }
   scope :unrevealed, -> { where(unrevealed: true) }
   scope :anonymous, -> { where(anonymous:  true) }

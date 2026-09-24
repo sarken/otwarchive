@@ -126,6 +126,7 @@ en:
           attributes:
             collection:
               blank: The collection can't be blank.
+              banned_participant: You are banned from the collection %{title}.
               closed: The collection %{title} is not currently open.
               not_found: We couldn't find the collection %{name}.
             collection_id:

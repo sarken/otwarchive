@@ -13,6 +13,7 @@ class ChallengeSignupsController < ApplicationController
   before_action :signup_owner_only, only: [:edit, :update]
   before_action :maintainer_or_signup_owner_only, only: [:show]
   before_action :check_signup_open, only: [:new, :create, :edit, :update]
+  before_action :check_participant_banned, only: [:new, :create]
   before_action :check_pseud_ownership, only: [:create, :update]
   before_action :check_signup_in_collection, only: [:show, :edit, :update, :destroy, :confirm_delete]
 
@@ -61,6 +62,13 @@ class ChallengeSignupsController < ApplicationController
 
   def load_signup_from_id
     @challenge_signup = ChallengeSignup.find(params[:id])
+  end
+
+  def check_participant_banned
+    if @collection.user_is_banned_participant?(current_user)
+      flash[:error] = ts("You are banned from the collection %{title}.", title: @collection.title)
+      redirect_to @collection
+    end
   end
 
   def check_pseud_ownership
