@@ -16,6 +16,7 @@ class InvitationsController < ApplicationController
   end
 
   def index
+    access_denied if policy(User).can_manage_users?
     @unsent_invitations = @user.invitations.unsent.limit(5)
   end
 

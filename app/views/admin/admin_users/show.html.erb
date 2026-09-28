@@ -6,10 +6,7 @@
   <!--subnav-->
   <ul class="navigation actions">
     <li>
-      <%= link_to t(".navigation.invitations.manage"), manage_user_invitations_path(user_id: @user.login) %>
-    </li>
-    <li>
-      <%= link_to t(".navigation.invitations.add"), user_invitations_path(user_id: @user.login) %>
+      <%= link_to t(".navigation.invitations"), manage_user_invitations_path(user_id: @user.login) %>
     </li>
     <li><%= link_to t(".navigation.troubleshoot"), troubleshoot_admin_user_path(id: @user.login) %></li>
     <li>

@@ -238,9 +238,7 @@ en:
         navigation:
           activate: Activate
           creations: Creations
-          invitations:
-            add: Add Invitations
-            manage: Manage Invitations
+          invitations: Manage Invitations
           rename: Rename
           roles: Manage Roles
           troubleshoot: Troubleshoot
@@ -3330,6 +3328,7 @@ en:
       edit_profile: Edit Profile
     header_navigation:
       admin_creations: Creations
+      admin_invitations: Manage Invitations
       admin_user: User Administration
       edit_multiple: Edit Works
       invitations: Invitations

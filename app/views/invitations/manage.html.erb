@@ -4,28 +4,40 @@
 
 <!--subnav -->
 <%= render "user_invitations_navigation" %>
+<!--/subnav-->
 
-<ul class="navigation actions" role="navigation">
-  <li><h4 class="heading"><%= ts('Manage:') %></h4></li>
+<!--main content-->
+<% if policy(User).can_manage_users? %>
+  <%= form_for :invitation, url: user_invitations_url(@user), class: "single simple post" do |f| %>
+    <fieldset>
+      <legend>Create more invitiations for this user</legend>
+      <p>
+        <%= label_tag "invitation[number_of_invites]", ts('Number of invitations') %>
+        <%= f.text_field :number_of_invites  %>
+        <span class="submit actions"><%= submit_tag 'Create Invitations' %></span>
+      </p>
+    </fieldset>
+  <% end %>
+<% end %>
+
+<h3 class="landmark">Manage Invitations</h3>
+<ul class="navigation actions">
   <li>
-    <%= span_if_current(ts("Unsent (%{count})", :count=> @user.invitations.unsent.count.to_s), 
+    <%= span_if_current(ts("Unsent (%{count})", :count=> @user.invitations.unsent.count.to_s),
       manage_user_invitations_path(@user, :status => :unsent)) %>
   </li>
   <li>
-    <%= span_if_current(ts("Sent But Unused (%{count})", :count => @user.invitations.unredeemed.count.to_s), 
+    <%= span_if_current(ts("Sent But Unused (%{count})", :count => @user.invitations.unredeemed.count.to_s),
       manage_user_invitations_path(@user, :status => :unredeemed)) %>
   </li>
   <li>
-    <%= span_if_current(ts("Used (%{count})", :count => @user.invitations.redeemed.count.to_s), 
+    <%= span_if_current(ts("Used (%{count})", :count => @user.invitations.redeemed.count.to_s),
       manage_user_invitations_path(@user, :status => :redeemed)) %>
   </li>
-  <li class="last">
+  <li>
     <%= link_to ts('All'), manage_user_invitations_path(@user) %>
   </li>
 </ul>
 
-<!--/subnav-->
-
-<!--main content-->
 <%= render "invitations/user_invitations", invitations: @invitations %>
 <!--/content-->
