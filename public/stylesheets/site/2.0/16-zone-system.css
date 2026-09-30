@@ -274,6 +274,11 @@ Guidelines.
   margin: 0.714em 0;
 }
 
+/* Paragraphs have 1.286em block margins, so the smaller 0.643em block margins
+previously on these elements were being collapsed into the margins of the
+surrounding paragraphs, giving us a 1.286em margin anyway. This change only
+increases vertical spacing when the element was surrounded by elements with
+block margins of less than 0.643em. */
 .docs .userstuff ul, .docs .userstuff ol, .docs .userstuff details .toc {
   margin: 1.286em auto;
   padding: 0;
