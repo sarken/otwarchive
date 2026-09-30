@@ -1,10 +1,10 @@
 <% if bookmark.bookmarkable.is_a?(Work) %>
 <% if bookmark.tags.exists? %>
-<%= ts("Bookmarker's Tags: ").html_safe %>
-<%= bookmark.tags.pluck(:name).join(", ") %><br />
+<%= metadata_label(Bookmark.human_attribute_name("tags")) %>
+<%= tag_metadata_list(bookmark.tags) %><br />
 <% end %>
 <% if bookmark.bookmarker_notes.present? %>
-<%= ts("Bookmarker's Notes: ").html_safe %>
+<%= metadata_label(Bookmark.human_attribute_name("notes")) %>
 <%= raw sanitize_field(bookmark, :bookmarker_notes, image_safety_mode: true) %>
 <% end %>
 <% end %>

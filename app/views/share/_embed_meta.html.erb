@@ -1,19 +1,18 @@
-<%= ts("Chapters: ") %>
+<%= metadata_label(Work.human_attribute_name("chapter_total_display"))%>
 <%= chapter_total_display(work) %><br />
-<%= ts("Fandom: ") %>
-<%= work.tag_groups["Fandom"].map { |fandom| link_to fandom.name, tag_url(fandom) }.join(", ").html_safe %><br />
+<%= metadata_label(t("activerecord.models.fandom", count: work.tag_groups["Fandom"].size)) %>
+<%= work.tag_groups["Fandom"].map { |fandom| link_to fandom.name, tag_url(fandom) }.join(t("support.array.words_connector")).html_safe %><br />
 <% [Rating, ArchiveWarning, Relationship, Character, Freeform].each do |klass| %>
 <% if (tags = work.tag_groups[klass.to_s]).present? %>
-<%= ts("#{klass.label_name}: ") %>
-<%= tags.map(&:display_name).join(", ").html_safe %>
+<%= tag_metadata(work.tag_groups[klass.to_s]) %>
 <br />
 <% end %>
 <% end %>
 <% if work.series.exists? %>
-<%= ts("Series: ") %>
+<%= metadata_label(Series.model_name.human(count: work.series.count)) %>
 <%= series_list_with_work_position(work) %><br />
 <% end %>
 <% if work.summary.present? %>
-<%= ts("Summary: ") %>
+<%= metadata_label(Work.human_attribute_name("summary"))%>
 <%= sanitize_field(work, :summary).html_safe %>
 <% end %>
