@@ -1,0 +1,23 @@
+<%# expects work %>
+<%= metadata_label(Work.human_attribute_name("chapter_total_display"))%><%= chapter_total_display(work) %>
+<%= tag_metadata(work.tag_groups["Fandom"]) %>
+<%= tag_metadata(work.tag_groups["Rating"]) %>
+<%= tag_metadata(work.tag_groups["ArchiveWarning"]) %>
+<% unless work.tag_groups["Relationship"].empty? %>
+<%= tag_metadata(work.tag_groups["Relationship"]) %>
+<% end %>
+<% unless work.tag_groups["Character"].empty? %>
+<%= tag_metadata(work.tag_groups["Character"]) %>
+<% end %>
+<% unless work.tag_groups["Freeform"].empty? %>
+<%= tag_metadata(work.tag_groups["Freeform"]) %>
+<% end %>
+<% series_count = work.series.count %>
+<% unless series_count.zero? %>
+<%= metadata_label(Series.model_name.human(count: series_count)) %><%= raw to_plain_text(series_list_with_work_position(work, email_styling: true)) %>
+<% end %>
+<% unless work.summary.blank? %>
+
+<%= metadata_label(Work.human_attribute_name("summary")) %>
+    <%= raw to_plain_text(sanitize_field(work, :summary)) %>
+<% end %>

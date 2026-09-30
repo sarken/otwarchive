@@ -1,0 +1,9 @@
+<% if bookmark.bookmarkable.is_a?(Work) %>
+<% if bookmark.tags.exists? %>
+<%= metadata_label(Bookmark.human_attribute_name("tags")) %><%= tag_metadata_list(bookmark.tags) %>
+<% end %>
+<% if bookmark.bookmarker_notes.present? %>
+<%= metadata_label(Bookmark.human_attribute_name("notes")) %>
+    <%= raw to_plain_text(sanitize_field(bookmark, :bookmarker_notes)) %>
+<% end %>
+<% end %>

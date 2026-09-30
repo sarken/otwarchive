@@ -1,0 +1,4 @@
+<% if item.bookmarkable.is_a?(Work) %>
+<%= render "share/tumblr_meta", work: item.bookmarkable %>
+<%= render "share/tumblr_meta_bookmark", bookmark: item %>
+<% end %>

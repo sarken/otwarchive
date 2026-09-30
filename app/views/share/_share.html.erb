@@ -21,7 +21,7 @@
       <% work = shareable.is_a?(Bookmark) ? shareable.bookmarkable : shareable %>
       <% tumblr_url = work_url(work) %>
       <% tumblr_title = get_tumblr_embed_link_title(work) %>
-      <% tumblr_caption = shareable.is_a?(Bookmark) ? render("share/embed_link_bookmark", item: shareable) : render("share/embed_meta", work: shareable) %>
+      <% tumblr_caption = shareable.is_a?(Bookmark) ? render(partial: "share/tumblr_link_bookmark", locals: { item: shareable }, formats: [:text]) : render(partial: "share/tumblr_meta", locals: { work: shareable }, formats: [:text]) %>
       <% tumblr_address = "http://tumblr.com/widgets/share/tool?canonicalUrl=#{u(tumblr_url)}&title=#{u(tumblr_title)}&caption=#{u(tumblr_caption)}" %>
       <%= sharing_button("tumblr", tumblr_address, ts("Tumblr"), target: "_blank") %>
     </li>
