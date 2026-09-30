@@ -13,7 +13,42 @@ SUBSECTIONS:
   margin: auto;
 }
 
-.system:not(.feedbacks) .userstuff h3 {
+/* Assumes our heading levels are correct. If they are not, they should be
+fixed. The hr is for the TOS FAQ. */
+
+.system:not(.feedbacks) .userstuff h3:where(hr + h3, hr + h3) {
+  background: lightgrey;
+}
+
+.system:not(.feedbacks) .userstuff h3:not(:where(hr + h3)) {
+  background: lightgoldenrodyellow;
+  margin-top: 3em;
+}
+
+.system:not(.feedbacks) .userstuff h4:where(h3 + h4, hr + h4) {
+  background: lightgrey;
+}
+
+.system:not(.feedbacks) .userstuff h4:not(:where(h3 + h4, hr + h4)) {
+  background: lightpink;
+  margin-top: 3em;
+}
+
+.system:not(.feedbacks) .userstuff h5:where(h4 + h5, hr + h5) {
+  background: lightgrey;
+}
+
+.system:not(.feedbacks) .userstuff h5:not(:where(h4 + h5, hr + h5)) {
+  background: aliceblue;
+  margin-top: 3em;
+}
+
+.system:not(.feedbacks) .userstuff h6:where(h5 + h6, hr + h6) {
+  background: lightgrey;
+}
+
+.system:not(.feedbacks) .userstuff h6:not(:where(h5 + h6, hr + h6)) {
+  background: lavender;
   margin-top: 3em;
 }
 
@@ -282,6 +317,11 @@ block margins of less than 0.643em. */
 .docs .userstuff ul, .docs .userstuff ol, .docs .userstuff details .toc {
   margin: 1.286em auto;
   padding: 0;
+}
+
+/* override the above so I can toggle */
+.docs .userstuff ul, .docs .userstuff ol, .docs .userstuff details .toc {
+  margin: 0.643em auto;
 }
 
 .docs .userstuff li {
