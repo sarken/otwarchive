@@ -340,8 +340,12 @@ block margins of less than 0.643em. */
   list-style-type: upper-alpha;
 }
 
+/* Not strictly necessary for the margin changes, but an issue became evident
+due to the background colors I was using for troubleshooting. Might need to
+revert. */
 .docs .userstuff summary .heading {
-  display: inline;
+  display: inline-block;
+  margin: 0;
 }
 
 /* module: tos
