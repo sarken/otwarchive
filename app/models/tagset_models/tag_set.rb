@@ -49,7 +49,7 @@ class TagSet < ApplicationRecord
     end
 
     define_method("#{type}_taglist") do
-      self.instance_variable_get("@#{type}_tagnames") ? tagnames_to_list(self.instance_variable_get("@#{type}_tagnames"), type.classify) : with_type(type.classify)
+      self.instance_variable_get("@#{type}_tagnames") ? tagnames_to_list(self.instance_variable_get("@#{type}_tagnames"), type) : with_type(type.classify)
     end
 
     # _to_add/remove only
