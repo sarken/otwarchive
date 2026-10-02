@@ -101,6 +101,8 @@ class TagsController < ApplicationController
                 Work
               when "chapter"
                 Chapter
+              when "request"
+                Request
               end
       @display_creation = model.find(params[:creation_id]) if model.is_a? Class
 
