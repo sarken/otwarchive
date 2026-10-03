@@ -49,7 +49,7 @@ class TagSet < ApplicationRecord
     end
 
     define_method("#{type}_taglist") do
-      self.instance_variable_get("@#{type}_tagnames") ? tagnames_to_list(self.instance_variable_get("@#{type}_tagnames"), type) : with_type(type.classify)
+      self.instance_variable_get("@#{type}_tagnames") ? tagnames_to_list(self.instance_variable_get("@#{type}_tagnames"), type) : with_type(type)
     end
 
     # _to_add/remove only
@@ -165,7 +165,7 @@ class TagSet < ApplicationRecord
     # this is required because otherwise tag sets created on the fly (eg with + during potential match generation)
     # that are not saved in the database will return empty list.
     # We use Tag.where so that we can still chain this with other AR queries
-    return self.new_record? ? Tag.where(id: self.tags.select {|t| t.type == type.classify}.collect(&:id)) : self.tags.with_type(type)
+    return self.new_record? ? Tag.where(id: self.tags.select {|t| t.type == type.classify}.collect(&:id)) : self.tags.with_type(type.classify)
   end
 
   def has_type?(type)
