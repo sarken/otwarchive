@@ -295,11 +295,11 @@ class Prompt < ApplicationRecord
   end
 
   def archive_warnings
-    self.tag_set ? self.tag_set.archive_warning_taglist : {}
+    self.tag_set ? self.tag_set.with_type("archive_warning") : {}
   end
 
   def freeforms
-    self.tag_set ? self.tag_set.freeform_taglist : {}
+    self.tag_set ? self.tag_set.with_type("freeform") : {}
   end
 
   def claim_by(user)
